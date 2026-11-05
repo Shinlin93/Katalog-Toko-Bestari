@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toko Bestari: Plastik dan Peralatan Rumah Tangga</title>
+<meta name="description" content="Toko Bestari di Gedangan, Sidoarjo: kresek, plastik PE dan OPP, mika, gelas cup, thinwall, toples, sampai perabot rumah tangga. Cek harga dan pesan lewat WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Toko Bestari: Plastik dan Peralatan Rumah Tangga">
+<meta property="og:description" content="Cari kebutuhan plastik dan perabot rumah tangga di Toko Bestari, Gedangan, Sidoarjo. Pesan lewat WhatsApp, lalu ambil di toko.">
+<meta property="og:locale" content="id_ID">
+<link rel="icon" href="aset/favicon.png">
+<link rel="stylesheet" href="css/tema.css">
+<link rel="stylesheet" href="css/tata-letak.css">
+<link rel="stylesheet" href="css/komponen.css">
+</head>
+<body>
+<a class="lompat" href="#katalog">Lewati ke daftar produk</a>
+
+<header class="kepala" id="beranda">
+  <div class="wrap kepala-isi">
+    <div class="marka">
+      <span class="logo"><img src="aset/logo-maskot.jpg" alt="" width="56" height="56"></span>
+      <div>
+        <h1 id="nama-toko">Toko Bestari</h1>
+        <p class="tagline" id="tagline">Plastik dan Peralatan Rumah Tangga</p>
+      </div>
+    </div>
+
+    <form class="cari" id="form-cari" role="search" autocomplete="off">
+      <label class="sr" for="cari">Cari barang</label>
+      <input id="cari" type="search" placeholder="Cari barang, misalnya toples" enterkeyhint="search">
+      <button class="cari-tombol" type="submit" aria-label="Cari">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      </button>
+      <div class="saran" id="saran" hidden></div>
+    </form>
+
+    <div class="info">
+      <a class="info-blok" id="info-wa" target="_blank" rel="noopener"><span>WhatsApp</span><b id="info-wa-nomor"></b></a>
+      <a class="info-blok" id="info-lokasi" target="_blank" rel="noopener"><span>Lokasi toko</span><b id="info-lokasi-teks"></b></a>
+    </div>
+
+    <button class="tombol-tema" id="tombol-tema" type="button"></button>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Menu utama">
+  <div class="wrap nav-isi">
+    <ul class="nav-daftar">
+      <li><a href="#beranda" data-bagian="beranda">Beranda</a></li>
+      <li><a href="#katalog" data-bagian="katalog">Katalog</a></li>
+      <li><a href="#lokasi" data-bagian="lokasi">Alamat</a></li>
+      <li><a href="#kontak" data-bagian="kontak">Kontak</a></li>
+      <li><a href="#faq" data-bagian="faq">FAQ</a></li>
+    </ul>
+    <button class="keranjang" id="tombol-keranjang" type="button" data-aksi="buka-laci">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>
+      <span class="lencana" id="lencana">0</span>
+      <span class="total-mini" id="total-mini">Rp 0</span>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <section class="wrap bagian" aria-labelledby="hero-judul">
+    <div class="hero">
+      <div class="hero-teks">
+        <p class="hero-label" id="hero-label">Toko plastik dan perabot · Gedangan, Sidoarjo</p>
+        <h2 class="hero-judul" id="hero-judul">Cari kebutuhan plastik dan perabot rumah tangga dengan mudah</h2>
+        <p class="hero-sub" id="hero-sub">Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di toko kami di Gedangan.</p>
+        <div class="hero-aksi">
+          <a class="hero-utama" href="#katalog">Lihat katalog</a>
+          <a class="hero-kedua" id="hero-wa" target="_blank" rel="noopener" hidden>Chat WhatsApp</a>
+        </div>
+        <div class="hero-cepat" id="hero-cepat"></div>
+      </div>
+      <div class="hero-panel">
+        <p class="hero-angka"><b id="hero-jumlah">Ratusan</b> <span id="hero-jumlah-ket">produk di katalog</span></p>
+        <h3>Pesanan Anda terkirim seperti ini</h3>
+        <p class="contoh-label">Contoh chat WhatsApp</p>
+        <p class="contoh-pesan" id="contoh-pesan">Halo Toko Bestari, saya mau pesan:
+1. Kresek 257 UK 15 - 2 pak
+2. Plastik PE Hitam Tali Putih 9X20 Boyo - 1 pak
+Mohon dicek stok dan totalnya.</p>
+        <p class="contoh-cara">Pilih barang, tekan Tambah ke Keranjang, lalu buka keranjang dan kirim. Kami balas dengan konfirmasi stok dan total.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap bagian" aria-labelledby="j-kategori">
+    <div class="kartu-putih">
+      <h2 class="sr" id="j-kategori">Kategori produk terbanyak</h2>
+      <ul class="strip-daftar" id="strip"></ul>
+    </div>
+  </section>
+
+  <section class="wrap bagian" id="pilihan" aria-labelledby="j-pilihan" hidden>
+    <h2 class="judul-bagian" id="j-pilihan">Produk pilihan</h2>
+    <ul class="baris-pilihan" id="baris-pilihan"></ul>
+  </section>
+
+  <section class="wrap bagian" id="katalog" aria-labelledby="j-katalog">
+    <h2 class="judul-bagian" id="j-katalog">Semua produk</h2>
+    <div id="catatan"></div>
+    <div class="pil" id="kategori" role="group" aria-label="Kategori produk"></div>
+    <div class="baris-hasil">
+      <p id="jumlah" aria-live="polite"></p>
+      <label class="urut">
+        <span>Kategori</span>
+        <select id="kategori-lain">
+          <option value="">Semua kategori</option>
+        </select>
+      </label>
+      <label class="urut">
+        <span>Urutkan</span>
+        <select id="urut">
+          <option value="">Urutan toko</option>
+          <option value="murah">Harga terendah</option>
+          <option value="mahal">Harga tertinggi</option>
+          <option value="az">Nama A sampai Z</option>
+        </select>
+      </label>
+    </div>
+    <ul class="daftar" id="daftar"></ul>
+    <noscript><p class="catatan">Katalog butuh JavaScript. Aktifkan JavaScript di browser, atau tanyakan produk lewat WhatsApp 0851-3687-9923.</p></noscript>
+    <div class="lagi" id="lagi" hidden><button class="tombol-sekunder" id="tombol-lagi" type="button"></button></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-isi">
+      <section id="lokasi" aria-labelledby="h-lokasi">
+        <p class="nama-footer" id="f-nama"></p>
+        <p id="f-tagline"></p>
+        <h2 id="h-lokasi">Alamat toko</h2>
+        <p id="f-alamat">Jl. Wirabumi No. 97, Gedangan, Sidoarjo</p>
+        <a id="f-maps" target="_blank" rel="noopener">Buka di Google Maps</a>
+      </section>
+      <section id="kontak" aria-labelledby="h-kontak">
+        <h2 id="h-kontak">Hubungi kami</h2>
+        <ul>
+          <li><a id="f-wa" target="_blank" rel="noopener"></a></li>
+          <li><a id="f-ig" target="_blank" rel="noopener"></a></li>
+        </ul>
+      </section>
+      <section class="faq" id="faq" aria-labelledby="h-faq">
+        <h2 id="h-faq">Pertanyaan yang sering ditanyakan</h2>
+        <div class="faq-daftar" id="faq-daftar"></div>
+      </section>
+    </div>
+    <p class="catatan-bawah">Harga bisa berubah. Kami memastikan stok dan total saat membalas chat Anda di WhatsApp.</p>
+  </div>
+</footer>
+
+<div class="melayang">
+  <button id="ke-atas" type="button" data-aksi="ke-atas" aria-label="Kembali ke atas" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+  </button>
+  <a id="wa-melayang" target="_blank" rel="noopener" aria-label="Chat WhatsApp" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.5-5.4A8.5 8.5 0 1 1 21 12z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z" fill="currentColor" stroke="none"/></svg>
+  </a>
+</div>
+
+<dialog class="laci" id="laci" aria-labelledby="judul-laci">
+  <div class="laci-isi">
+    <div class="laci-kepala">
+      <h2 id="judul-laci">Keranjang</h2>
+      <button class="tombol-sekunder" type="button" data-aksi="tutup-laci">Tutup</button>
+    </div>
+    <div class="laci-daftar" id="laci-daftar"></div>
+    <div class="laci-kaki" id="laci-kaki"></div>
+  </div>
+</dialog>
+
+<p class="sr" id="pengumuman" aria-live="polite"></p>
+
+<script src="js/pengaturan.js"></script>
+<script src="js/data.js"></script>
+<script src="js/keranjang.js"></script>
+<script src="js/tampilan.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+/* Warna, font, dan tema terang/gelap. Ubah warna di sini, bukan di file lain. */
+:root {
+  --bg: #F4F6FA;
+  --card: #FFFFFF;
+  --soft: #EAF0FB;
+  --ink: #1B2433;
+  --mute: #566174;
+  --line: #DDE3EC;
+  --field: #738098;
+  --primary: #1D5FD8;
+  --primary-hover: #174BB0;
+  --primary-ink: #FFFFFF;
+  --primary-text: #1A54C4;
+  --nav: #E4EEFF;
+  --pill: #BFD4FF;
+  --pill-ink: #1B2433;
+  /* Merah celemek maskot (#EE2F34), digelapkan supaya teks lolos kontras 4.5:1 di atas putih. */
+  --aksen: #C8102E;
+  --aksen-ink: #FFFFFF;
+  --wa: #168F46;
+  --overlay: rgba(10, 20, 40, 0.5);
+  --hero: #1849A9;
+  --hero-ink: #FFFFFF;
+  --hero-mute: #D3E0FF;
+  --hero-chip: rgba(255, 255, 255, 0.14);
+  /* Skala sudut: tombol dan kolom 10px, kartu 14px. Bentuk kapsul hanya untuk filter kategori dan lencana,
+     supaya filter mudah dibedakan dari tombol aksi. */
+  --r-kontrol: 10px;
+  --r-kartu: 14px;
+  --r-pil: 999px;
+  /* Font bawaan perangkat: tampil tanpa unduhan di HP dengan sinyal lemah (lihat DESIGN.md). */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0F1623;
+  --card: #172033;
+  --soft: #1E2A42;
+  --ink: #E6EBF3;
+  --mute: #A3AEC0;
+  --line: #2A3550;
+  --field: #7E8CA5;
+  --primary: #5B93F5;
+  --primary-hover: #7BA8F7;
+  --primary-ink: #0B1220;
+  --primary-text: #8DB2F8;
+  --nav: #16233D;
+  --pill: #2B4C93;
+  --pill-ink: #FFFFFF;
+  --aksen: #FF8A80;
+  --aksen-ink: #1A0B0B;
+  --hero: #16326E;
+  --hero-mute: #B9CBF2;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+body.laci-buka { overflow: hidden; }
+
+:focus-visible { outline: 3px solid var(--primary-text); outline-offset: 2px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--ink); }
+h1, h2, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+[hidden] { display: none !important; }
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.lompat {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-radius: 8px;
+}
+.lompat:focus { top: 8px; }

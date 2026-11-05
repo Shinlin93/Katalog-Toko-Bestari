@@ -1,0 +1,112 @@
+/* Susunan halaman dan semua breakpoint responsif. */
+html { scroll-padding-top: calc(68px + env(safe-area-inset-top, 0px)); }
+
+body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+
+.wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.kepala { background: var(--card); padding-top: env(safe-area-inset-top, 0px); }
+.kepala-isi {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "marka tema" "cari cari" "info info";
+  align-items: center;
+  gap: 12px 12px;
+  padding-top: 12px;
+  padding-bottom: 14px;
+}
+.marka { grid-area: marka; }
+.tombol-tema { grid-area: tema; }
+.cari { grid-area: cari; }
+/* Nomor WhatsApp dan lokasi selalu terlihat, juga di HP, karena itu info terpenting untuk memesan. */
+.info { grid-area: info; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: var(--nav);
+  border-bottom: 1px solid var(--line);
+}
+.nav-isi { display: flex; align-items: center; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+.nav-daftar { display: flex; flex: 1 1 0; min-width: 0; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.nav-daftar::-webkit-scrollbar { display: none; }
+/* Tepi kanan memudar selama masih ada menu di luar layar, tanda bahwa menu bisa digeser. */
+.nav-daftar.ada-sisa { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+
+.bagian { padding-top: 22px; }
+.strip-daftar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.baris-pilihan { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.baris-pilihan > li { flex: none; width: 176px; scroll-snap-align: start; }
+
+.pil { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: thin; }
+.baris-hasil { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin: 6px 0 14px; }
+
+.daftar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.lagi { display: flex; justify-content: center; padding: 24px 0 4px; }
+
+.footer-isi { display: grid; gap: 22px; padding-top: 28px; padding-bottom: 8px; }
+
+.melayang {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 519px) {
+  .total-mini { display: none; }
+  .nav-daftar { gap: 0; }
+}
+
+@media (min-width: 600px) {
+  .daftar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .baris-pilihan > li { width: 190px; }
+}
+
+@media (min-width: 700px) {
+  .footer-isi { grid-template-columns: 1.3fr 1fr; }
+}
+
+@media (min-width: 960px) {
+  .kepala-isi {
+    grid-template-columns: auto minmax(260px, 1fr) auto auto;
+    grid-template-areas: "marka cari info tema";
+    gap: 12px 28px;
+  }
+  .info { display: flex; gap: 24px; }
+  .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+}
+
+@media (min-width: 1100px) {
+  .daftar { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1300px) {
+  .daftar { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* HP mendatar: ruang vertikal sempit, jadi menu tidak menempel di atas. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .nav { position: static; }
+  html { scroll-padding-top: 0; }
+}
+
+/* Hero dan FAQ. */
+@media (min-width: 700px) {
+  .faq { grid-column: 1 / -1; }
+  .faq-daftar { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (min-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 40px; padding: 52px 48px; align-items: center; }
+}
