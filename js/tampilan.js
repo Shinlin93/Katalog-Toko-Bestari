@@ -12,6 +12,8 @@ var KatalogTampilan = (function () {
   var MASKOT = '<img class="maskot" src="aset/logo-maskot.jpg" alt="" width="96" height="80">';
   function rupiah(n) { return "Rp " + n.toLocaleString("id-ID"); }
   function linkWA(teks) { return "https://wa.me/" + cfg.waNomor + "?text=" + encodeURIComponent(teks); }
+  // Alamat halaman detail satu produk, dipakai untuk kartu dan tombol bagikan.
+  function linkProduk(p) { return "produk.html?id=" + encodeURIComponent(p.id); }
   function linkMaps() { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(cfg.alamat); }
 
   function setTema(t) {
@@ -100,6 +102,68 @@ var KatalogTampilan = (function () {
     }).join("");
   }
 
+  // ---- Panduan belanja (isi diatur di pengaturan.js) ----
+  function daftarPanduan() { return cfg.panduan || []; }
+  function ambilPanduan(id) {
+    return daftarPanduan().filter(function (g) { return g.id === id; })[0] || null;
+  }
+
+  function buatPanduan() {
+    var daftar = daftarPanduan();
+    $("panduan").hidden = !daftar.length;
+    $("daftar-panduan").innerHTML = daftar.map(function (g) {
+      return '<li><button class="kartu-panduan" type="button" data-aksi="buka-panduan" data-nilai="' + esc(g.id) + '">' +
+        '<img src="aset/logo-maskot.jpg" alt="" width="64" height="54">' +
+        '<span class="kartu-panduan-teks"><b>' + esc(g.judul) + "</b><small>" + esc(g.ringkas || "") + "</small></span>" +
+        '<span class="kartu-panduan-aksi">Buka panduan</span></button></li>';
+    }).join("");
+  }
+
+  // Gambar tas sederhana; ukurannya hanya untuk perbandingan antar pilihan.
+  function gambarTas(lebar) {
+    return '<svg class="tas" viewBox="0 0 40 48" width="' + lebar + '" height="' + Math.round(lebar * 1.2) + '" aria-hidden="true">' +
+      '<path d="M4 3h8v9q8 8 16 0V3h8v41a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/></svg>';
+  }
+
+  function gambarPanduan(id) {
+    var g = ambilPanduan(id);
+    if (!g) return false;
+    $("judul-panduan").textContent = g.judul;
+    var pilihan = g.pilihan || [], n = pilihan.length;
+    var html = '<div class="panduan-pembuka"><img class="maskot" src="aset/logo-maskot.jpg" alt="" width="72" height="60">' +
+      '<p class="gelembung">' + esc(g.pengantar || g.ringkas || "") + "</p></div>";
+    if (n) {
+      html += '<ol class="pilihan-panduan">' + pilihan.map(function (x, i) {
+        var lebar = n > 1 ? Math.round(26 + (i * 30) / (n - 1)) : 40;
+        return '<li class="pilihan-item"><div class="pilihan-gambar">' + gambarTas(lebar) + "</div>" +
+          '<div class="pilihan-teks">' + (x.label ? '<span class="pilihan-label">' + esc(x.label) + "</span>" : "") +
+          "<h3>" + esc(x.nama) + "</h3><p>" + esc(x.untuk || "") + "</p></div>" +
+          (x.cari ? '<button class="tombol-sekunder pilihan-tombol" type="button" data-aksi="cari-panduan" data-nilai="' + esc(x.cari) +
+            '">Lihat ' + esc(x.nama.toLowerCase()) + "</button>" : "") + "</li>";
+      }).join("") + "</ol>";
+      html += '<p class="catatan-kecil">Gambar tas hanya untuk membandingkan ukuran, bukan ukuran sebenarnya.</p>';
+    }
+    if ((g.warna || []).length) {
+      html += '<h3 class="panduan-subjudul">' + esc(g.warnaJudul || "Pilihan warna") + '</h3><ul class="warna-daftar">' +
+        g.warna.map(function (w) {
+          return '<li><span class="warna-contoh" style="background:' + esc(w.contoh) + '"></span>' + esc(w.nama) + "</li>";
+        }).join("") + "</ul>";
+    }
+    html += '<p class="catatan-kecil">Masih ragu? Tanyakan lewat WhatsApp, kami bantu pilihkan.</p>';
+    $("isi-panduan").innerHTML = html;
+    $("isi-panduan").scrollTop = 0;
+    return true;
+  }
+
+  // Panduan yang cocok dengan kategori atau kata yang sedang dicari, untuk ditawarkan di atas hasil.
+  function panduanCocok(S) {
+    var kueri = (S.kueri || "").toLowerCase();
+    return daftarPanduan().filter(function (g) {
+      if (S.kategori && g.kategori && S.kategori.toLowerCase() === g.kategori.toLowerCase()) return true;
+      return kueri && (g.kataKunci || []).some(function (k) { return kueri.indexOf(k.toLowerCase()) > -1; });
+    })[0] || null;
+  }
+
   function hitungKategori(produk) {
     var urut = [], hitung = {};
     produk.forEach(function (p) {
@@ -150,8 +214,9 @@ var KatalogTampilan = (function () {
     var harga = p.harga ? rupiah(p.harga) + " <small>per " + esc(p.sat) + "</small>" : "<small>Tanya harga lewat WhatsApp</small>";
     var tombol = habis ? '<button class="beli" type="button" disabled>Stok habis</button>'
       : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '" aria-label="Tambah ke keranjang: ' + esc(p.nama) + '">Tambah ke Keranjang</button>';
-    return '<li class="kartu" data-id="' + esc(p.id) + '"><div class="foto">' + foto + esc(p.kat) + "<small>Foto menyusul</small></div>" +
-      '<div class="isi"><p class="nama">' + esc(p.nama) + "</p>" + stok + '<p class="harga">' + harga + "</p>" +
+    var link = esc(linkProduk(p));
+    return '<li class="kartu" data-id="' + esc(p.id) + '"><a class="foto" href="' + link + '" tabindex="-1" aria-hidden="true">' + foto + esc(p.kat) + "<small>Foto menyusul</small></a>" +
+      '<div class="isi"><p class="nama"><a href="' + link + '">' + esc(p.nama) + "</a></p>" + stok + '<p class="harga">' + harga + "</p>" +
       '<p class="di-keranjang"' + (n ? "" : " hidden") + ">Di keranjang: " + n + "</p>" + tombol + "</div></li>";
   }
 
@@ -237,6 +302,9 @@ var KatalogTampilan = (function () {
     var catatan = [];
     if (!cfg.waNomor) catatan.push('<div class="catatan" role="status"><p>Nomor WhatsApp toko belum diisi, jadi pesanan belum bisa dikirim.</p></div>');
     if (S.catatan) catatan.push('<div class="catatan" role="status"><p>' + esc(S.catatan) + '</p><button class="tombol-sekunder" type="button" data-aksi="ulang">Coba muat lagi</button></div>');
+    var g = S.keadaan === "ok" ? panduanCocok(S) : null;
+    if (g) catatan.push('<div class="petunjuk"><img src="aset/logo-maskot.jpg" alt="" width="48" height="40"><p>' + esc(g.petunjuk || g.judul) +
+      '</p><button class="tombol-sekunder" type="button" data-aksi="buka-panduan" data-nilai="' + esc(g.id) + '">Lihat panduan</button></div>');
     $("catatan").innerHTML = catatan.join("");
 
     var sorot = S.keadaan === "ok" && !S.kueri && !S.kategori ? S.produk.filter(function (p) { return p.sorot; }).slice(0, 10) : [];
@@ -279,5 +347,6 @@ var KatalogTampilan = (function () {
   return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori, buatStrip: buatStrip,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan };
+           isiContohPesan: isiContohPesan, buatPanduan: buatPanduan, gambarPanduan: gambarPanduan,
+           kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk };
 })();

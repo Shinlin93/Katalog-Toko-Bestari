@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Produk · Toko Bestari</title>
+<meta name="description" content="Detail produk di Toko Bestari, Gedangan, Sidoarjo. Cek harga dan pesan lewat WhatsApp.">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Produk · Toko Bestari">
+<meta property="og:description" content="Detail produk di Toko Bestari, Gedangan, Sidoarjo. Cek harga dan pesan lewat WhatsApp.">
+<meta property="og:locale" content="id_ID">
+<link rel="icon" href="aset/favicon.png">
+<link rel="stylesheet" href="css/tema.css">
+<link rel="stylesheet" href="css/tata-letak.css">
+<link rel="stylesheet" href="css/komponen.css">
+</head>
+<body class="halaman-produk">
+<a class="lompat" href="#produk">Lewati ke detail produk</a>
+
+<header class="kepala">
+  <div class="wrap kepala-isi kepala-produk">
+    <a class="marka" href="index.html">
+      <span class="logo"><img src="aset/logo-maskot.jpg" alt="" width="56" height="56"></span>
+      <div>
+        <p class="h1" id="nama-toko">Toko Bestari</p>
+        <p class="tagline" id="tagline">Plastik dan Peralatan Rumah Tangga</p>
+      </div>
+    </a>
+    <button class="tombol-tema" id="tombol-tema" type="button"></button>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Menu utama">
+  <div class="wrap nav-isi">
+    <ul class="nav-daftar">
+      <li><a href="index.html#katalog" id="kembali">← Kembali ke katalog</a></li>
+    </ul>
+    <button class="keranjang" id="tombol-keranjang" type="button" data-aksi="buka-laci">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11L21 7H6"/></svg>
+      <span class="lencana" id="lencana">0</span>
+      <span class="total-mini" id="total-mini">Rp 0</span>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap bagian" id="catatan"></div>
+  <section class="wrap bagian" id="produk" aria-live="polite">
+    <p class="keadaan"><b>Memuat produk</b>Sebentar, harga terbaru sedang diambil.</p>
+  </section>
+  <noscript><p class="wrap catatan">Halaman ini butuh JavaScript. Tanyakan produk lewat WhatsApp 0851-3687-9923.</p></noscript>
+
+  <section class="wrap bagian" id="serupa" aria-labelledby="j-serupa" hidden>
+    <h2 class="judul-bagian" id="j-serupa">Produk lain di kategori ini</h2>
+    <ul class="baris-pilihan" id="baris-serupa"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-isi">
+      <section aria-labelledby="h-lokasi">
+        <h2 id="h-lokasi">Alamat toko</h2>
+        <p id="f-alamat">Jl. Wirabumi No. 97, Gedangan, Sidoarjo</p>
+        <a id="f-maps" target="_blank" rel="noopener">Buka di Google Maps</a>
+      </section>
+      <section aria-labelledby="h-kontak">
+        <h2 id="h-kontak">Hubungi kami</h2>
+        <ul><li><a id="f-wa" target="_blank" rel="noopener"></a></li></ul>
+      </section>
+    </div>
+    <p class="catatan-bawah">Harga bisa berubah. Kami memastikan stok dan total saat membalas chat Anda di WhatsApp.</p>
+  </div>
+</footer>
+
+<dialog class="laci" id="laci" aria-labelledby="judul-laci">
+  <div class="laci-isi">
+    <div class="laci-kepala">
+      <h2 id="judul-laci">Keranjang</h2>
+      <button class="tombol-sekunder" type="button" data-aksi="tutup-laci">Tutup</button>
+    </div>
+    <div class="laci-daftar" id="laci-daftar"></div>
+    <div class="laci-kaki" id="laci-kaki"></div>
+  </div>
+</dialog>
+
+<p class="sr" id="pengumuman" aria-live="polite"></p>
+
+<script src="js/pengaturan.js"></script>
+<script src="js/data.js"></script>
+<script src="js/keranjang.js"></script>
+<script src="js/tampilan.js"></script>
+<script src="js/produk.js"></script>
+</body>
+</html>

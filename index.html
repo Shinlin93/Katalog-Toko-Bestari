@@ -65,7 +65,9 @@
 <main>
   <section class="wrap bagian" aria-labelledby="hero-judul">
     <div class="hero">
-      <div class="hero-teks">
+      <div class="hero-slider" id="hero-slider">
+      <div class="slide-daftar" id="slide-daftar">
+      <div class="slide hero-teks">
         <p class="hero-label" id="hero-label">Toko plastik dan perabot · Gedangan, Sidoarjo</p>
         <h2 class="hero-judul" id="hero-judul">Cari kebutuhan plastik dan perabot rumah tangga dengan mudah</h2>
         <p class="hero-sub" id="hero-sub">Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di toko kami di Gedangan.</p>
@@ -74,6 +76,9 @@
           <a class="hero-kedua" id="hero-wa" target="_blank" rel="noopener" hidden>Chat WhatsApp</a>
         </div>
         <div class="hero-cepat" id="hero-cepat"></div>
+      </div>
+      </div>
+      <div class="slide-kontrol" id="slide-kontrol" hidden></div>
       </div>
       <div class="hero-panel">
         <p class="hero-angka"><b id="hero-jumlah">Ratusan</b> <span id="hero-jumlah-ket">produk di katalog</span></p>
@@ -93,6 +98,11 @@ Mohon dicek stok dan totalnya.</p>
       <h2 class="sr" id="j-kategori">Kategori produk terbanyak</h2>
       <ul class="strip-daftar" id="strip"></ul>
     </div>
+  </section>
+
+  <section class="wrap bagian" id="panduan" aria-labelledby="j-panduan" hidden>
+    <h2 class="judul-bagian" id="j-panduan">Panduan belanja</h2>
+    <ul class="daftar-panduan" id="daftar-panduan"></ul>
   </section>
 
   <section class="wrap bagian" id="pilihan" aria-labelledby="j-pilihan" hidden>
@@ -174,12 +184,23 @@ Mohon dicek stok dan totalnya.</p>
   </div>
 </dialog>
 
+<dialog class="laci" id="dialog-panduan" aria-labelledby="judul-panduan">
+  <div class="laci-isi">
+    <div class="laci-kepala">
+      <h2 id="judul-panduan">Panduan</h2>
+      <button class="tombol-sekunder" type="button" data-aksi="tutup-panduan">Tutup</button>
+    </div>
+    <div class="laci-daftar" id="isi-panduan"></div>
+  </div>
+</dialog>
+
 <p class="sr" id="pengumuman" aria-live="polite"></p>
 
 <script src="js/pengaturan.js"></script>
 <script src="js/data.js"></script>
 <script src="js/keranjang.js"></script>
 <script src="js/tampilan.js"></script>
+<script src="js/slider.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

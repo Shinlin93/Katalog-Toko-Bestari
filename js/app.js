@@ -24,9 +24,13 @@
         if (keluar.length) T.pengumuman("Dikeluarkan dari keranjang karena tidak ada lagi di katalog: " + keluar.join(", ") + ".");
       }
       S.keadaan = r.produk.length ? "ok" : "kosong";
-      S.kategori = "";
+      // Link dari halaman produk (index.html?kategori=...) langsung membuka kategori tersebut.
+      var katAwal = new URLSearchParams(location.search).get("kategori") || "";
+      if (!S.produk.some(function (p) { return p.kat === katAwal; })) katAwal = "";
+      S.kategori = katAwal;
       S.batas = cfg.produkPerHalaman;
       T.buatKategori(S.produk);
+      if (katAwal) T.tandaiKategori(katAwal);
       T.buatStrip(S.produk);
       T.isiJumlahProduk(S.produk);
       T.isiContohPesan(S.produk);
@@ -66,12 +70,36 @@
     document.body.classList.add("laci-buka");
   }
   function tutupLaci() {
-    if (laci.close) laci.close(); else { laci.removeAttribute("open"); sesudahLaci(); }
+    if (laci.close) laci.close(); else laci.removeAttribute("open");
+    sesudahLaci();
   }
   function sesudahLaci() {
+    if (!document.body.classList.contains("laci-buka")) return;
     document.body.classList.remove("laci-buka");
     $("tombol-keranjang").focus();
   }
+  // Jendela panduan: memakai gaya laci yang sama, fokus kembali ke tombol yang membukanya.
+  var dialogPanduan = $("dialog-panduan"), pembukaPanduan = null;
+  function bukaPanduan(tombol, id) {
+    if (!T.gambarPanduan(id)) return;
+    pembukaPanduan = tombol;
+    if (dialogPanduan.showModal) dialogPanduan.showModal(); else dialogPanduan.setAttribute("open", "");
+    document.body.classList.add("laci-buka");
+  }
+  // Menutup lewat tombol langsung memulihkan halaman; event "close" tetap menangani tombol Escape.
+  function tutupPanduan() {
+    if (dialogPanduan.close) dialogPanduan.close(); else dialogPanduan.removeAttribute("open");
+    sesudahPanduan();
+  }
+  function sesudahPanduan() {
+    if (!document.body.classList.contains("laci-buka")) return;
+    document.body.classList.remove("laci-buka");
+    if (pembukaPanduan && document.body.contains(pembukaPanduan)) pembukaPanduan.focus();
+    pembukaPanduan = null;
+  }
+  dialogPanduan.addEventListener("close", sesudahPanduan);
+  dialogPanduan.addEventListener("click", function (e) { if (e.target === dialogPanduan) tutupPanduan(); });
+
   laci.addEventListener("close", sesudahLaci);
   laci.addEventListener("click", function (e) { if (e.target === laci) tutupLaci(); });
 
@@ -144,6 +172,17 @@
     else if (aksi === "ulang") mulai();
     else if (aksi === "kategori") { T.tandaiKategori(nilai); ubah({ kategori: nilai }); keKatalog(); }
     else if (aksi === "ke-atas") window.scrollTo({ top: 0 });
+    else if (aksi === "buka-panduan") bukaPanduan(b, nilai);
+    else if (aksi === "tutup-panduan") tutupPanduan();
+    else if (aksi === "cari-panduan") {
+      pembukaPanduan = null;
+      tutupPanduan();
+      $("urut").value = "";
+      T.tandaiKategori("");
+      $("cari").value = nilai;
+      ubah({ kueri: nilai, kategori: "", urut: "" });
+      keKatalog();
+    }
   });
 
   // Menandai menu yang sesuai dengan bagian halaman dan menampilkan tombol ke atas.
@@ -172,6 +211,8 @@
 
   T.mulaiTema();
   T.isiToko();
+  T.buatPanduan();
+  HeroSlider.mulai();
   T.gambarLencana();
   sesuaikanMenu();
   mulai();
