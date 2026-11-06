@@ -535,7 +535,10 @@ a.foto { color: var(--ink); text-decoration: none; }
 a.marka { color: var(--ink); text-decoration: none; }
 .h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 700; }
 .detail { display: grid; gap: 0; }
-.detail-foto { aspect-ratio: 1 / 1; font-size: 1.1rem; }
+/* Di HP foto dibuat lebih pendek supaya nama, harga, dan tombol beli tetap terlihat tanpa menggulir. */
+.detail-foto { aspect-ratio: 4 / 3; max-height: 40vh; font-size: 1.1rem; }
+.keadaan-aksi { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
+.keadaan-aksi .tombol-sekunder { display: inline-flex; align-items: center; text-decoration: none; }
 .detail-isi { display: flex; flex-direction: column; gap: 8px; padding: 18px 16px 20px; }
 .detail-kat { font-size: 0.9rem; }
 .detail-kat a { color: var(--mute); font-weight: 600; }
@@ -554,7 +557,7 @@ a.marka { color: var(--ink); text-decoration: none; }
 .bagikan-link { margin-top: 8px; color: var(--mute); font-size: 0.8rem; overflow-wrap: anywhere; user-select: all; }
 @media (min-width: 760px) {
   .detail { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
-  .detail-foto { border-right: 1px solid var(--line); }
+  .detail-foto { aspect-ratio: 1 / 1; max-height: none; border-right: 1px solid var(--line); }
   .detail-isi { padding: 28px 28px; }
 }
 @media (min-width: 1100px) {

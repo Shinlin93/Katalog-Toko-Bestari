@@ -80,14 +80,28 @@
     document.title = "Produk tidak ditemukan · " + cfg.namaToko;
     $("produk").innerHTML = '<div class="keadaan"><img class="maskot" src="aset/logo-maskot.jpg" alt="" width="96" height="80">' +
       "<b>Produk tidak ditemukan</b>Mungkin produk ini sudah tidak ada di katalog, atau linknya terpotong saat dikirim." +
-      '<p style="margin-top:16px"><a class="tombol-sekunder" style="display:inline-flex;align-items:center;text-decoration:none" href="index.html#katalog">Lihat semua produk</a></p></div>';
+      '<p class="keadaan-aksi"><a class="tombol-sekunder" href="index.html#katalog">Lihat semua produk</a></p></div>';
+  }
+
+  // Daftar produk gagal dimuat sama sekali: penyebabnya koneksi, bukan linknya.
+  function gagalMuat() {
+    document.title = "Produk belum bisa dimuat · " + cfg.namaToko;
+    $("catatan").innerHTML = "";
+    $("produk").innerHTML = '<div class="keadaan"><b>Produk belum bisa dimuat</b>Periksa koneksi internet, lalu coba lagi. ' +
+      "Anda juga bisa menanyakan produk ini langsung lewat WhatsApp." +
+      '<p class="keadaan-aksi"><button class="tombol-sekunder" type="button" data-aksi="ulang">Coba muat lagi</button>' +
+      (cfg.waNomor ? '<a class="tombol-sekunder" target="_blank" rel="noopener" href="' +
+        esc(T.linkWA("Halo " + cfg.namaToko + ", saya mau tanya produk ini:\n" + linkBagikan())) + '">Tanya lewat WhatsApp</a>' : "") +
+      "</p></div>";
   }
 
   function mulai() {
+    $("produk").innerHTML = '<p class="keadaan"><b>Memuat produk</b>Sebentar, harga terbaru sedang diambil.</p>';
     D.muat().then(function (r) {
       produk = r.produk;
       if (r.catatan) $("catatan").innerHTML = '<div class="catatan" role="status"><p>' + esc(r.catatan) + "</p></div>";
       if (r.terbaru) { K.sinkron(r.produk); T.gambarLencana(); }
+      if (!produk.length) return gagalMuat();
       for (var i = 0; i < produk.length; i++) if (produk[i].id === id) { ini = produk[i]; break; }
       if (!ini) return tidakDitemukan();
       var judul = ini.nama + " · " + cfg.namaToko;
@@ -157,6 +171,7 @@
     var aksi = b.getAttribute("data-aksi"), idItem = b.getAttribute("data-id");
     if (aksi === "tambah") {
       var p = null;
+      if (!produk.length) return gagalMuat();
       for (var i = 0; i < produk.length; i++) if (produk[i].id === idItem) p = produk[i];
       if (!p) return;
       K.tambah(p);
@@ -169,6 +184,7 @@
     else if (aksi === "lebih" || aksi === "kurang") { K.ubah(idItem, aksi === "lebih" ? 1 : -1); perbarui(idItem); }
     else if (aksi === "hapus-item") { K.hapus(idItem); perbarui(idItem); }
     else if (aksi === "kosongkan") { K.kosongkan(); perbarui(null); }
+    else if (aksi === "ulang") mulai();
     else if (aksi === "salin-link") {
       salin(linkBagikan()).then(function () { beriTanda(b, "Link disalin"); },
         function () { beriTanda(b, "Gagal menyalin, salin link di bawah"); });
