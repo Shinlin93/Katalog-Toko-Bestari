@@ -53,6 +53,7 @@
   $("tombol-tema").addEventListener("click", T.gantiTema);
 
   T.mulaiTema();
+  K.setToko(D.tokoAktif().id);
   isiToko();
   T.isiFaq();
   T.gambarLencana();

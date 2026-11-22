@@ -7,13 +7,15 @@
   var id = new URLSearchParams(location.search).get("id") || "";
   // Toko ditentukan dari kode produk: produk toko lain berawalan "id-toko:".
   var toko = D.tokoDariIdProduk(id);
+  // Keranjang di halaman ini adalah keranjang toko pemilik produk.
+  K.setToko(toko.id);
 
   // Alamat yang dibagikan: selalu bentuk bersih tanpa tanda # atau parameter lain.
   function linkBagikan() {
     return location.origin + location.pathname + "?id=" + encodeURIComponent(id);
   }
   function teksBagikan(p) {
-    return p.nama + (p.harga ? " - " + rupiah(p.harga) + " per " + p.sat : "") + " di " + cfg.namaToko;
+    return p.nama + (p.harga ? " - " + rupiah(p.harga) + " per " + p.sat : "") + " di " + toko.nama + " (" + cfg.namaToko + ")";
   }
 
   function setMeta(nama, isi) {
@@ -29,7 +31,7 @@
   }
 
   function gambarProduk(p) {
-    var habis = p.status === "habis", n = K.qty(p.id);
+    var habis = p.status === "habis", n = K.qty(p.id), diKeranjang = T.teksDiKeranjang(n);
     var foto = p.foto ? '<img src="' + esc(cfg.folderFoto + p.foto) + '" alt="' + esc(p.nama) + '" onerror="this.remove()">' : "";
     var stok = habis ? '<p class="stok habis">Stok habis</p>'
       : p.status === "sedikit" ? '<p class="stok sedikit">Stok tinggal sedikit</p>'
@@ -49,8 +51,9 @@
           (p.kode ? '<p class="detail-kode">Kode barang: ' + esc(p.kode) + "</p>" : "") +
           stok +
           '<p class="harga detail-harga">' + harga + "</p>" +
-          '<p class="di-keranjang"' + (n ? "" : " hidden") + ">Di keranjang: " + n + "</p>" +
+          '<p class="di-keranjang"' + (diKeranjang ? "" : " hidden") + ">" + esc(diKeranjang) + "</p>" +
           '<div class="detail-aksi">' + beli + tanya + "</div>" +
+          '<div class="toko-lain" id="toko-lain" hidden></div>' +
           '<div class="bagikan" role="group" aria-labelledby="j-bagikan">' +
             '<p class="bagikan-judul" id="j-bagikan">Bagikan produk ini</p>' +
             '<div class="bagikan-tombol">' +
@@ -72,6 +75,27 @@
     lain = lain.slice(0, 12);
     $("serupa").hidden = !lain.length;
     $("baris-serupa").innerHTML = lain.map(T.kartu).join("");
+  }
+
+  // Barang yang sama (KODE sama) di toko lain, lengkap dengan harganya di toko itu.
+  function gambarTokoLain(p) {
+    if (!p.kode) return;
+    var hasil = [];
+    var lain = D.daftarToko().filter(function (t) { return t.id !== toko.id; });
+    Promise.all(lain.map(function (t) {
+      return D.muat(t).then(function (r) {
+        var x = r.produk.filter(function (q) { return q.kode === p.kode; })[0];
+        if (x) hasil.push({ toko: t, p: x });
+      });
+    })).then(function () {
+      var el = $("toko-lain");
+      if (!el || !hasil.length) return;
+      el.innerHTML = '<p class="toko-lain-judul">Juga tersedia di</p>' + hasil.map(function (h) {
+        var harga = h.p.status === "habis" ? "Stok habis" : h.p.harga ? rupiah(h.p.harga) + " per " + esc(h.p.sat) : "Tanya harga";
+        return '<a class="toko-lain-item" href="' + esc(T.linkProduk(h.p)) + '"><b>' + esc(h.toko.nama) + "</b><span>" + harga + "</span></a>";
+      }).join("");
+      el.hidden = false;
+    });
   }
 
   function tidakDitemukan() {
@@ -111,6 +135,7 @@
       setMeta("og:description", teksBagikan(ini));
       gambarProduk(ini);
       gambarSerupa(ini);
+      gambarTokoLain(ini);
     });
   }
 

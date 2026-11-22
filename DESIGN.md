@@ -5,7 +5,7 @@ Catatan arah desain website katalog. Isinya disalin dari arahan pemilik toko dan
 ## Identitas
 
 - Nama di website: **Toko Bestari**. Nama di spanduk: **Bestari Plastik**. Keduanya ditampilkan bersama, misalnya "Toko Bestari (Bestari Plastik)".
-- Dua toko: Toko Wirabumi (Jl. Wirabumi No. 97, Gedangan, Sidoarjo) dan Toko Citra City (Ruko Citra City R-19). Data toko diatur di `js/pengaturan.js` (`toko`).
+- Dua toko: Toko Gedangan (Jl. Wirabumi No. 97, Gedangan, Sidoarjo) dan Toko Sarirogo (Ruko Citra City R-19, Sarirogo, Sidoarjo). Data toko diatur di `js/pengaturan.js` (`toko`).
 - Maskot: kelinci bercelemek merah (`aset/logo-maskot.jpg`). Dipakai sebagai logo dan pemandu di panduan belanja.
 - Barang: plastik, kemasan, dan perabot rumah tangga. Harga diambil dari Google Sheets.
 
@@ -53,7 +53,7 @@ Memakai font bawaan perangkat (system-ui). Website jadi tampil tanpa mengunduh f
 - Hero cukup berisi judul, satu kalimat, dua tombol, dan panel berisi jumlah produk serta 3 langkah cara pesan. Contoh chat pesanan ada di FAQ.
 - FAQ punya halaman sendiri (faq.html), dibuka dari menu atas dan dari link di footer. Footer di setiap halaman berisi alamat, logo WhatsApp dan Instagram, dan link FAQ.
 - HP (sampai 699 px): satu kolom, produk dua kolom, dan langkah cara pesan hanya menampilkan judulnya.
-- Dua toko, dua katalog: tombol Toko Gedangan dan Toko Citra City di atas katalog, dengan alamat toko terpilih di bawahnya. Pilihan diingat, dan link ?toko=citra langsung membuka katalog Citra City. Pencarian memberi tahu bila barang ada di toko lain. Keranjang tetap satu, dikelompokkan per toko, dan pesan WhatsApp dipisah per toko.
+- Dua toko, dua katalog, dua keranjang: tombol Toko Gedangan dan Toko Sarirogo di atas katalog, dengan alamat toko terpilih di bawahnya. Pilihan diingat, dan link ?toko=citra langsung membuka katalog Toko Sarirogo. Satu pesanan untuk satu toko: keranjang mengikuti toko yang dipilih, keranjang toko lain tetap tersimpan, tombol pilihan toko menampilkan "N di keranjang", dan di dalam keranjang ada pengingat "Keranjang Toko ... masih berisi N barang". Pesan WhatsApp selalu menyebut toko dan alamat tempat mengambil di baris pertama. Barang yang dijual di kedua toko memakai KODE yang sama di kedua spreadsheet, untuk "Juga tersedia di" di halaman produk. Bila barang yang dicari tidak ada di toko yang dipilih tapi ada di toko lain, hasil pencarian menampilkan "Tidak ada di Toko …, tapi barang ini ada di toko kami yang lain" dengan tombol "Lihat di Toko … (jumlah)" yang langsung membuka katalog toko itu. Kotak saran saat mengetik hanya berisi barang toko yang dipilih.
 - Tablet (700 sampai 1039 px): hero dua kolom, produk tiga atau empat kolom.
 - Desktop (1040 px ke atas): header satu baris, produk empat sampai enam kolom.
 - Semua tombol dan link minimal 44 x 44 px.

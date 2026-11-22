@@ -107,7 +107,11 @@ var KatalogTampilan = (function () {
 
   // Angka besar = jumlah produk di katalog, tanpa menyinggung stok.
   function isiJumlahProduk(produk, toko) {
-    if (!produk.length) return;
+    if (!produk.length) {
+      $("hero-jumlah").textContent = "–";
+      $("hero-jumlah-ket").textContent = toko ? "Katalog " + toko.nama + " belum bisa dimuat" : "Katalog belum bisa dimuat";
+      return;
+    }
     $("hero-jumlah").textContent = produk.length.toLocaleString("id-ID");
     $("hero-jumlah-ket").textContent = toko ? "produk di " + toko.nama : "produk di katalog";
   }
@@ -120,8 +124,10 @@ var KatalogTampilan = (function () {
     wadah.hidden = daftar.length < 2;
     wadah.innerHTML = daftar.map(function (t) {
       var n = jumlah && jumlah[t.id] != null ? jumlah[t.id].toLocaleString("id-ID") + " produk" : "Memuat...";
+      var diKeranjang = K.jumlahToko(t.id);
       return '<button class="pilih-toko-item" type="button" data-aksi="pilih-toko" data-nilai="' + esc(t.id) + '" aria-pressed="' + (t.id === aktifId) + '">' +
-        "<b>" + esc(t.nama) + "</b><small>" + n + "</small></button>";
+        "<b>" + esc(t.nama) + "</b><small>" + n + "</small>" +
+        (diKeranjang ? '<span class="pilih-toko-keranjang">' + diKeranjang + " di keranjang</span>" : "") + "</button>";
     }).join("");
     var aktif = daftar.filter(function (t) { return t.id === aktifId; })[0];
     if (aktif) {
@@ -237,8 +243,10 @@ var KatalogTampilan = (function () {
     $("kategori-lain").value = nilai;
   }
 
+  function teksDiKeranjang(n) { return n ? "Di keranjang: " + n : ""; }
+
   function kartu(p) {
-    var habis = p.status === "habis", n = K.qty(p.id);
+    var habis = p.status === "habis", n = K.qty(p.id), diKeranjang = teksDiKeranjang(n);
     var foto = p.foto ? '<img src="' + esc(cfg.folderFoto + p.foto) + '" alt="' + esc(p.nama) + '" loading="lazy" onerror="this.remove()">' : "";
     var stok = habis ? '<p class="stok habis">Stok habis</p>'
       : p.status === "sedikit" ? '<p class="stok sedikit">Stok tinggal sedikit</p>'
@@ -249,16 +257,17 @@ var KatalogTampilan = (function () {
     var link = esc(linkProduk(p));
     return '<li class="kartu" data-id="' + esc(p.id) + '"><a class="foto" href="' + link + '" tabindex="-1" aria-hidden="true">' + foto + esc(p.kat) + "<small>Foto menyusul</small></a>" +
       '<div class="isi"><p class="nama"><a href="' + link + '">' + esc(p.nama) + "</a></p>" + stok + '<p class="harga">' + harga + "</p>" +
-      '<p class="di-keranjang"' + (n ? "" : " hidden") + ">Di keranjang: " + n + "</p>" + tombol + "</div></li>";
+      '<p class="di-keranjang"' + (diKeranjang ? "" : " hidden") + ">" + esc(diKeranjang) + "</p>" + tombol + "</div></li>";
   }
 
   // Memperbarui tulisan "Di keranjang" tanpa menggambar ulang, supaya fokus keyboard tidak hilang.
-  function perbaruiKartu(id) {
+  function perbaruiKartu() {
     [].forEach.call(document.querySelectorAll(".kartu"), function (el) {
-      if (id != null && el.getAttribute("data-id") !== id) return;
-      var n = K.qty(el.getAttribute("data-id")), baris = el.querySelector(".di-keranjang");
-      baris.hidden = !n;
-      baris.textContent = "Di keranjang: " + n;
+      var baris = el.querySelector(".di-keranjang");
+      if (!baris) return;
+      var teks = teksDiKeranjang(K.qty(el.getAttribute("data-id")));
+      baris.hidden = !teks;
+      baris.textContent = teks;
     });
   }
 
@@ -270,19 +279,33 @@ var KatalogTampilan = (function () {
     $("tombol-keranjang").setAttribute("aria-label", "Buka keranjang, " + n + " barang, total " + total);
   }
 
+  // Pengingat keranjang toko lain yang masih berisi barang. Di halaman depan tautan ini langsung memindah toko;
+  // di halaman lain membuka halaman depan dengan toko dan keranjang tersebut.
+  function htmlPengingatToko() {
+    return K.tokoLainBerisi().map(function (l) {
+      return '<p class="laci-lain">Keranjang <b>' + esc(l.toko.nama) + "</b> masih berisi " + l.jumlah + " barang. " +
+        '<a href="index.html?toko=' + encodeURIComponent(l.toko.id) + '#keranjang" data-aksi="buka-keranjang-toko" data-nilai="' + esc(l.toko.id) + '">Buka</a></p>';
+    }).join("");
+  }
+
   function gambarLaci() {
     var aktif = document.activeElement, fokus = null;
     if (aktif && aktif.closest && aktif.closest("#laci") && aktif.getAttribute("data-aksi")) {
       fokus = { aksi: aktif.getAttribute("data-aksi"), id: aktif.getAttribute("data-id") };
     }
+    var t = K.toko(), banyakToko = (cfg.toko || []).length > 1;
+    $("judul-laci").textContent = banyakToko ? "Keranjang " + t.nama : "Keranjang";
+    var info = banyakToko ? '<p class="laci-toko">Diambil di ' + esc(t.alamat) + "</p>" : "";
+    var pengingat = htmlPengingatToko();
     var daftar = K.daftar();
     if (!daftar.length) {
-      $("laci-daftar").innerHTML = '<div class="laci-kosong">' + MASKOT + '<b>Keranjang masih kosong</b><p>Pilih produk, lalu tekan + Keranjang.</p>' +
-        '<button class="tombol-utama" type="button" data-aksi="tutup-laci">Lihat produk</button></div>';
+      $("laci-daftar").innerHTML = info + '<div class="laci-kosong">' + MASKOT + "<b>Keranjang " + (banyakToko ? esc(t.nama) + " " : "") + "masih kosong</b>" +
+        "<p>Pilih produk, lalu tekan + Keranjang.</p>" +
+        '<button class="tombol-utama" type="button" data-aksi="tutup-laci">Lihat produk</button></div>' + pengingat;
       $("laci-kaki").innerHTML = "";
       return;
     }
-    var barisItem = function (x) {
+    $("laci-daftar").innerHTML = info + "<ul>" + daftar.map(function (x) {
       var id = esc(x.id), nama = esc(x.nama);
       return '<li class="baris-keranjang"><div class="bk-nama">' + nama + "<small>" +
         (x.harga > 0 ? rupiah(x.harga) + " per " + esc(x.sat) : "Harga ditanyakan lewat WhatsApp") + "</small></div>" +
@@ -291,17 +314,12 @@ var KatalogTampilan = (function () {
         '<span><span class="sr">Jumlah: </span>' + x.qty + "</span>" +
         '<button type="button" data-aksi="lebih" data-id="' + id + '" aria-label="Tambah jumlah: ' + nama + '">+</button></div>' +
         '<button class="tombol-teks" style="justify-self:end" type="button" data-aksi="hapus-item" data-id="' + id + '" aria-label="Hapus dari keranjang: ' + nama + '">Hapus</button></li>';
-    };
-    var kelompok = K.perToko();
-    var banyakToko = (cfg.toko || []).length > 1;
-    $("laci-daftar").innerHTML = kelompok.map(function (g) {
-      var judul = banyakToko ? '<h3 class="laci-toko">Ambil di ' + esc(g.toko.nama) + "<small>" + esc(g.toko.alamat) + "</small></h3>" : "";
-      return judul + "<ul>" + g.item.map(barisItem).join("") + "</ul>";
-    }).join("");
+    }).join("") + "</ul>" + pengingat;
     $("laci-kaki").innerHTML = '<div class="total"><span>Total perkiraan</span><b>' + rupiah(K.total()) + "</b></div>" +
       (K.adaTanpaHarga() ? '<p class="catatan-kecil">Barang tanpa harga belum dihitung.</p>' : "") +
       '<p class="catatan-kecil">Pesanan dikirim lewat WhatsApp, bukan pembayaran online. Kami memastikan harga dan stok saat membalas chat Anda.</p>' +
-      (cfg.waNomor ? '<a class="tombol-utama tombol-wa tombol-kirim" href="' + linkWA(K.teksPesanan(cfg.namaToko)) + '" target="_blank" rel="noopener">' + IKON_WA_TOMBOL + "Kirim pesanan lewat WhatsApp</a>"
+      (cfg.waNomor ? '<a class="tombol-utama tombol-wa tombol-kirim" href="' + linkWA(K.teksPesanan(cfg.namaToko)) + '" target="_blank" rel="noopener">' + IKON_WA_TOMBOL +
+          "Kirim pesanan lewat WhatsApp</a>"
         : '<p class="catatan-kecil">Nomor WhatsApp toko belum diisi, jadi pesanan belum bisa dikirim.</p>') +
       '<button class="tombol-teks" type="button" data-aksi="kosongkan">Kosongkan keranjang</button>';
     if (fokus) kembalikanFokus(fokus);
@@ -349,20 +367,11 @@ var KatalogTampilan = (function () {
     var catatan = [];
     if (!cfg.waNomor) catatan.push('<div class="catatan" role="status"><p>Nomor WhatsApp toko belum diisi, jadi pesanan belum bisa dikirim.</p></div>');
     if (S.catatan) catatan.push('<div class="catatan" role="status"><p>' + esc(S.catatan) + '</p><button class="tombol-sekunder" type="button" data-aksi="ulang">Coba muat lagi</button></div>');
-    var g = S.keadaan === "ok" ? panduanCocok(S) : null;
+    var g = S.keadaan === "ok" && hasil.length ? panduanCocok(S) : null;
     if (g) catatan.push('<div class="petunjuk"><img src="aset/logo-maskot.jpg" alt="" width="48" height="40"><p>' + esc(g.petunjuk || g.judul) +
       '</p><button class="tombol-sekunder" type="button" data-aksi="buka-panduan" data-nilai="' + esc(g.id) + '">Lihat panduan</button></div>');
     // S.lain: toko lain yang juga punya hasil untuk kata yang dicari, [{ toko, jumlah }].
     var lain = S.keadaan === "ok" && S.kueri ? (S.lain || []) : [];
-    var tombolLain = function (kelas) {
-      return lain.map(function (l) {
-        return '<button class="' + kelas + '" type="button" data-aksi="pilih-toko" data-nilai="' + esc(l.toko.id) + '">Lihat di ' + esc(l.toko.nama) + " (" + l.jumlah + ")</button>";
-      }).join("");
-    };
-    if (lain.length && hasil.length) {
-      catatan.push('<div class="petunjuk petunjuk-toko"><p>“' + esc(S.kueri) + "” juga ada di " +
-        lain.map(function (l) { return esc(l.toko.nama); }).join(" dan ") + ".</p>" + tombolLain("tombol-sekunder") + "</div>");
-    }
     $("catatan").innerHTML = catatan.join("");
 
     var sorot = S.keadaan === "ok" && !S.kueri && !S.kategori ? S.produk.filter(function (p) { return p.sorot; }).slice(0, 10) : [];
@@ -383,10 +392,13 @@ var KatalogTampilan = (function () {
       return;
     }
     var ket = S.kueri ? " untuk “" + S.kueri + "”" : "";
+    // Barang tidak ada di toko ini tapi ada di toko lain: beri tahu, dengan tombol langsung ke katalog toko itu.
     if (!hasil.length && lain.length) {
       $("jumlah").textContent = "0 produk" + ket;
       daftar.innerHTML = '<li class="keadaan">' + MASKOT + "<b>Tidak ada di " + esc(S.tokoNama) + "</b>Tapi barang ini ada di toko kami yang lain." +
-        '<div class="keadaan-aksi">' + tombolLain("tombol-utama") + "</div>" +
+        '<div class="keadaan-aksi">' + lain.map(function (l) {
+          return '<button class="tombol-utama" type="button" data-aksi="pilih-toko" data-nilai="' + esc(l.toko.id) + '">Lihat di ' + esc(l.toko.nama) + " (" + l.jumlah + ")</button>";
+        }).join("") + "</div>" +
         '<button class="tombol-sekunder" type="button" data-aksi="reset">Hapus pencarian dan filter</button></li>';
       return;
     }
@@ -414,7 +426,7 @@ var KatalogTampilan = (function () {
   return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
+           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, teksDiKeranjang: teksDiKeranjang, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
            kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
            htmlAlamat: htmlAlamat, isiSosmed: isiSosmed, ikonWA: IKON_WA_TOMBOL, konfirmasiKosongkan: konfirmasiKosongkan, namaLengkap: namaLengkap };
 })();

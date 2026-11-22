@@ -613,6 +613,16 @@ footer .link-faq { margin-top: 10px; }
 .petunjuk-toko p { flex: 1 1 200px; }
 .keadaan .keadaan-aksi { flex-direction: column; align-items: center; }
 
-/* Judul kelompok toko di keranjang. */
-.laci-toko { display: grid; gap: 2px; margin: 14px 0 0; padding: 8px 12px; background: var(--soft); border-radius: var(--r-kontrol); font-size: 0.95rem; font-weight: 700; }
-.laci-toko small { color: var(--mute); font-size: 0.8rem; font-weight: 400; }
+/* Keranjang per toko: alamat toko di atas daftar, pengingat keranjang toko lain di bawahnya. */
+.laci-toko { margin: 12px 0 0; padding: 8px 12px; background: var(--soft); border-radius: var(--r-kontrol); color: var(--mute); font-size: 0.88rem; }
+.laci-lain { margin: 14px 0 6px; padding: 10px 12px; border: 1.5px dashed var(--field); border-radius: var(--r-kontrol); font-size: 0.9rem; }
+.laci-lain a { font-weight: 700; }
+.pilih-toko-keranjang { justify-self: center; margin-top: 2px; padding: 1px 8px; background: var(--aksen); color: var(--aksen-ink); border-radius: var(--r-pil); font-size: 0.75rem; font-weight: 700; }
+
+/* "Juga tersedia di" toko lain, di halaman produk. */
+.toko-lain { display: grid; gap: 8px; margin-top: 4px; }
+.toko-lain-judul { font-weight: 700; font-size: 0.9rem; }
+.toko-lain-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; padding: 8px 14px; background: var(--soft); color: var(--ink); border-radius: var(--r-kontrol); text-decoration: none; }
+.toko-lain-item span { color: var(--aksen); font-weight: 700; }
+.toko-lain-item:hover b { text-decoration: underline; }
+

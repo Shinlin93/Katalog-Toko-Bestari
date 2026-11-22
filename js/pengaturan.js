@@ -17,12 +17,14 @@ var PENGATURAN = {
   //   alamat   = tampil di bawah tombol pilihan toko dan di footer, dengan link Google Maps
   //   sheetUrl = link CSV katalog toko ini
   // Toko pertama adalah toko utama: tampil lebih dulu untuk pengunjung baru, dan link produk lamanya tetap berlaku.
+  // PENTING: barang yang dijual di lebih dari satu toko harus memakai KODE yang sama persis di setiap spreadsheet.
+  // Dari KODE itu website tahu barangnya sama, untuk "Juga tersedia di" di halaman produk.
   toko: [
     { id: "gedangan", nama: "Toko Gedangan", alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",
       sheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIaFMLVXEA2sKENSW79x0tmdpKx8VtiieeaWeAwAipPTmCOeclfSbyjrhwyoqs0C3jaanlj45MBgNN/pub?gid=791871072&single=true&output=csv" },
-    // CONTOH: belum ada spreadsheet Citra City, jadi sementara memakai file contoh di folder data/.
-    // Ganti dengan link CSV tab Citra City setelah tab-nya dibuat dan diterbitkan.
-    { id: "citra", nama: "Toko Citra City", alamat: "Ruko Citra City R-19",
+    // CONTOH: belum ada spreadsheet Toko Sarirogo, jadi sementara memakai file contoh di folder data/.
+    // Ganti dengan link CSV tab Toko Sarirogo setelah tab-nya dibuat dan diterbitkan.
+    { id: "citra", nama: "Toko Sarirogo", alamat: "Ruko Citra City R-19, Sarirogo, Sidoarjo",
       sheetUrl: "data/contoh-citra.csv" }
   ],
   // Alamat utama, dipakai bila daftar toko di atas kosong.
@@ -106,7 +108,9 @@ var PENGATURAN = {
     { tanya: "Bagaimana cara membayar?",
       jawab: "Website ini tidak menerima pembayaran online. Pembayaran dilakukan setelah pesanan dan total dikonfirmasi lewat WhatsApp." },
     { tanya: "Apakah bisa dikirim?",
-      jawab: "Pesanan bisa diambil langsung di Toko Wirabumi atau Toko Citra City. Untuk pengiriman, tanyakan area dan ongkos kirimnya lewat WhatsApp." },
+      jawab: "Pesanan bisa diambil langsung di Toko Gedangan atau Toko Sarirogo. Untuk pengiriman, tanyakan area dan ongkos kirimnya lewat WhatsApp." },
+    { tanya: "Bisakah memesan dari dua toko sekaligus?",
+      jawab: "Keranjang dipisah per toko, karena pesanan disiapkan di toko masing-masing. Pilih toko pertama, kirim pesanannya, lalu pindah ke toko kedua dan kirim pesanan berikutnya. Isi keranjang tiap toko tetap tersimpan saat Anda pindah toko." },
     { tanya: "Barang yang saya cari tidak ada di katalog.",
       jawab: "Tanyakan saja lewat WhatsApp. Belum semua barang di toko tercantum di website." }
   ]

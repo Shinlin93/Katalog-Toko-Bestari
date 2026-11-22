@@ -32,7 +32,7 @@
   function tampilkanToko(katAwal) {
     var r = S.semua[S.toko];
     T.gambarPilihToko(S.toko, jumlahPerToko());
-    if (!r) { S.keadaan = "memuat"; S.catatan = ""; gambar(); return; }
+    if (!r) { S.produk = []; S.keadaan = "memuat"; S.catatan = ""; T.buatKategori([]); gambar(); return; }
     S.produk = r.produk;
     S.catatan = r.catatan;
     S.keadaan = r.produk.length ? "ok" : "kosong";
@@ -74,6 +74,10 @@
     S.toko = t.id;
     S.tokoNama = t.nama;
     D.setTokoAktif(t.id);
+    // Keranjang ikut pindah ke toko ini; keranjang toko sebelumnya tetap tersimpan.
+    K.setToko(t.id);
+    T.gambarLencana();
+    if (laci.open) T.gambarLaci();
     // Link di address bar ikut berubah, supaya halaman yang dibagikan membuka toko yang sama.
     var u = new URL(location.href);
     u.searchParams.set("toko", t.id);
@@ -152,6 +156,7 @@
 
   function perbaruiKeranjang(id) {
     T.gambarLencana();
+    T.gambarPilihToko(S.toko, jumlahPerToko());
     T.perbaruiKartu(id);
     if (laci.open) T.gambarLaci();
   }
@@ -161,7 +166,7 @@
     if (!p) return;
     K.tambah(p);
     perbaruiKeranjang(id);
-    T.pengumuman(p.nama + " ditambahkan ke keranjang. Jumlah di keranjang: " + K.qty(id) + ".");
+    T.pengumuman(p.nama + " ditambahkan ke keranjang " + S.tokoNama + ". Jumlah di keranjang: " + K.qty(id) + ".");
     var awal = tombol.textContent;
     tombol.textContent = "Ditambahkan";
     setTimeout(function () { tombol.textContent = awal; }, 1200);
@@ -219,7 +224,8 @@
     else if (aksi === "ulang") mulai();
     else if (aksi === "kategori") { T.tandaiKategori(nilai); ubah({ kategori: nilai }); keKatalog(); }
     else if (aksi === "ke-atas") window.scrollTo({ top: 0 });
-    else if (aksi === "pilih-toko") { gantiToko(nilai); if (!b.closest("#pilih-toko")) keKatalog(); }
+    else if (aksi === "buka-keranjang-toko") { e.preventDefault(); gantiToko(nilai); }
+    else if (aksi === "pilih-toko") { tutupSaran(); gantiToko(nilai); if (!b.closest("#pilih-toko")) keKatalog(); }
     else if (aksi === "buka-panduan") bukaPanduan(b, nilai);
     else if (aksi === "tutup-panduan") tutupPanduan();
     else if (aksi === "cari-panduan") {
@@ -265,4 +271,11 @@
   T.gambarLencana();
   sesuaikanMenu();
   mulai();
+  // Datang dari pengingat keranjang di halaman lain (index.html?toko=...#keranjang): langsung buka keranjangnya.
+  if (location.hash === "#keranjang") {
+    history.replaceState(null, "", location.pathname + location.search);
+    bukaLaci();
+  }
+  // Toko yang dibuka lewat link (?toko=...) diingat untuk kunjungan berikutnya.
+  D.setTokoAktif(S.toko);
 })();
