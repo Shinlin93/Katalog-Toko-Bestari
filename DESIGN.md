@@ -19,7 +19,8 @@ Catatan arah desain website katalog. Isinya disalin dari arahan pemilik toko dan
 
 | Peran | Terang | Gelap | Catatan |
 |---|---|---|---|
-| Latar | #F4F6FA | #0F1623 | |
+| Latar area produk | #ECEFF5 | #0F1623 | Abu terang supaya kartu putih menonjol |
+| Footer (bingkai) | #12264D | #1F3561 | Biru tua dengan garis merah di atasnya, teks putih |
 | Kartu | #FFFFFF | #172033 | |
 | Teks | #1B2433 | #E6EBF3 | |
 | Teks pelan | #566174 | #A3AEC0 | Kontras lolos 4,5:1 |
@@ -27,6 +28,12 @@ Catatan arah desain website katalog. Isinya disalin dari arahan pemilik toko dan
 | Merah aksen | #C8102E | #FF8A80 | Diambil dari celemek maskot. Untuk harga, garis bawah judul bagian, dan jumlah di keranjang |
 | Hijau WhatsApp | #168F46 (ikon), #137A3C (tombol bertulisan) | sama | |
 | Garis kartu | #BAC4D3 | #3A4766 | |
+
+Halaman dibagi menjadi empat area dengan warna berbeda supaya pembeli tidak bingung:
+1. Atas (header dan menu): putih. Menu yang aktif ditandai teks merah dan garis bawah merah.
+2. Hero: biru terang.
+3. Area produk: latar abu terang dengan kartu putih.
+4. Footer: biru tua dengan garis merah.
 
 Aturan: satu warna utama (biru), satu aksen (merah), dan hijau khusus untuk WhatsApp. Tidak memakai gradien dekoratif.
 
@@ -42,13 +49,22 @@ Memakai font bawaan perangkat (system-ui). Website jadi tampil tanpa mengunduh f
 
 ## Tata letak
 
-- HP (sampai 699 px):
-  - Satu kolom, produk dua kolom.
-  - Hero diringkas, dan contoh chat dilipat.
-  - Strip kategori dan kartu panduan disembunyikan karena isinya sudah ada di tempat lain.
+- Urutan halaman depan: header dan menu, hero, katalog, footer. Tiap informasi hanya muncul di satu tempat utama.
+- Hero cukup berisi judul, satu kalimat, dua tombol, dan panel berisi jumlah produk serta 3 langkah cara pesan. Contoh chat pesanan ada di FAQ.
+- FAQ punya halaman sendiri (faq.html), dibuka dari menu atas dan dari link di footer. Footer di setiap halaman berisi alamat, logo WhatsApp dan Instagram, dan link FAQ.
+- HP (sampai 699 px): satu kolom, produk dua kolom, dan langkah cara pesan hanya menampilkan judulnya.
 - Tablet (700 sampai 1039 px): hero dua kolom, produk tiga atau empat kolom.
 - Desktop (1040 px ke atas): header satu baris, produk empat sampai enam kolom.
 - Semua tombol dan link minimal 44 x 44 px.
+
+## Tombol
+
+- Hijau WhatsApp penuh dengan logo untuk tombol yang mengirim pesan, yaitu Kirim pesanan di keranjang dan tombol melayang. Ini aksi paling penting.
+- Biru penuh untuk aksi utama di halaman detail produk (Tambah ke Keranjang), tombol cari, dan tombol keranjang.
+- Biru muda dengan tulisan biru untuk tombol + Keranjang di kartu katalog, supaya puluhan kartu tidak dipenuhi blok biru.
+- Bergaris untuk aksi kedua. Tombol WhatsApp yang bergaris tetap diberi logo.
+- Aksi yang tidak bisa dibatalkan, seperti mengosongkan keranjang, selalu ditanyakan dulu.
+- Pengaturan jarang dipakai (tema) cukup berupa ikon 44 x 44 px.
 
 ## Teks
 

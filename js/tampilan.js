@@ -11,6 +11,38 @@ var KatalogTampilan = (function () {
   // Maskot hanya muncul saat pengunjung butuh arahan (keranjang kosong, pencarian tanpa hasil). Lihat DESIGN.md.
   var MASKOT = '<img class="maskot" src="aset/logo-maskot.jpg" alt="" width="96" height="80">';
   function rupiah(n) { return "Rp " + n.toLocaleString("id-ID"); }
+  // Logo untuk tautan WhatsApp dan Instagram di footer (hanya logo, nama lengkap ada di aria-label).
+  var IKON_WA = '<svg class="ikon-sosmed" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+  var IKON_WA_TOMBOL = IKON_WA.replace('class="ikon-sosmed"', 'class="ikon-wa-tombol"');
+  var IKON_IG = '<svg class="ikon-sosmed" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/>' +
+    '<circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/></svg>';
+  // Mengisi tautan footer: WhatsApp dan Instagram tampil sebagai logo.
+  function isiSosmed(tanyaWA) {
+    var wa = $("f-wa"), ig = $("f-ig");
+    if (wa) {
+      if (cfg.waNomor) {
+        wa.innerHTML = IKON_WA;
+        wa.href = tanyaWA;
+        wa.setAttribute("aria-label", "WhatsApp " + cfg.waTampil);
+        wa.title = "WhatsApp " + cfg.waTampil;
+      } else wa.parentNode.hidden = true;
+    }
+    if (ig) {
+      if (cfg.instagram) {
+        ig.innerHTML = IKON_IG;
+        ig.href = "https://www.instagram.com/" + cfg.instagram + "/";
+        ig.setAttribute("aria-label", "Instagram @" + cfg.instagram);
+        ig.title = "Instagram @" + cfg.instagram;
+      } else ig.parentNode.hidden = true;
+    }
+  }
+
+  // Mengosongkan keranjang tidak bisa dibatalkan, jadi selalu ditanyakan dulu.
+  function konfirmasiKosongkan() {
+    return window.confirm("Kosongkan keranjang? Semua barang di keranjang akan dihapus.");
+  }
+
   function linkWA(teks) { return "https://wa.me/" + cfg.waNomor + "?text=" + encodeURIComponent(teks); }
   // Alamat halaman detail satu produk, dipakai untuk kartu dan tombol bagikan.
   function linkProduk(p) { return "produk.html?id=" + encodeURIComponent(p.id); }
@@ -25,10 +57,15 @@ var KatalogTampilan = (function () {
   }
   function namaLengkap() { return cfg.namaToko + (cfg.namaLain ? " (" + cfg.namaLain + ")" : ""); }
 
+  var IKON_BULAN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>';
+  var IKON_MATAHARI = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/>' +
+    '<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
   function setTema(t) {
     document.documentElement.setAttribute("data-theme", t);
-    $("tombol-tema").textContent = t === "dark" ? "Terang" : "Gelap";
-    $("tombol-tema").setAttribute("aria-label", t === "dark" ? "Ganti ke mode terang" : "Ganti ke mode gelap");
+    var label = t === "dark" ? "Ganti ke mode terang" : "Ganti ke mode gelap";
+    $("tombol-tema").innerHTML = t === "dark" ? IKON_MATAHARI : IKON_BULAN;
+    $("tombol-tema").setAttribute("aria-label", label);
+    $("tombol-tema").title = label;
     try { localStorage.setItem("tema", t); } catch (e) {}
   }
   function mulaiTema() {
@@ -47,42 +84,25 @@ var KatalogTampilan = (function () {
     $("nama-toko").textContent = cfg.namaToko;
     $("tagline").textContent = cfg.tagline;
     document.title = cfg.namaToko + ": " + cfg.tagline;
-    var jumlahToko = daftarToko().length;
-    $("info-lokasi-label").textContent = jumlahToko > 1 ? jumlahToko + " toko" : "Lokasi toko";
-    $("info-lokasi-teks").textContent = cfg.lokasiSingkat;
     $("f-nama").textContent = namaLengkap();
     $("f-tagline").textContent = cfg.tagline;
     $("f-alamat").innerHTML = htmlAlamat();
-    $("f-ig").textContent = "Instagram @" + cfg.instagram;
-    $("f-ig").href = "https://www.instagram.com/" + cfg.instagram + "/";
     if (cfg.waNomor) {
       var tanya = linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".");
-      $("info-wa-nomor").textContent = cfg.waTampil;
-      $("info-wa").href = tanya;
-      $("f-wa").textContent = "WhatsApp " + cfg.waTampil;
-      $("f-wa").href = tanya;
       $("wa-melayang").href = tanya;
       $("wa-melayang").hidden = false;
       $("hero-wa").href = tanya;
+      $("hero-wa").innerHTML = IKON_WA_TOMBOL + "Chat WhatsApp";
       $("hero-wa").hidden = false;
-    } else {
-      $("info-wa").hidden = true;
-      $("f-wa").parentNode.hidden = true;
     }
+    isiSosmed(cfg.waNomor ? linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
     isiHero();
-    isiFaq();
   }
 
   function isiHero() {
     var h = cfg.hero || {};
-    $("hero-label").textContent = h.label || cfg.lokasiSingkat;
     $("hero-judul").textContent = h.judul || cfg.namaToko;
     $("hero-sub").textContent = h.sub || cfg.tagline;
-    $("hero-cepat").innerHTML = (cfg.saranCari || []).length
-      ? '<span>Coba cari:</span>' + cfg.saranCari.map(function (k) {
-          return '<button type="button" data-aksi="pilih-saran" data-nilai="' + esc(k) + '">' + esc(k) + "</button>";
-        }).join("")
-      : "";
   }
 
   // Angka besar = jumlah produk di katalog, tanpa menyinggung stok.
@@ -92,7 +112,7 @@ var KatalogTampilan = (function () {
     $("hero-jumlah-ket").textContent = "produk di katalog";
   }
 
-  // Contoh chat di halaman depan, memakai dua produk asli yang berharga dan masih ada stok,
+  // Contoh chat di jawaban FAQ cara memesan, memakai dua produk asli yang berharga dan masih ada stok,
   // diformat persis seperti pesan yang dikirim dari keranjang.
   function isiContohPesan(produk) {
     var siap = produk.filter(function (p) { return p.harga > 0 && p.status !== "habis"; });
@@ -100,14 +120,16 @@ var KatalogTampilan = (function () {
     if (pilihan.length < 2 || pilihan[0] === pilihan[1]) pilihan = siap.slice(0, 2);
     if (!pilihan.length) return;
     var isi = pilihan.map(function (p, i) { return { nama: p.nama, harga: p.harga, sat: p.sat, qty: i === 0 ? 2 : 1 }; });
-    $("contoh-pesan").textContent = K.teksPesanan(cfg.namaToko, isi);
+    var teks = K.teksPesanan(cfg.namaToko, isi);
+    [].forEach.call(document.querySelectorAll(".contoh-pesan"), function (el) { el.textContent = teks; });
   }
 
+  var CONTOH_AWAL = "Halo " + cfg.namaToko + ", saya mau pesan:\n1. Kresek 257 UK 15 - 2 pak\n2. Plastik PE Hitam Tali Putih 9X20 Boyo - 1 pak\nMohon dicek stok dan totalnya.";
+  // Semua pertanyaan di halaman faq.html.
   function isiFaq() {
-    var daftar = cfg.faq || [];
-    $("faq").hidden = !daftar.length;
-    $("faq-daftar").innerHTML = daftar.map(function (f) {
-      return '<details class="faq-item"><summary>' + esc(f.tanya) + "</summary><p>" + esc(f.jawab) + "</p></details>";
+    $("faq-daftar").innerHTML = (cfg.faq || []).map(function (f) {
+      var contoh = f.contoh ? '<p class="contoh-label">Contoh chat WhatsApp</p><p class="contoh-pesan">' + esc(CONTOH_AWAL) + "</p>" : "";
+      return '<details class="faq-item"><summary>' + esc(f.tanya) + '</summary><div class="faq-jawab"><p>' + esc(f.jawab) + "</p>" + contoh + "</div></details>";
     }).join("");
   }
 
@@ -117,16 +139,6 @@ var KatalogTampilan = (function () {
     return daftarPanduan().filter(function (g) { return g.id === id; })[0] || null;
   }
 
-  function buatPanduan() {
-    var daftar = daftarPanduan();
-    $("panduan").hidden = !daftar.length;
-    $("daftar-panduan").innerHTML = daftar.map(function (g) {
-      return '<li><button class="kartu-panduan" type="button" data-aksi="buka-panduan" data-nilai="' + esc(g.id) + '">' +
-        '<img src="aset/logo-maskot.jpg" alt="" width="64" height="54">' +
-        '<span class="kartu-panduan-teks"><b>' + esc(g.judul) + "</b><small>" + esc(g.ringkas || "") + "</small></span>" +
-        '<span class="kartu-panduan-aksi">Buka panduan</span></button></li>';
-    }).join("");
-  }
 
   // Gambar tas sederhana; ukurannya hanya untuk perbandingan antar pilihan.
   function gambarTas(lebar) {
@@ -199,13 +211,6 @@ var KatalogTampilan = (function () {
   var JUMLAH_TOMBOL_KATEGORI = 10;
 
   // Delapan kategori dengan produk terbanyak, sebagai jalan pintas di bagian atas.
-  function buatStrip(produk) {
-    var k = hitungKategori(produk);
-    var teratas = k.urut.slice().sort(function (a, b) { return k.hitung[b] - k.hitung[a]; }).slice(0, 8);
-    $("strip").innerHTML = teratas.map(function (n) {
-      return '<li><button class="strip-item" type="button" data-aksi="kategori" data-nilai="' + esc(n) + '"><b>' + esc(n) + "</b><small>" + k.hitung[n] + " produk</small></button></li>";
-    }).join("");
-  }
 
   function tandaiKategori(nilai) {
     [].forEach.call($("kategori").children, function (b) {
@@ -222,7 +227,7 @@ var KatalogTampilan = (function () {
       : '<p class="stok"><span class="centang" aria-hidden="true">✓</span> Tersedia</p>';
     var harga = p.harga ? rupiah(p.harga) + " <small>per " + esc(p.sat) + "</small>" : "<small>Tanya harga lewat WhatsApp</small>";
     var tombol = habis ? '<button class="beli" type="button" disabled>Stok habis</button>'
-      : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '" aria-label="Tambah ke keranjang: ' + esc(p.nama) + '">Tambah ke Keranjang</button>';
+      : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '" aria-label="Tambah ke keranjang: ' + esc(p.nama) + '">+ Keranjang</button>';
     var link = esc(linkProduk(p));
     return '<li class="kartu" data-id="' + esc(p.id) + '"><a class="foto" href="' + link + '" tabindex="-1" aria-hidden="true">' + foto + esc(p.kat) + "<small>Foto menyusul</small></a>" +
       '<div class="isi"><p class="nama"><a href="' + link + '">' + esc(p.nama) + "</a></p>" + stok + '<p class="harga">' + harga + "</p>" +
@@ -254,7 +259,7 @@ var KatalogTampilan = (function () {
     }
     var daftar = K.daftar();
     if (!daftar.length) {
-      $("laci-daftar").innerHTML = '<div class="laci-kosong">' + MASKOT + '<b>Keranjang masih kosong</b><p>Pilih produk, lalu tekan Tambah ke Keranjang.</p>' +
+      $("laci-daftar").innerHTML = '<div class="laci-kosong">' + MASKOT + '<b>Keranjang masih kosong</b><p>Pilih produk, lalu tekan + Keranjang.</p>' +
         '<button class="tombol-utama" type="button" data-aksi="tutup-laci">Lihat produk</button></div>';
       $("laci-kaki").innerHTML = "";
       return;
@@ -272,7 +277,7 @@ var KatalogTampilan = (function () {
     $("laci-kaki").innerHTML = '<div class="total"><span>Total perkiraan</span><b>' + rupiah(K.total()) + "</b></div>" +
       (K.adaTanpaHarga() ? '<p class="catatan-kecil">Barang tanpa harga belum dihitung.</p>' : "") +
       '<p class="catatan-kecil">Pesanan dikirim lewat WhatsApp, bukan pembayaran online. Kami memastikan harga dan stok saat membalas chat Anda.</p>' +
-      (cfg.waNomor ? '<a class="tombol-utama" href="' + linkWA(K.teksPesanan(cfg.namaToko)) + '" target="_blank" rel="noopener">Kirim pesanan lewat WhatsApp</a>'
+      (cfg.waNomor ? '<a class="tombol-utama tombol-wa tombol-kirim" href="' + linkWA(K.teksPesanan(cfg.namaToko)) + '" target="_blank" rel="noopener">' + IKON_WA_TOMBOL + "Kirim pesanan lewat WhatsApp</a>"
         : '<p class="catatan-kecil">Nomor WhatsApp toko belum diisi, jadi pesanan belum bisa dikirim.</p>') +
       '<button class="tombol-teks" type="button" data-aksi="kosongkan">Kosongkan keranjang</button>';
     if (fokus) kembalikanFokus(fokus);
@@ -312,7 +317,7 @@ var KatalogTampilan = (function () {
     if (!cfg.waNomor) return "";
     var teks = kueri ? "Halo " + cfg.namaToko + ", apakah ada " + kueri + "? Saya tidak menemukannya di website."
                      : "Halo " + cfg.namaToko + ", saya mau tanya harga dan stok barang.";
-    return '<a class="tombol-utama tombol-wa" href="' + esc(linkWA(teks)) + '" target="_blank" rel="noopener">' +
+    return '<a class="tombol-utama tombol-wa" href="' + esc(linkWA(teks)) + '" target="_blank" rel="noopener">' + IKON_WA_TOMBOL +
       (kueri ? "Tanya stok “" + esc(kueri) + "” lewat WhatsApp" : "Tanya lewat WhatsApp") + "</a>";
   }
 
@@ -364,10 +369,10 @@ var KatalogTampilan = (function () {
     }
   }
 
-  return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori, buatStrip: buatStrip,
+  return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan, buatPanduan: buatPanduan, gambarPanduan: gambarPanduan,
+           isiContohPesan: isiContohPesan, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
            kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
-           htmlAlamat: htmlAlamat, namaLengkap: namaLengkap };
+           htmlAlamat: htmlAlamat, isiSosmed: isiSosmed, ikonWA: IKON_WA_TOMBOL, konfirmasiKosongkan: konfirmasiKosongkan, namaLengkap: namaLengkap };
 })();

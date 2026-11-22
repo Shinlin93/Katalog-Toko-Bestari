@@ -1,6 +1,7 @@
 /* Warna, font, dan tema terang/gelap. Ubah warna di sini, bukan di file lain. */
 :root {
-  --bg: #F4F6FA;
+  /* Latar area konten sedikit abu, supaya kartu putih, header putih, dan bingkai biru tua mudah dibedakan. */
+  --bg: #ECEFF5;
   --card: #FFFFFF;
   --soft: #EAF0FB;
   --ink: #1B2433;
@@ -14,6 +15,12 @@
   --primary-ink: #FFFFFF;
   --primary-text: #1A54C4;
   --nav: #E4EEFF;
+  /* Bingkai halaman: menu atas dan footer memakai biru tua yang sama, dengan garis merah aksen,
+     supaya jelas berbeda dari header putih, hero biru terang, dan area produk abu terang. */
+  --bingkai: #12264D;
+  --bingkai-ink: #FFFFFF;
+  --bingkai-mute: #C5D2EA;
+  --bingkai-soft: rgba(255, 255, 255, 0.10);
   --pill: #BFD4FF;
   --pill-ink: #1B2433;
   /* Merah celemek maskot (#EE2F34), digelapkan supaya teks lolos kontras 4.5:1 di atas putih. */
@@ -51,6 +58,7 @@
   --primary-ink: #0B1220;
   --primary-text: #8DB2F8;
   --nav: #16233D;
+  --bingkai: #1F3561;
   --pill: #2B4C93;
   --pill-ink: #FFFFFF;
   --aksen: #FF8A80;

@@ -31,9 +31,7 @@
       S.batas = cfg.produkPerHalaman;
       T.buatKategori(S.produk);
       if (katAwal) T.tandaiKategori(katAwal);
-      T.buatStrip(S.produk);
       T.isiJumlahProduk(S.produk);
-      T.isiContohPesan(S.produk);
       gambar();
     });
   }
@@ -164,7 +162,7 @@
     else if (aksi === "tutup-laci") tutupLaci();
     else if (aksi === "lebih" || aksi === "kurang") { K.ubah(id, aksi === "lebih" ? 1 : -1); perbaruiKeranjang(id); }
     else if (aksi === "hapus-item") { K.hapus(id); perbaruiKeranjang(id); }
-    else if (aksi === "kosongkan") { K.kosongkan(); perbaruiKeranjang(null); }
+    else if (aksi === "kosongkan") { if (T.konfirmasiKosongkan()) { K.kosongkan(); perbaruiKeranjang(null); } }
     else if (aksi === "pilih-saran") { tutupSaran(); setKueri(nilai); keKatalog(); }
     else if (aksi === "lihat-hasil") { tutupSaran(); keKatalog(); }
     else if (aksi === "saran-cepat") setKueri(nilai);
@@ -186,7 +184,7 @@
   });
 
   // Menandai menu yang sesuai dengan bagian halaman dan menampilkan tombol ke atas.
-  var BAGIAN = ["beranda", "katalog", "lokasi", "kontak", "faq"], menunggu = false;
+  var BAGIAN = ["beranda", "katalog", "lokasi", "kontak"], menunggu = false;
   function sesuaikanMenu() {
     menunggu = false;
     var aktif = BAGIAN[0];
@@ -211,15 +209,8 @@
   window.addEventListener("resize", tandaiSisaMenu);
   tandaiSisaMenu();
 
-  // Contoh chat di hero terbuka di layar lebar, dilipat di HP.
-  var caraPesan = $("cara-pesan"), layarLebar = window.matchMedia("(min-width: 700px)");
-  function aturCaraPesan() { caraPesan.open = layarLebar.matches; }
-  if (layarLebar.addEventListener) layarLebar.addEventListener("change", aturCaraPesan); else layarLebar.addListener(aturCaraPesan);
-  aturCaraPesan();
-
   T.mulaiTema();
   T.isiToko();
-  T.buatPanduan();
   HeroSlider.mulai();
   T.gambarLencana();
   sesuaikanMenu();

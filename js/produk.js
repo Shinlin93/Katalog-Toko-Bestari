@@ -23,10 +23,7 @@
     $("nama-toko").textContent = cfg.namaToko;
     $("tagline").textContent = cfg.tagline;
     $("f-alamat").innerHTML = T.htmlAlamat();
-    if (cfg.waNomor) {
-      $("f-wa").textContent = "WhatsApp " + cfg.waTampil;
-      $("f-wa").href = T.linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".");
-    } else $("f-wa").parentNode.hidden = true;
+    T.isiSosmed(cfg.waNomor ? T.linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
   }
 
   function gambarProduk(p) {
@@ -39,7 +36,7 @@
     var beli = habis ? '<button class="beli" type="button" disabled>Stok habis</button>'
       : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '">Tambah ke Keranjang</button>';
     var tanya = cfg.waNomor ? '<a class="tombol-sekunder tombol-wa-produk" target="_blank" rel="noopener" href="' +
-      esc(T.linkWA("Halo " + cfg.namaToko + ", saya mau tanya produk ini:\n" + p.nama + "\n" + linkBagikan())) + '">Tanya lewat WhatsApp</a>' : "";
+      esc(T.linkWA("Halo " + cfg.namaToko + ", saya mau tanya produk ini:\n" + p.nama + "\n" + linkBagikan())) + '">' + T.ikonWA + 'Tanya lewat WhatsApp</a>' : "";
 
     $("produk").innerHTML =
       '<div class="detail kartu" data-id="' + esc(p.id) + '">' +
@@ -182,7 +179,7 @@
     else if (aksi === "tutup-laci") tutupLaci();
     else if (aksi === "lebih" || aksi === "kurang") { K.ubah(idItem, aksi === "lebih" ? 1 : -1); perbarui(idItem); }
     else if (aksi === "hapus-item") { K.hapus(idItem); perbarui(idItem); }
-    else if (aksi === "kosongkan") { K.kosongkan(); perbarui(null); }
+    else if (aksi === "kosongkan") { if (T.konfirmasiKosongkan()) { K.kosongkan(); perbarui(null); } }
     else if (aksi === "ulang") mulai();
     else if (aksi === "salin-link") {
       salin(linkBagikan()).then(function () { beriTanda(b, "Link disalin"); },

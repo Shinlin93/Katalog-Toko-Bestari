@@ -17,7 +17,6 @@ var PENGATURAN = {
   ],
   // Alamat utama, dipakai bila daftar toko di atas kosong.
   alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",
-  lokasiSingkat: "Wirabumi dan Citra City",
   instagram: "bestari.store2",
 
   // Link CSV dari Google Sheets (File > Bagikan > Publikasikan ke web, format .csv).
@@ -26,14 +25,13 @@ var PENGATURAN = {
   folderFoto: "foto/",
   produkPerHalaman: 40,
 
-  // Kata yang disarankan saat pencarian tidak menemukan hasil, juga tombol cepat di hero.
+  // Kata yang disarankan saat pencarian tidak menemukan hasil.
   saranCari: ["kresek", "mika", "gelas", "toples", "sedotan"],
 
   // Teks bagian besar di atas halaman.
   hero: {
-    label: "Toko Bestari (Bestari Plastik) · 2 toko",
     judul: "Cari kebutuhan plastik dan perabot rumah tangga dengan mudah",
-    sub: "Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di salah satu toko kami atau minta dikirim."
+    sub: "Kresek, mika, gelas cup, sampai perabot rumah tangga. Pesan lewat WhatsApp, ambil di toko kami."
   },
 
   // Slide tambahan di hero. Slide pertama selalu judul toko di atas; slide di bawah ini menyusul.
@@ -86,10 +84,12 @@ var PENGATURAN = {
     }
   ],
 
-  // Pertanyaan di footer. Tambah, hapus, atau ubah sesuai kebijakan toko.
+  // Pertanyaan di halaman faq.html. Tambah, hapus, atau ubah sesuai kebijakan toko.
+  // contoh: true menampilkan contoh chat pesanan di bawah jawaban.
   faq: [
     { tanya: "Bagaimana cara memesan?",
-      jawab: "Pilih barang, tekan Tambah ke Keranjang, lalu buka keranjang dan tekan Kirim pesanan lewat WhatsApp. Daftar pesanan Anda terkirim otomatis sebagai chat, lalu kami balas dengan konfirmasi stok dan total." },
+      jawab: "Pilih barang, tekan + Keranjang, lalu buka keranjang dan tekan Kirim pesanan lewat WhatsApp. Daftar pesanan Anda terkirim otomatis sebagai chat, lalu kami balas dengan konfirmasi stok dan total.",
+      contoh: true },
     { tanya: "Apakah harga di website sudah pasti?",
       jawab: "Harga di website adalah harga terbaru dari kami, tetapi bisa berubah sewaktu-waktu. Total akhir dipastikan saat kami membalas chat pesanan Anda." },
     { tanya: "Apa arti satuan pak dan pcs?",

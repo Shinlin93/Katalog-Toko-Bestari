@@ -78,13 +78,6 @@ h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 7
 .saran-semua { justify-content: center; color: var(--ink); text-decoration: underline; font-weight: 700; }
 .saran-kosong { padding: 12px; color: var(--mute); }
 
-.info-blok { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 44px; padding: 6px 12px; background: var(--soft); border-radius: var(--r-kontrol); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
-@media (min-width: 1040px) {
-  .info-blok { padding: 0; background: none; }
-}
-.info-blok span { display: block; font-size: 0.78rem; color: var(--mute); }
-.info-blok b { font-weight: 700; }
-.info-blok:hover b { text-decoration: underline; }
 
 .nav-daftar a {
   display: flex;
@@ -135,28 +128,6 @@ h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 7
   font-weight: 700;
 }
 
-.kartu-putih { padding: 14px 16px; background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); }
-.strip-item {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  min-width: 128px;
-  min-height: 56px;
-  padding: 8px 16px;
-  background: var(--soft);
-  color: var(--ink);
-  border: 0;
-  border-radius: var(--r-kontrol);
-  text-align: left;
-}
-.strip-daftar > li { display: flex; }
-.strip-item { width: 100%; }
-.strip-item b { font-weight: 700; white-space: nowrap; }
-.strip-item small { color: var(--mute); }
-.strip-item:hover { background: var(--pill); color: var(--pill-ink); }
-.strip-item:hover small { color: var(--pill-ink); }
 
 .judul-bagian {
   width: fit-content;
@@ -374,19 +345,7 @@ body.melayang-minggir .melayang { opacity: 0; visibility: hidden; transition: op
 .hero-utama:hover { background: #E4EEFF; }
 .hero-kedua { color: var(--hero-ink); border: 1.5px solid currentColor; }
 .hero-kedua:hover { background: var(--hero-chip); }
-.hero .hero-utama:focus-visible, .hero .hero-kedua:focus-visible, .hero-cepat button:focus-visible { outline-color: #FFFFFF; }
-.hero-cepat { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 18px; font-size: 0.85rem; color: var(--hero-mute); }
-.hero-cepat span { margin-right: 2px; }
-.hero-cepat button {
-  min-height: 44px;
-  padding: 0 14px;
-  background: var(--hero-chip);
-  color: var(--hero-ink);
-  border: 0;
-  border-radius: var(--r-pil);
-  font-weight: 600;
-}
-.hero-cepat button:hover { background: rgba(255, 255, 255, 0.26); }
+.hero .hero-utama:focus-visible, .hero .hero-kedua:focus-visible { outline-color: #FFFFFF; }
 
 .hero-panel { align-self: center; padding: 20px; background: var(--card); color: var(--ink); border-radius: var(--r-kartu); }
 .hero-angka { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
@@ -405,12 +364,16 @@ body.melayang-minggir .melayang { opacity: 0; visibility: hidden; transition: op
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-.contoh-cara { margin-top: 12px; color: var(--mute); font-size: 0.88rem; line-height: 1.45; }
+/* Tiga langkah cara pesan di panel hero. */
+.langkah { margin: 0; padding: 0; list-style: none; counter-reset: langkah; display: grid; gap: 12px; }
+.langkah li { counter-increment: langkah; display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: 12px; }
+.langkah li::before { content: counter(langkah); grid-row: span 2; display: grid; place-items: center; width: 32px; height: 32px; background: var(--soft); color: var(--ink); border-radius: 50%; font-weight: 700; }
+.langkah b { font-weight: 700; }
+.langkah span { color: var(--mute); font-size: 0.9rem; }
 
-/* FAQ di footer. */
-.faq { padding-top: 22px; border-top: 1px solid var(--line); }
+/* Halaman FAQ (faq.html): satu kolom selebar bacaan nyaman. */
 .faq-daftar { display: grid; gap: 8px; }
-.faq-item { background: var(--soft); border-radius: var(--r-kontrol); }
+.faq-item { background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kontrol); }
 .faq-item summary {
   display: flex;
   align-items: center;
@@ -426,33 +389,10 @@ body.melayang-minggir .melayang { opacity: 0; visibility: hidden; transition: op
 .faq-item summary::after { content: "+"; flex: none; font-size: 1.3rem; font-weight: 400; color: var(--mute); }
 .faq-item[open] summary::after { content: "−"; }
 .faq-item summary:hover { text-decoration: underline; }
-.faq-item p { padding: 0 16px 14px; color: var(--mute); max-width: 70ch; }
+.faq-jawab { padding: 0 16px 14px; }
+.faq-jawab > p:first-child { color: var(--mute); max-width: 70ch; }
+.faq-jawab .contoh-label { margin-top: 12px; }
 
-/* Panduan belanja. Maskot tampil sebagai pemandu (lihat DESIGN.md). */
-.daftar-panduan { display: grid; gap: 12px; }
-.kartu-panduan {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas: "gambar teks" "gambar aksi";
-  align-items: center;
-  gap: 4px 14px;
-  width: 100%;
-  padding: 14px 16px;
-  background: var(--card);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--r-kartu);
-  text-align: left;
-}
-.kartu-panduan:hover { border-color: var(--field); }
-.kartu-panduan img { grid-area: gambar; width: 64px; height: 54px; object-fit: cover; object-position: top; background: #FFFFFF; border-radius: var(--r-kontrol); }
-.kartu-panduan-teks { grid-area: teks; }
-.kartu-panduan-teks b { display: block; font-size: 1.05rem; }
-.kartu-panduan-teks small { display: block; margin-top: 2px; color: var(--mute); font-size: 0.88rem; line-height: 1.4; }
-.kartu-panduan-aksi { grid-area: aksi; justify-self: start; margin-top: 6px; font-weight: 700; text-decoration: underline; }
-@media (min-width: 700px) {
-  .daftar-panduan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 
 .petunjuk {
   display: flex;
@@ -537,7 +477,7 @@ a.foto { color: var(--ink); text-decoration: none; }
 
 /* Halaman detail produk (produk.html). */
 .kepala-produk { grid-template-areas: "marka tema"; }
-@media (min-width: 960px) { .kepala-produk { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "marka tema"; } }
+@media (min-width: 900px) { .kepala-produk { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "marka tema"; } }
 a.marka { color: var(--ink); text-decoration: none; }
 .h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 700; }
 .detail { display: grid; gap: 0; }
@@ -583,33 +523,22 @@ a.marka { color: var(--ink); text-decoration: none; }
 .keadaan-atau { margin-top: 18px; }
 .keadaan .saran-cepat { margin-top: 8px; }
 
-/* Contoh chat di hero: terbuka di layar lebar, dilipat di HP supaya katalog lebih cepat terlihat. */
-.cara-pesan summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; list-style: none; }
-.cara-pesan summary::-webkit-details-marker { display: none; }
-.cara-pesan summary h3 { margin: 0; }
-.cara-pesan summary::after { content: "Lihat"; flex: none; color: var(--primary-text); font-size: 0.88rem; font-weight: 700; text-decoration: underline; }
-.cara-pesan[open] summary::after { content: "Tutup"; }
-.cara-pesan[open] summary { margin-bottom: 10px; }
-@media (min-width: 700px) {
-  .cara-pesan summary { cursor: default; pointer-events: none; }
-  .cara-pesan summary::after { display: none; }
-}
 
 /* Ukuran hero per lebar layar. Ditaruh di akhir file supaya menimpa gaya dasar hero di atas. */
-/* HP: hero diringkas supaya produk pertama cepat terlihat. Kata cepat di hero sudah ada di kolom cari,
-   strip kategori sama dengan tombol kategori di katalog, dan kartu panduan sama dengan slide panduan,
-   jadi ketiganya disembunyikan di HP. */
+/* HP: hero diringkas supaya produk pertama cepat terlihat. */
 @media (max-width: 699px) {
   .hero { gap: 14px; padding: 22px 16px 18px; }
   .hero-judul { margin: 8px 0 10px; font-size: 1.7rem; }
   .hero-sub { font-size: 0.95rem; }
   .hero-aksi { margin-top: 16px; }
-  .hero-cepat { display: none; }
+  .hero-utama, .hero-kedua { padding: 0 16px; }
   .hero-panel { padding: 14px 16px; }
-  .hero-angka { padding-bottom: 10px; margin-bottom: 4px; }
-  .bagian-strip { display: none; }
-  /* Panduan kresek tetap bisa dibuka dari slide kedua di hero dan dari petunjuk saat mencari kresek. */
-  #panduan { display: none; }
+  /* Di HP cukup judul tiap langkah, keterangannya disembunyikan supaya panel pendek. */
+  .langkah { gap: 8px; }
+  .langkah span { display: none; }
+  .langkah li::before { grid-row: auto; width: 28px; height: 28px; }
+  .langkah li { grid-template-columns: 28px minmax(0, 1fr); align-items: center; }
+  .hero-angka { padding-bottom: 10px; margin-bottom: 10px; }
 }
 /* Tablet: hero sudah dua kolom, dengan ukuran sedang. */
 @media (min-width: 700px) {
@@ -619,3 +548,52 @@ a.marka { color: var(--ink); text-decoration: none; }
 @media (min-width: 900px) {
   .hero { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 40px; padding: 52px 48px; }
 }
+
+/* Empat area dengan warna berbeda (lihat DESIGN.md):
+   1. Atas (header dan menu): putih. Menu aktif ditandai teks merah dan garis bawah merah.
+   2. Hero: biru terang.
+   3. Area produk: abu terang, kartu putih.
+   4. Footer: biru tua dengan garis merah. */
+.nav { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); box-shadow: 0 2px 6px rgba(10, 20, 40, 0.08); }
+.nav-daftar a { position: relative; color: var(--ink); }
+.nav-daftar a:hover { background: var(--soft); color: var(--ink); }
+.nav-daftar a[aria-current="true"] { background: transparent; color: var(--aksen); }
+.nav-daftar a[aria-current="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: 4px; height: 3px; background: var(--aksen); border-radius: 2px; }
+.lencana { border-color: var(--card); }
+footer :focus-visible { outline-color: #FFFFFF; }
+
+footer { background: var(--bingkai); color: var(--bingkai-ink); border-top: 3px solid var(--aksen); }
+footer a, footer h2, .nama-footer { color: var(--bingkai-ink); }
+footer p, .alamat-daftar span, .catatan-bawah { color: var(--bingkai-mute); }
+.alamat-daftar b { color: var(--bingkai-ink); }
+
+/* Logo WhatsApp resmi (bentuk isi, bukan garis) di tombol mengambang. */
+.melayang .ikon-wa { width: 30px; height: 30px; fill: currentColor; stroke: none; }
+
+/* WhatsApp dan Instagram di footer: logo saja, dalam lingkaran 48 px. */
+.sosmed { display: flex; gap: 12px; margin-top: 4px; }
+footer .sosmed a { display: grid; place-items: center; width: 48px; height: 48px; min-height: 48px; background: var(--bingkai-soft); color: var(--bingkai-ink); border: 1.5px solid rgba(255, 255, 255, 0.35); border-radius: 50%; }
+footer .sosmed a:hover { background: rgba(255, 255, 255, 0.2); }
+.ikon-sosmed { width: 24px; height: 24px; }
+
+/* Halaman FAQ. */
+.halaman-faq .faq { max-width: 820px; }
+.halaman-faq .judul-bagian { margin-top: 8px; font-size: 1.5rem; }
+.faq-tanya { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-top: 24px; padding: 18px 20px; background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); }
+.faq-tanya p { flex: 1 1 260px; color: var(--mute); }
+.faq-tanya b { display: block; color: var(--ink); }
+.faq-tanya .tombol-utama { width: auto; margin-top: 0; padding: 0 22px; }
+footer .link-faq { margin-top: 10px; }
+
+/* Tombol di kartu katalog dibuat kalem (biru muda, tulisan biru), supaya 40 kartu tidak dipenuhi blok biru.
+   Biru penuh dipakai untuk aksi utama: tombol di halaman detail produk dan saat kursor di atas tombol. */
+.daftar .beli:not(:disabled), .baris-pilihan .beli:not(:disabled) { background: var(--soft); color: var(--primary-text); border: 1.5px solid var(--primary); font-size: 0.9rem; }
+.daftar .beli:not(:disabled):hover, .baris-pilihan .beli:not(:disabled):hover { background: var(--primary); color: var(--primary-ink); }
+
+/* Logo WhatsApp di tombol bertulisan. */
+.ikon-wa-tombol { flex: none; width: 20px; height: 20px; margin-right: 8px; fill: currentColor; stroke: none; }
+.tombol-kirim { min-height: 52px; font-size: 1rem; }
+
+/* Tombol tema: ikon bulan atau matahari, 44 x 44 px. */
+.tombol-tema { display: grid; place-items: center; width: 44px; padding: 0; }
+.tombol-tema svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
