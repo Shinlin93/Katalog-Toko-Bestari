@@ -79,7 +79,7 @@ h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 7
 .saran-kosong { padding: 12px; color: var(--mute); }
 
 .info-blok { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 44px; padding: 6px 12px; background: var(--soft); border-radius: var(--r-kontrol); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
-@media (min-width: 960px) {
+@media (min-width: 1040px) {
   .info-blok { padding: 0; background: none; }
 }
 .info-blok span { display: block; font-size: 0.78rem; color: var(--mute); }
@@ -135,7 +135,7 @@ h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 7
   font-weight: 700;
 }
 
-.kartu-putih { padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-kartu); }
+.kartu-putih { padding: 14px 16px; background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); }
 .strip-item {
   flex: none;
   display: flex;
@@ -209,7 +209,7 @@ h1 { font-size: clamp(1.25rem, 4.5vw, 1.6rem); line-height: 1.15; font-weight: 7
   font-size: 1rem;
 }
 
-.kartu { display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-kartu); }
+.kartu { display: flex; flex-direction: column; min-width: 0; overflow: hidden; background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); }
 .foto {
   position: relative;
   aspect-ratio: 1 / 1;
@@ -293,6 +293,10 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; font-wei
   box-shadow: 0 6px 16px rgba(10, 20, 40, 0.28);
 }
 .melayang button { width: 48px; height: 48px; background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+.melayang { transition: opacity 0.2s ease, visibility 0s linear 0s; }
+/* Di HP, tombol mengambang minggir selama daftar produk ada di bagian bawah layar, supaya tidak menutupi tombol beli.
+   Keranjang dan menu tetap bisa dicapai lewat menu atas yang menempel. */
+body.melayang-minggir .melayang { opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0s linear 0.2s; }
 
 .laci {
   position: fixed;
@@ -496,8 +500,9 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; font-wei
    dan halaman di bawahnya tidak melompat saat slide berganti. */
 .hero-slider { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .slide-daftar { display: grid; flex: 1; }
-.slide { grid-area: 1 / 1; min-width: 0; transition: opacity 0.35s ease, visibility 0.35s; }
-.slide[aria-hidden="true"] { opacity: 0; visibility: hidden; }
+/* Slide lama menghilang dulu, baru slide baru muncul, supaya teks dan gambar tidak sempat bertumpuk. */
+.slide { grid-area: 1 / 1; min-width: 0; transition: opacity 0.25s ease 0.18s, visibility 0s linear 0.18s; }
+.slide[aria-hidden="true"] { opacity: 0; visibility: hidden; transition: opacity 0.18s ease, visibility 0s linear 0.18s; }
 @media (prefers-reduced-motion: reduce) {
   .slide { transition: none; }
 }
@@ -526,7 +531,8 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; font-wei
 
 /* Tautan di kartu produk menuju halaman detail. */
 a.foto { color: var(--ink); text-decoration: none; }
-.nama a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+/* Area sentuh nama produk minimal 44 px tinggi, walau namanya hanya satu baris. */
+.nama a { display: block; min-height: 44px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .nama a:hover { text-decoration-color: currentColor; }
 
 /* Halaman detail produk (produk.html). */
@@ -562,4 +568,54 @@ a.marka { color: var(--ink); text-decoration: none; }
 }
 @media (min-width: 1100px) {
   .detail { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); max-width: 1100px; }
+}
+
+/* Daftar alamat toko di footer. */
+.alamat-daftar { display: grid; gap: 12px; }
+.alamat-daftar li { display: grid; }
+.alamat-daftar b { font-weight: 700; }
+.alamat-daftar a { justify-self: start; }
+
+/* Tombol tanya lewat WhatsApp di keadaan kosong. */
+.tombol-wa { background: var(--wa-teks); color: #FFFFFF; }
+.tombol-wa:hover { background: #0F6532; }
+.keadaan .keadaan-aksi .tombol-utama { width: auto; margin-top: 0; padding: 8px 20px; line-height: 1.3; }
+.keadaan-atau { margin-top: 18px; }
+.keadaan .saran-cepat { margin-top: 8px; }
+
+/* Contoh chat di hero: terbuka di layar lebar, dilipat di HP supaya katalog lebih cepat terlihat. */
+.cara-pesan summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; list-style: none; }
+.cara-pesan summary::-webkit-details-marker { display: none; }
+.cara-pesan summary h3 { margin: 0; }
+.cara-pesan summary::after { content: "Lihat"; flex: none; color: var(--primary-text); font-size: 0.88rem; font-weight: 700; text-decoration: underline; }
+.cara-pesan[open] summary::after { content: "Tutup"; }
+.cara-pesan[open] summary { margin-bottom: 10px; }
+@media (min-width: 700px) {
+  .cara-pesan summary { cursor: default; pointer-events: none; }
+  .cara-pesan summary::after { display: none; }
+}
+
+/* Ukuran hero per lebar layar. Ditaruh di akhir file supaya menimpa gaya dasar hero di atas. */
+/* HP: hero diringkas supaya produk pertama cepat terlihat. Kata cepat di hero sudah ada di kolom cari,
+   strip kategori sama dengan tombol kategori di katalog, dan kartu panduan sama dengan slide panduan,
+   jadi ketiganya disembunyikan di HP. */
+@media (max-width: 699px) {
+  .hero { gap: 14px; padding: 22px 16px 18px; }
+  .hero-judul { margin: 8px 0 10px; font-size: 1.7rem; }
+  .hero-sub { font-size: 0.95rem; }
+  .hero-aksi { margin-top: 16px; }
+  .hero-cepat { display: none; }
+  .hero-panel { padding: 14px 16px; }
+  .hero-angka { padding-bottom: 10px; margin-bottom: 4px; }
+  .bagian-strip { display: none; }
+  /* Panduan kresek tetap bisa dibuka dari slide kedua di hero dan dari petunjuk saat mencari kresek. */
+  #panduan { display: none; }
+}
+/* Tablet: hero sudah dua kolom, dengan ukuran sedang. */
+@media (min-width: 700px) {
+  .hero { grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr); gap: 28px; padding: 36px 28px; align-items: center; }
+  .hero-judul { font-size: clamp(2rem, 4.2vw, 3.3rem); }
+}
+@media (min-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 40px; padding: 52px 48px; }
 }

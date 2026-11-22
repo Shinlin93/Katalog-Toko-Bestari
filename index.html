@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Toko Bestari: Plastik dan Peralatan Rumah Tangga</title>
-<meta name="description" content="Toko Bestari di Gedangan, Sidoarjo: kresek, plastik PE dan OPP, mika, gelas cup, thinwall, toples, sampai perabot rumah tangga. Cek harga dan pesan lewat WhatsApp.">
+<meta name="description" content="Toko Bestari (Bestari Plastik) di Jl. Wirabumi Gedangan dan Ruko Citra City: kresek, plastik PE dan OPP, mika, gelas cup, thinwall, toples, sampai perabot rumah tangga. Cek harga dan pesan lewat WhatsApp.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Toko Bestari: Plastik dan Peralatan Rumah Tangga">
-<meta property="og:description" content="Cari kebutuhan plastik dan perabot rumah tangga di Toko Bestari, Gedangan, Sidoarjo. Pesan lewat WhatsApp, lalu ambil di toko.">
+<meta property="og:description" content="Cari kebutuhan plastik dan perabot rumah tangga di Toko Bestari (Bestari Plastik). Pesan lewat WhatsApp, lalu ambil di salah satu toko kami.">
 <meta property="og:locale" content="id_ID">
 <link rel="icon" href="aset/favicon.png">
 <link rel="stylesheet" href="css/tema.css">
@@ -38,7 +38,7 @@
 
     <div class="info">
       <a class="info-blok" id="info-wa" target="_blank" rel="noopener"><span>WhatsApp</span><b id="info-wa-nomor"></b></a>
-      <a class="info-blok" id="info-lokasi" target="_blank" rel="noopener"><span>Lokasi toko</span><b id="info-lokasi-teks"></b></a>
+      <a class="info-blok" id="info-lokasi" href="#lokasi"><span id="info-lokasi-label">Lokasi toko</span><b id="info-lokasi-teks"></b></a>
     </div>
 
     <button class="tombol-tema" id="tombol-tema" type="button"></button>
@@ -68,9 +68,9 @@
       <div class="hero-slider" id="hero-slider">
       <div class="slide-daftar" id="slide-daftar">
       <div class="slide hero-teks">
-        <p class="hero-label" id="hero-label">Toko plastik dan perabot · Gedangan, Sidoarjo</p>
+        <p class="hero-label" id="hero-label">Toko Bestari (Bestari Plastik) · 2 toko</p>
         <h2 class="hero-judul" id="hero-judul">Cari kebutuhan plastik dan perabot rumah tangga dengan mudah</h2>
-        <p class="hero-sub" id="hero-sub">Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di toko kami di Gedangan.</p>
+        <p class="hero-sub" id="hero-sub">Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di salah satu toko kami atau minta dikirim.</p>
         <div class="hero-aksi">
           <a class="hero-utama" href="#katalog">Lihat katalog</a>
           <a class="hero-kedua" id="hero-wa" target="_blank" rel="noopener" hidden>Chat WhatsApp</a>
@@ -82,18 +82,20 @@
       </div>
       <div class="hero-panel">
         <p class="hero-angka"><b id="hero-jumlah">Ratusan</b> <span id="hero-jumlah-ket">produk di katalog</span></p>
-        <h3>Pesanan Anda terkirim seperti ini</h3>
+        <details class="cara-pesan" id="cara-pesan" open>
+        <summary><h3>Pesanan Anda terkirim seperti ini</h3></summary>
         <p class="contoh-label">Contoh chat WhatsApp</p>
         <p class="contoh-pesan" id="contoh-pesan">Halo Toko Bestari, saya mau pesan:
 1. Kresek 257 UK 15 - 2 pak
 2. Plastik PE Hitam Tali Putih 9X20 Boyo - 1 pak
 Mohon dicek stok dan totalnya.</p>
         <p class="contoh-cara">Pilih barang, tekan Tambah ke Keranjang, lalu buka keranjang dan kirim. Kami balas dengan konfirmasi stok dan total.</p>
+        </details>
       </div>
     </div>
   </section>
 
-  <section class="wrap bagian" aria-labelledby="j-kategori">
+  <section class="wrap bagian bagian-strip" aria-labelledby="j-kategori">
     <div class="kartu-putih">
       <h2 class="sr" id="j-kategori">Kategori produk terbanyak</h2>
       <ul class="strip-daftar" id="strip"></ul>
@@ -145,8 +147,7 @@ Mohon dicek stok dan totalnya.</p>
         <p class="nama-footer" id="f-nama"></p>
         <p id="f-tagline"></p>
         <h2 id="h-lokasi">Alamat toko</h2>
-        <p id="f-alamat">Jl. Wirabumi No. 97, Gedangan, Sidoarjo</p>
-        <a id="f-maps" target="_blank" rel="noopener">Buka di Google Maps</a>
+        <ul class="alamat-daftar" id="f-alamat"><li><span>Jl. Wirabumi No. 97, Gedangan, Sidoarjo</span></li><li><span>Ruko Citra City R-19</span></li></ul>
       </section>
       <section id="kontak" aria-labelledby="h-kontak">
         <h2 id="h-kontak">Hubungi kami</h2>

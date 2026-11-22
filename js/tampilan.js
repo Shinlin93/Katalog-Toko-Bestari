@@ -14,7 +14,16 @@ var KatalogTampilan = (function () {
   function linkWA(teks) { return "https://wa.me/" + cfg.waNomor + "?text=" + encodeURIComponent(teks); }
   // Alamat halaman detail satu produk, dipakai untuk kartu dan tombol bagikan.
   function linkProduk(p) { return "produk.html?id=" + encodeURIComponent(p.id); }
-  function linkMaps() { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(cfg.alamat); }
+  function linkMaps(alamat) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(alamat || cfg.alamat); }
+  function daftarToko() { return (cfg.toko && cfg.toko.length) ? cfg.toko : [{ nama: "", alamat: cfg.alamat }]; }
+  // Semua alamat toko, masing-masing dengan link Google Maps. Dipakai di footer halaman depan dan halaman produk.
+  function htmlAlamat() {
+    return daftarToko().map(function (t) {
+      return "<li>" + (t.nama ? "<b>" + esc(t.nama) + "</b>" : "") + "<span>" + esc(t.alamat) + "</span>" +
+        '<a href="' + esc(linkMaps(t.alamat)) + '" target="_blank" rel="noopener">Buka di Google Maps</a></li>';
+    }).join("");
+  }
+  function namaLengkap() { return cfg.namaToko + (cfg.namaLain ? " (" + cfg.namaLain + ")" : ""); }
 
   function setTema(t) {
     document.documentElement.setAttribute("data-theme", t);
@@ -38,12 +47,12 @@ var KatalogTampilan = (function () {
     $("nama-toko").textContent = cfg.namaToko;
     $("tagline").textContent = cfg.tagline;
     document.title = cfg.namaToko + ": " + cfg.tagline;
+    var jumlahToko = daftarToko().length;
+    $("info-lokasi-label").textContent = jumlahToko > 1 ? jumlahToko + " toko" : "Lokasi toko";
     $("info-lokasi-teks").textContent = cfg.lokasiSingkat;
-    $("info-lokasi").href = linkMaps();
-    $("f-nama").textContent = cfg.namaToko;
+    $("f-nama").textContent = namaLengkap();
     $("f-tagline").textContent = cfg.tagline;
-    $("f-alamat").textContent = cfg.alamat;
-    $("f-maps").href = linkMaps();
+    $("f-alamat").innerHTML = htmlAlamat();
     $("f-ig").textContent = "Instagram @" + cfg.instagram;
     $("f-ig").href = "https://www.instagram.com/" + cfg.instagram + "/";
     if (cfg.waNomor) {
@@ -298,6 +307,15 @@ var KatalogTampilan = (function () {
     kotak.hidden = false;
   }
 
+  // Tombol tanya stok lewat WhatsApp untuk barang yang belum ada di katalog website.
+  function tombolTanyaWA(kueri) {
+    if (!cfg.waNomor) return "";
+    var teks = kueri ? "Halo " + cfg.namaToko + ", apakah ada " + kueri + "? Saya tidak menemukannya di website."
+                     : "Halo " + cfg.namaToko + ", saya mau tanya harga dan stok barang.";
+    return '<a class="tombol-utama tombol-wa" href="' + esc(linkWA(teks)) + '" target="_blank" rel="noopener">' +
+      (kueri ? "Tanya stok “" + esc(kueri) + "” lewat WhatsApp" : "Tanya lewat WhatsApp") + "</a>";
+  }
+
   function gambar(S, hasil) {
     var catatan = [];
     if (!cfg.waNomor) catatan.push('<div class="catatan" role="status"><p>Nomor WhatsApp toko belum diisi, jadi pesanan belum bisa dikirim.</p></div>');
@@ -320,13 +338,15 @@ var KatalogTampilan = (function () {
     }
     if (S.keadaan === "kosong") {
       $("jumlah").textContent = "";
-      daftar.innerHTML = '<li class="keadaan"><b>Daftar produk belum bisa ditampilkan</b>Tanyakan harga dan stok langsung lewat WhatsApp.</li>';
+      daftar.innerHTML = '<li class="keadaan"><b>Daftar produk belum bisa ditampilkan</b>Tanyakan harga dan stok langsung lewat WhatsApp.' +
+        '<div class="keadaan-aksi">' + tombolTanyaWA("") + "</div></li>";
       return;
     }
     var ket = S.kueri ? " untuk “" + S.kueri + "”" : "";
     if (!hasil.length) {
       $("jumlah").textContent = "0 produk" + ket;
-      daftar.innerHTML = '<li class="keadaan">' + MASKOT + '<b>Tidak ada produk yang cocok</b>Coba kata lain, atau lihat semua kategori.' +
+      daftar.innerHTML = '<li class="keadaan">' + MASKOT + '<b>Belum ada di katalog website</b>Belum semua barang di toko tercantum di sini. Tanyakan langsung, kami cek stoknya.' +
+        '<div class="keadaan-aksi">' + tombolTanyaWA(S.kueri) + '</div><p class="keadaan-atau">Atau coba kata lain:</p>' +
         '<div class="saran-cepat">' + cfg.saranCari.map(function (k) {
           return '<button class="pil-item" type="button" data-aksi="saran-cepat" data-nilai="' + esc(k) + '">' + esc(k) + "</button>";
         }).join("") + '</div><button class="tombol-sekunder" type="button" data-aksi="reset">Hapus pencarian dan filter</button></li>';
@@ -348,5 +368,6 @@ var KatalogTampilan = (function () {
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
            isiContohPesan: isiContohPesan, buatPanduan: buatPanduan, gambarPanduan: gambarPanduan,
-           kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk };
+           kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
+           htmlAlamat: htmlAlamat, namaLengkap: namaLengkap };
 })();

@@ -7,8 +7,17 @@ var PENGATURAN = {
   waNomor: "6285136879923",
   waTampil: "0851-3687-9923",
 
+  // Nama yang tertulis di spanduk toko, ditampilkan di samping nama toko supaya pembeli tahu ini toko yang sama.
+  namaLain: "Bestari Plastik",
+
+  // Semua toko. Tampil di footer, masing-masing dengan link Google Maps.
+  toko: [
+    { nama: "Toko Wirabumi", alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo" },
+    { nama: "Toko Citra City", alamat: "Ruko Citra City R-19" }
+  ],
+  // Alamat utama, dipakai bila daftar toko di atas kosong.
   alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",
-  lokasiSingkat: "Gedangan, Sidoarjo",
+  lokasiSingkat: "Wirabumi dan Citra City",
   instagram: "bestari.store2",
 
   // Link CSV dari Google Sheets (File > Bagikan > Publikasikan ke web, format .csv).
@@ -22,9 +31,9 @@ var PENGATURAN = {
 
   // Teks bagian besar di atas halaman.
   hero: {
-    label: "Toko plastik dan perabot · Gedangan, Sidoarjo",
+    label: "Toko Bestari (Bestari Plastik) · 2 toko",
     judul: "Cari kebutuhan plastik dan perabot rumah tangga dengan mudah",
-    sub: "Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di toko kami di Gedangan."
+    sub: "Butuh kresek, mika, gelas cup, atau ember dan baskom? Temukan barangnya di sini, kirim pesanan lewat WhatsApp, lalu ambil di salah satu toko kami atau minta dikirim."
   },
 
   // Slide tambahan di hero. Slide pertama selalu judul toko di atas; slide di bawah ini menyusul.
@@ -90,7 +99,7 @@ var PENGATURAN = {
     { tanya: "Bagaimana cara membayar?",
       jawab: "Website ini tidak menerima pembayaran online. Pembayaran dilakukan setelah pesanan dan total dikonfirmasi lewat WhatsApp." },
     { tanya: "Apakah bisa dikirim?",
-      jawab: "Pesanan bisa diambil langsung di toko. Untuk pengiriman, tanyakan area dan ongkos kirimnya lewat WhatsApp." },
+      jawab: "Pesanan bisa diambil langsung di Toko Wirabumi atau Toko Citra City. Untuk pengiriman, tanyakan area dan ongkos kirimnya lewat WhatsApp." },
     { tanya: "Barang yang saya cari tidak ada di katalog.",
       jawab: "Tanyakan saja lewat WhatsApp. Belum semua barang di toko tercantum di website." }
   ]

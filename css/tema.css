@@ -6,6 +6,8 @@
   --ink: #1B2433;
   --mute: #566174;
   --line: #DDE3EC;
+  /* Tepi kartu produk sedikit lebih gelap dari garis pemisah biasa, supaya batas antar kartu tetap terlihat di layar HP yang terang. */
+  --garis-kartu: #BAC4D3;
   --field: #738098;
   --primary: #1D5FD8;
   --primary-hover: #174BB0;
@@ -18,6 +20,8 @@
   --aksen: #C8102E;
   --aksen-ink: #FFFFFF;
   --wa: #168F46;
+  /* Hijau WhatsApp yang lebih gelap untuk tombol bertulisan putih (kontras 5,4:1). */
+  --wa-teks: #137A3C;
   --overlay: rgba(10, 20, 40, 0.5);
   --hero: #1849A9;
   --hero-ink: #FFFFFF;
@@ -40,6 +44,7 @@
   --ink: #E6EBF3;
   --mute: #A3AEC0;
   --line: #2A3550;
+  --garis-kartu: #3A4766;
   --field: #7E8CA5;
   --primary: #5B93F5;
   --primary-hover: #7BA8F7;

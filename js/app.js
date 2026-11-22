@@ -196,6 +196,8 @@
       else a.removeAttribute("aria-current");
     });
     $("ke-atas").hidden = window.scrollY < 400;
+    var d = $("daftar").getBoundingClientRect(), h = window.innerHeight;
+    document.body.classList.toggle("melayang-minggir", window.innerWidth < 700 && d.top < h - 60 && d.bottom > h - 140);
   }
   window.addEventListener("scroll", function () {
     if (!menunggu) { menunggu = true; requestAnimationFrame(sesuaikanMenu); }
@@ -208,6 +210,12 @@
   navDaftar.addEventListener("scroll", tandaiSisaMenu, { passive: true });
   window.addEventListener("resize", tandaiSisaMenu);
   tandaiSisaMenu();
+
+  // Contoh chat di hero terbuka di layar lebar, dilipat di HP.
+  var caraPesan = $("cara-pesan"), layarLebar = window.matchMedia("(min-width: 700px)");
+  function aturCaraPesan() { caraPesan.open = layarLebar.matches; }
+  if (layarLebar.addEventListener) layarLebar.addEventListener("change", aturCaraPesan); else layarLebar.addListener(aturCaraPesan);
+  aturCaraPesan();
 
   T.mulaiTema();
   T.isiToko();

@@ -67,7 +67,12 @@ body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 @media (max-width: 519px) {
   .total-mini { display: none; }
   .nav-daftar { gap: 0; }
+  /* Di HP, "Beranda" disembunyikan supaya Katalog, Alamat, Kontak, dan FAQ muat tanpa digeser.
+     Kembali ke atas tetap bisa lewat tombol panah atau logo. */
+  .nav-daftar li:first-child { display: none; }
 }
+
+
 
 @media (min-width: 600px) {
   .daftar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -78,13 +83,18 @@ body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
   .footer-isi { grid-template-columns: 1.3fr 1fr; }
 }
 
-@media (min-width: 960px) {
+/* Header satu baris baru mulai 1040 px, karena kolom cari dan dua info (WhatsApp, 2 toko) butuh ruang. */
+@media (min-width: 1040px) {
   .kepala-isi {
     grid-template-columns: auto minmax(260px, 1fr) auto auto;
     grid-template-areas: "marka cari info tema";
     gap: 12px 28px;
   }
   .info { display: flex; gap: 24px; }
+  .info-blok b { white-space: nowrap; }
+}
+
+@media (min-width: 960px) {
   .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 }
 
@@ -106,7 +116,4 @@ body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 @media (min-width: 700px) {
   .faq { grid-column: 1 / -1; }
   .faq-daftar { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-}
-@media (min-width: 900px) {
-  .hero { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 40px; padding: 52px 48px; align-items: center; }
 }

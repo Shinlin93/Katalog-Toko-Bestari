@@ -22,8 +22,7 @@
   function isiToko() {
     $("nama-toko").textContent = cfg.namaToko;
     $("tagline").textContent = cfg.tagline;
-    $("f-alamat").textContent = cfg.alamat;
-    $("f-maps").href = T.linkMaps();
+    $("f-alamat").innerHTML = T.htmlAlamat();
     if (cfg.waNomor) {
       $("f-wa").textContent = "WhatsApp " + cfg.waTampil;
       $("f-wa").href = T.linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".");
@@ -107,7 +106,7 @@
       var judul = ini.nama + " · " + cfg.namaToko;
       document.title = judul;
       setMeta("og:title", judul);
-      setMeta("description", teksBagikan(ini) + ". Pesan lewat WhatsApp, lalu ambil di toko kami di " + cfg.lokasiSingkat + ".");
+      setMeta("description", teksBagikan(ini) + ". Pesan lewat WhatsApp, lalu ambil di salah satu toko kami.");
       setMeta("og:description", teksBagikan(ini));
       gambarProduk(ini);
       gambarSerupa(ini);
