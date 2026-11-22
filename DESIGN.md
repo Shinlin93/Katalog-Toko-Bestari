@@ -53,6 +53,7 @@ Memakai font bawaan perangkat (system-ui). Website jadi tampil tanpa mengunduh f
 - Hero cukup berisi judul, satu kalimat, dua tombol, dan panel berisi jumlah produk serta 3 langkah cara pesan. Contoh chat pesanan ada di FAQ.
 - FAQ punya halaman sendiri (faq.html), dibuka dari menu atas dan dari link di footer. Footer di setiap halaman berisi alamat, logo WhatsApp dan Instagram, dan link FAQ.
 - HP (sampai 699 px): satu kolom, produk dua kolom, dan langkah cara pesan hanya menampilkan judulnya.
+- Dua toko, dua katalog: tombol Toko Gedangan dan Toko Citra City di atas katalog, dengan alamat toko terpilih di bawahnya. Pilihan diingat, dan link ?toko=citra langsung membuka katalog Citra City. Pencarian memberi tahu bila barang ada di toko lain. Keranjang tetap satu, dikelompokkan per toko, dan pesan WhatsApp dipisah per toko.
 - Tablet (700 sampai 1039 px): hero dua kolom, produk tiga atau empat kolom.
 - Desktop (1040 px ke atas): header satu baris, produk empat sampai enam kolom.
 - Semua tombol dan link minimal 44 x 44 px.

@@ -1,39 +1,88 @@
 // Menyambungkan data, tampilan, dan keranjang, lalu memasang semua tombol.
 (function () {
   var cfg = PENGATURAN, D = KatalogData, T = KatalogTampilan, K = KatalogKeranjang;
-  var S = { produk: [], kategori: "", kueri: "", urut: "", batas: cfg.produkPerHalaman, keadaan: "memuat", catatan: "" };
+  var S = { produk: [], kategori: "", kueri: "", urut: "", batas: cfg.produkPerHalaman, keadaan: "memuat", catatan: "",
+            toko: D.tokoAktif().id, tokoNama: D.tokoAktif().nama, semua: {}, lain: [] };
   var $ = function (id) { return document.getElementById(id); };
   var laci = $("laci");
 
   function hasil() {
     return D.cari(S.produk, { kueri: S.kueri, kategori: S.kategori, urut: S.urut });
   }
-  function gambar() { T.gambar(S, S.keadaan === "ok" ? hasil() : []); }
+  // Toko lain yang juga punya hasil untuk kata yang sedang dicari.
+  function hitungLain() {
+    S.lain = [];
+    if (!S.kueri) return;
+    D.daftarToko().forEach(function (t) {
+      var r = S.semua[t.id];
+      if (t.id === S.toko || !r || !r.produk.length) return;
+      var n = D.cari(r.produk, { kueri: S.kueri }).length;
+      if (n) S.lain.push({ toko: t, jumlah: n });
+    });
+  }
+  function gambar() { hitungLain(); T.gambar(S, S.keadaan === "ok" ? hasil() : []); }
 
+  function jumlahPerToko() {
+    var j = {};
+    for (var id in S.semua) j[id] = S.semua[id].produk.length;
+    return j;
+  }
+
+  // Menampilkan katalog toko yang sedang dipilih. `katAwal` dipakai saat datang dari link kategori.
+  function tampilkanToko(katAwal) {
+    var r = S.semua[S.toko];
+    T.gambarPilihToko(S.toko, jumlahPerToko());
+    if (!r) { S.keadaan = "memuat"; S.catatan = ""; gambar(); return; }
+    S.produk = r.produk;
+    S.catatan = r.catatan;
+    S.keadaan = r.produk.length ? "ok" : "kosong";
+    katAwal = katAwal || "";
+    if (!S.produk.some(function (p) { return p.kat === katAwal; })) katAwal = "";
+    S.kategori = katAwal;
+    S.batas = cfg.produkPerHalaman;
+    T.buatKategori(S.produk);
+    T.tandaiKategori(katAwal);
+    T.isiJumlahProduk(S.produk, D.cariToko(S.toko));
+    gambar();
+  }
+
+  // Semua toko dimuat bersamaan: toko yang dipilih langsung tampil, toko lain dipakai untuk petunjuk pencarian.
   function mulai() {
     S.keadaan = "memuat";
     S.catatan = "";
-    gambar();
-    D.muat().then(function (r) {
-      S.produk = r.produk;
-      S.catatan = r.catatan;
-      // Hanya disamakan bila daftar terbaru berhasil dimuat; salinan lama bisa berisi harga usang.
-      if (r.terbaru) {
-        var keluar = K.sinkron(r.produk);
-        T.gambarLencana();
-        if (keluar.length) T.pengumuman("Dikeluarkan dari keranjang karena tidak ada lagi di katalog: " + keluar.join(", ") + ".");
-      }
-      S.keadaan = r.produk.length ? "ok" : "kosong";
-      // Link dari halaman produk (index.html?kategori=...) langsung membuka kategori tersebut.
-      var katAwal = new URLSearchParams(location.search).get("kategori") || "";
-      if (!S.produk.some(function (p) { return p.kat === katAwal; })) katAwal = "";
-      S.kategori = katAwal;
-      S.batas = cfg.produkPerHalaman;
-      T.buatKategori(S.produk);
-      if (katAwal) T.tandaiKategori(katAwal);
-      T.isiJumlahProduk(S.produk);
-      gambar();
+    S.semua = {};
+    tampilkanToko();
+    var katAwal = new URLSearchParams(location.search).get("kategori") || "";
+    D.daftarToko().forEach(function (t) {
+      D.muat(t).then(function (r) {
+        S.semua[t.id] = r;
+        // Hanya disamakan bila daftar terbaru berhasil dimuat; salinan lama bisa berisi harga usang.
+        if (r.terbaru) {
+          var keluar = K.sinkron(r.produk, t.id);
+          T.gambarLencana();
+          if (keluar.length) T.pengumuman("Dikeluarkan dari keranjang karena tidak ada lagi di katalog " + t.nama + ": " + keluar.join(", ") + ".");
+        }
+        if (t.id === S.toko) tampilkanToko(katAwal);
+        else { T.gambarPilihToko(S.toko, jumlahPerToko()); if (S.keadaan === "ok" && S.kueri) gambar(); }
+      });
     });
+  }
+
+  function gantiToko(id) {
+    var t = D.cariToko(id);
+    if (t.id === S.toko) return;
+    S.toko = t.id;
+    S.tokoNama = t.nama;
+    D.setTokoAktif(t.id);
+    // Link di address bar ikut berubah, supaya halaman yang dibagikan membuka toko yang sama.
+    var u = new URL(location.href);
+    u.searchParams.set("toko", t.id);
+    u.searchParams.delete("kategori");
+    history.replaceState(null, "", u.pathname + u.search + u.hash);
+    $("urut").value = "";
+    S.urut = "";
+    tampilkanToko();
+    T.pengumuman("Menampilkan katalog " + t.nama + ".");
   }
 
   function ubah(bagian) {
@@ -170,6 +219,7 @@
     else if (aksi === "ulang") mulai();
     else if (aksi === "kategori") { T.tandaiKategori(nilai); ubah({ kategori: nilai }); keKatalog(); }
     else if (aksi === "ke-atas") window.scrollTo({ top: 0 });
+    else if (aksi === "pilih-toko") { gantiToko(nilai); if (!b.closest("#pilih-toko")) keKatalog(); }
     else if (aksi === "buka-panduan") bukaPanduan(b, nilai);
     else if (aksi === "tutup-panduan") tutupPanduan();
     else if (aksi === "cari-panduan") {

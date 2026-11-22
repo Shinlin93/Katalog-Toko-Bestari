@@ -5,6 +5,8 @@
   var esc = T.esc, rupiah = T.rupiah;
   var laci = $("laci"), produk = [], ini = null;
   var id = new URLSearchParams(location.search).get("id") || "";
+  // Toko ditentukan dari kode produk: produk toko lain berawalan "id-toko:".
+  var toko = D.tokoDariIdProduk(id);
 
   // Alamat yang dibagikan: selalu bentuk bersih tanpa tanda # atau parameter lain.
   function linkBagikan() {
@@ -36,13 +38,13 @@
     var beli = habis ? '<button class="beli" type="button" disabled>Stok habis</button>'
       : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '">Tambah ke Keranjang</button>';
     var tanya = cfg.waNomor ? '<a class="tombol-sekunder tombol-wa-produk" target="_blank" rel="noopener" href="' +
-      esc(T.linkWA("Halo " + cfg.namaToko + ", saya mau tanya produk ini:\n" + p.nama + "\n" + linkBagikan())) + '">' + T.ikonWA + 'Tanya lewat WhatsApp</a>' : "";
+      esc(T.linkWA("Halo " + cfg.namaToko + ", saya mau tanya produk ini di " + toko.nama + ":\n" + p.nama + "\n" + linkBagikan())) + '">' + T.ikonWA + 'Tanya lewat WhatsApp</a>' : "";
 
     $("produk").innerHTML =
       '<div class="detail kartu" data-id="' + esc(p.id) + '">' +
         '<div class="foto detail-foto">' + foto + esc(p.kat) + "<small>Foto menyusul</small></div>" +
         '<div class="detail-isi">' +
-          '<p class="detail-kat"><a href="index.html?kategori=' + encodeURIComponent(p.kat) + '#katalog">' + esc(p.kat) + "</a></p>" +
+          '<p class="detail-kat"><a href="index.html?toko=' + encodeURIComponent(toko.id) + "&kategori=" + encodeURIComponent(p.kat) + '#katalog">' + esc(p.kat) + "</a> · " + esc(toko.nama) + "</p>" +
           '<h1 class="detail-nama">' + esc(p.nama) + "</h1>" +
           (p.kode ? '<p class="detail-kode">Kode barang: ' + esc(p.kode) + "</p>" : "") +
           stok +
@@ -93,13 +95,15 @@
 
   function mulai() {
     $("produk").innerHTML = '<p class="keadaan"><b>Memuat produk</b>Sebentar, harga terbaru sedang diambil.</p>';
-    D.muat().then(function (r) {
+    D.muat(toko).then(function (r) {
       produk = r.produk;
       if (r.catatan) $("catatan").innerHTML = '<div class="catatan" role="status"><p>' + esc(r.catatan) + "</p></div>";
-      if (r.terbaru) { K.sinkron(r.produk); T.gambarLencana(); }
+      if (r.terbaru) { K.sinkron(r.produk, toko.id); T.gambarLencana(); }
       if (!produk.length) return gagalMuat();
       for (var i = 0; i < produk.length; i++) if (produk[i].id === id) { ini = produk[i]; break; }
       if (!ini) return tidakDitemukan();
+      // Kembali ke katalog membuka toko yang sama dengan produk ini.
+      D.setTokoAktif(toko.id);
       var judul = ini.nama + " · " + cfg.namaToko;
       document.title = judul;
       setMeta("og:title", judul);

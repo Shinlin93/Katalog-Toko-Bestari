@@ -58,8 +58,10 @@
   T.gambarLencana();
 
   // Daftar produk dimuat supaya harga di keranjang ikut terbaru dan contoh chat memakai produk asli.
-  D.muat().then(function (r) {
-    if (r.terbaru) { K.sinkron(r.produk); T.gambarLencana(); }
-    T.isiContohPesan(r.produk);
+  D.daftarToko().forEach(function (t, i) {
+    D.muat(t).then(function (r) {
+      if (r.terbaru) { K.sinkron(r.produk, t.id); T.gambarLencana(); }
+      if (i === 0) T.isiContohPesan(r.produk);
+    });
   });
 })();

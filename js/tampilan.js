@@ -106,10 +106,28 @@ var KatalogTampilan = (function () {
   }
 
   // Angka besar = jumlah produk di katalog, tanpa menyinggung stok.
-  function isiJumlahProduk(produk) {
+  function isiJumlahProduk(produk, toko) {
     if (!produk.length) return;
     $("hero-jumlah").textContent = produk.length.toLocaleString("id-ID");
-    $("hero-jumlah-ket").textContent = "produk di katalog";
+    $("hero-jumlah-ket").textContent = toko ? "produk di " + toko.nama : "produk di katalog";
+  }
+
+  // Tombol pilihan toko di atas katalog. `jumlah` berisi banyak produk per toko yang sudah dimuat.
+  function gambarPilihToko(aktifId, jumlah) {
+    var daftar = cfg.toko || [];
+    var wadah = $("pilih-toko");
+    if (!wadah) return;
+    wadah.hidden = daftar.length < 2;
+    wadah.innerHTML = daftar.map(function (t) {
+      var n = jumlah && jumlah[t.id] != null ? jumlah[t.id].toLocaleString("id-ID") + " produk" : "Memuat...";
+      return '<button class="pilih-toko-item" type="button" data-aksi="pilih-toko" data-nilai="' + esc(t.id) + '" aria-pressed="' + (t.id === aktifId) + '">' +
+        "<b>" + esc(t.nama) + "</b><small>" + n + "</small></button>";
+    }).join("");
+    var aktif = daftar.filter(function (t) { return t.id === aktifId; })[0];
+    if (aktif) {
+      $("j-katalog").textContent = "Katalog " + aktif.nama;
+      $("alamat-toko").innerHTML = "Diambil di " + esc(aktif.alamat) + ' · <a href="' + esc(linkMaps(aktif.alamat)) + '" target="_blank" rel="noopener">Lihat peta</a>';
+    }
   }
 
   // Contoh chat di jawaban FAQ cara memesan, memakai dua produk asli yang berharga dan masih ada stok,
@@ -264,7 +282,7 @@ var KatalogTampilan = (function () {
       $("laci-kaki").innerHTML = "";
       return;
     }
-    $("laci-daftar").innerHTML = "<ul>" + daftar.map(function (x) {
+    var barisItem = function (x) {
       var id = esc(x.id), nama = esc(x.nama);
       return '<li class="baris-keranjang"><div class="bk-nama">' + nama + "<small>" +
         (x.harga > 0 ? rupiah(x.harga) + " per " + esc(x.sat) : "Harga ditanyakan lewat WhatsApp") + "</small></div>" +
@@ -273,7 +291,13 @@ var KatalogTampilan = (function () {
         '<span><span class="sr">Jumlah: </span>' + x.qty + "</span>" +
         '<button type="button" data-aksi="lebih" data-id="' + id + '" aria-label="Tambah jumlah: ' + nama + '">+</button></div>' +
         '<button class="tombol-teks" style="justify-self:end" type="button" data-aksi="hapus-item" data-id="' + id + '" aria-label="Hapus dari keranjang: ' + nama + '">Hapus</button></li>';
-    }).join("") + "</ul>";
+    };
+    var kelompok = K.perToko();
+    var banyakToko = (cfg.toko || []).length > 1;
+    $("laci-daftar").innerHTML = kelompok.map(function (g) {
+      var judul = banyakToko ? '<h3 class="laci-toko">Ambil di ' + esc(g.toko.nama) + "<small>" + esc(g.toko.alamat) + "</small></h3>" : "";
+      return judul + "<ul>" + g.item.map(barisItem).join("") + "</ul>";
+    }).join("");
     $("laci-kaki").innerHTML = '<div class="total"><span>Total perkiraan</span><b>' + rupiah(K.total()) + "</b></div>" +
       (K.adaTanpaHarga() ? '<p class="catatan-kecil">Barang tanpa harga belum dihitung.</p>' : "") +
       '<p class="catatan-kecil">Pesanan dikirim lewat WhatsApp, bukan pembayaran online. Kami memastikan harga dan stok saat membalas chat Anda.</p>' +
@@ -328,6 +352,17 @@ var KatalogTampilan = (function () {
     var g = S.keadaan === "ok" ? panduanCocok(S) : null;
     if (g) catatan.push('<div class="petunjuk"><img src="aset/logo-maskot.jpg" alt="" width="48" height="40"><p>' + esc(g.petunjuk || g.judul) +
       '</p><button class="tombol-sekunder" type="button" data-aksi="buka-panduan" data-nilai="' + esc(g.id) + '">Lihat panduan</button></div>');
+    // S.lain: toko lain yang juga punya hasil untuk kata yang dicari, [{ toko, jumlah }].
+    var lain = S.keadaan === "ok" && S.kueri ? (S.lain || []) : [];
+    var tombolLain = function (kelas) {
+      return lain.map(function (l) {
+        return '<button class="' + kelas + '" type="button" data-aksi="pilih-toko" data-nilai="' + esc(l.toko.id) + '">Lihat di ' + esc(l.toko.nama) + " (" + l.jumlah + ")</button>";
+      }).join("");
+    };
+    if (lain.length && hasil.length) {
+      catatan.push('<div class="petunjuk petunjuk-toko"><p>“' + esc(S.kueri) + "” juga ada di " +
+        lain.map(function (l) { return esc(l.toko.nama); }).join(" dan ") + ".</p>" + tombolLain("tombol-sekunder") + "</div>");
+    }
     $("catatan").innerHTML = catatan.join("");
 
     var sorot = S.keadaan === "ok" && !S.kueri && !S.kategori ? S.produk.filter(function (p) { return p.sorot; }).slice(0, 10) : [];
@@ -348,6 +383,13 @@ var KatalogTampilan = (function () {
       return;
     }
     var ket = S.kueri ? " untuk “" + S.kueri + "”" : "";
+    if (!hasil.length && lain.length) {
+      $("jumlah").textContent = "0 produk" + ket;
+      daftar.innerHTML = '<li class="keadaan">' + MASKOT + "<b>Tidak ada di " + esc(S.tokoNama) + "</b>Tapi barang ini ada di toko kami yang lain." +
+        '<div class="keadaan-aksi">' + tombolLain("tombol-utama") + "</div>" +
+        '<button class="tombol-sekunder" type="button" data-aksi="reset">Hapus pencarian dan filter</button></li>';
+      return;
+    }
     if (!hasil.length) {
       $("jumlah").textContent = "0 produk" + ket;
       daftar.innerHTML = '<li class="keadaan">' + MASKOT + '<b>Belum ada di katalog website</b>Belum semua barang di toko tercantum di sini. Tanyakan langsung, kami cek stoknya.' +
@@ -372,7 +414,7 @@ var KatalogTampilan = (function () {
   return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
+           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
            kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
            htmlAlamat: htmlAlamat, isiSosmed: isiSosmed, ikonWA: IKON_WA_TOMBOL, konfirmasiKosongkan: konfirmasiKosongkan, namaLengkap: namaLengkap };
 })();

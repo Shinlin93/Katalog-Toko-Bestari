@@ -10,17 +10,24 @@ var PENGATURAN = {
   // Nama yang tertulis di spanduk toko, ditampilkan di samping nama toko supaya pembeli tahu ini toko yang sama.
   namaLain: "Bestari Plastik",
 
-  // Semua toko. Tampil di footer, masing-masing dengan link Google Maps.
+  // Daftar toko. Tiap toko punya katalog sendiri dari link CSV Google Sheets masing-masing
+  // (File > Bagikan > Publikasikan ke web, pilih tab-nya, format .csv).
+  //   id       = nama pendek untuk link, misalnya katalog-toko-bestari.vercel.app/?toko=citra
+  //   nama     = nama yang tampil di tombol pilihan toko, keranjang, dan pesan WhatsApp
+  //   alamat   = tampil di bawah tombol pilihan toko dan di footer, dengan link Google Maps
+  //   sheetUrl = link CSV katalog toko ini
+  // Toko pertama adalah toko utama: tampil lebih dulu untuk pengunjung baru, dan link produk lamanya tetap berlaku.
   toko: [
-    { nama: "Toko Wirabumi", alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo" },
-    { nama: "Toko Citra City", alamat: "Ruko Citra City R-19" }
+    { id: "gedangan", nama: "Toko Gedangan", alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIaFMLVXEA2sKENSW79x0tmdpKx8VtiieeaWeAwAipPTmCOeclfSbyjrhwyoqs0C3jaanlj45MBgNN/pub?gid=791871072&single=true&output=csv" },
+    // CONTOH: belum ada spreadsheet Citra City, jadi sementara memakai file contoh di folder data/.
+    // Ganti dengan link CSV tab Citra City setelah tab-nya dibuat dan diterbitkan.
+    { id: "citra", nama: "Toko Citra City", alamat: "Ruko Citra City R-19",
+      sheetUrl: "data/contoh-citra.csv" }
   ],
   // Alamat utama, dipakai bila daftar toko di atas kosong.
   alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",
   instagram: "bestari.store2",
-
-  // Link CSV dari Google Sheets (File > Bagikan > Publikasikan ke web, format .csv).
-  sheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIaFMLVXEA2sKENSW79x0tmdpKx8VtiieeaWeAwAipPTmCOeclfSbyjrhwyoqs0C3jaanlj45MBgNN/pub?gid=791871072&single=true&output=csv",
 
   folderFoto: "foto/",
   produkPerHalaman: 40,

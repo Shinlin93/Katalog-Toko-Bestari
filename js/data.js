@@ -1,4 +1,4 @@
-// Membaca produk (Google Sheets atau cadangan), lalu mencari dan mengurutkannya.
+// Membaca produk tiap toko (Google Sheets atau cadangan), lalu mencari dan mengurutkannya.
 var KatalogData = (function () {
   var KOLOM = ["KODE", "NAMA", "KATEGORI", "SATUAN", "HARGA", "STATUS", "TAMPIL", "FOTO", "TAG", "SOROT"];
 
@@ -50,7 +50,38 @@ var KatalogData = (function () {
     p.cariRapat = tanpaSpasi(p.cari);
   }
 
-  function ubahKeProduk(baris) {
+  // ---- Toko ----
+  // Toko pertama adalah toko utama: kode produknya dipakai apa adanya, supaya link produk dan isi keranjang lama
+  // tetap berlaku. Produk toko lain diberi awalan "id-toko:" supaya kodenya tidak bentrok antar toko.
+  function daftarToko() { return PENGATURAN.toko || []; }
+  function tokoUtama() { return daftarToko()[0]; }
+  function cariToko(id) {
+    var t = daftarToko().filter(function (x) { return x.id === id; })[0];
+    return t || tokoUtama();
+  }
+  function tokoDariIdProduk(id) {
+    var i = String(id).indexOf(":");
+    if (i > 0) {
+      var awalan = id.slice(0, i);
+      if (daftarToko().some(function (t) { return t.id === awalan; })) return cariToko(awalan);
+    }
+    return tokoUtama();
+  }
+  // Urutan: ?toko= di link, lalu pilihan terakhir pengunjung, lalu toko utama.
+  function tokoAktif() {
+    var dariLink = new URLSearchParams(location.search).get("toko");
+    if (dariLink && daftarToko().some(function (t) { return t.id === dariLink; })) return cariToko(dariLink);
+    var simpanan = null;
+    try { simpanan = localStorage.getItem("toko"); } catch (e) {}
+    return cariToko(simpanan);
+  }
+  function setTokoAktif(id) {
+    try { localStorage.setItem("toko", id); } catch (e) {}
+  }
+
+  function ubahKeProduk(baris, toko) {
+    toko = toko || tokoUtama();
+    var utama = toko === tokoUtama();
     var kepala = baris[0].map(function (h) { return h.trim().toUpperCase(); });
     var kolom = {};
     KOLOM.forEach(function (n) { kolom[n] = kepala.indexOf(n); });
@@ -64,7 +95,8 @@ var KatalogData = (function () {
       var kode = ambil(r, "KODE"), nama = ambil(r, "NAMA");
       return {
         urutan: urutan,
-        id: kode || nama,
+        toko: toko.id,
+        id: (utama ? "" : toko.id + ":") + (kode || nama),
         kode: kode,
         nama: nama,
         kat: ambil(r, "KATEGORI") || "Lainnya",
@@ -126,37 +158,45 @@ var KatalogData = (function () {
 
   function dariCadangan(catatan) {
     return muatSkripCadangan().then(function () {
-      return { produk: ubahKeProduk([KOLOM].concat(DATA_CADANGAN)), catatan: catatan };
+      return { produk: ubahKeProduk([KOLOM].concat(DATA_CADANGAN), tokoUtama()), catatan: catatan };
     }, function () {
       return { produk: [], catatan: "Daftar produk belum bisa dimuat. Periksa koneksi internet, atau tanyakan harga dan stok langsung lewat WhatsApp." };
     });
   }
 
-  function muat() {
-    var cfg = PENGATURAN;
-    if (!cfg.sheetUrl) return dariCadangan("");
+  // Memuat katalog satu toko. Salinan cadangan (data-cadangan.js) hanya ada untuk toko utama.
+  function muat(toko) {
+    toko = toko || tokoAktif();
+    var utama = toko === tokoUtama();
+    var kunciSimpan = utama ? "katalog" : "katalog-" + toko.id;
+    var gagal = function (catatan) {
+      if (utama) return dariCadangan(catatan);
+      return Promise.resolve({ produk: [], catatan: "Katalog " + toko.nama + " belum bisa dimuat. Periksa koneksi internet, atau tanyakan harga dan stok lewat WhatsApp." });
+    };
+    if (!toko.sheetUrl) return gagal("");
     var kontrol = new AbortController();
     var timer = setTimeout(function () { kontrol.abort(); }, 10000);
-    return fetch(cfg.sheetUrl, { signal: kontrol.signal, cache: "no-store" })
+    return fetch(toko.sheetUrl, { signal: kontrol.signal, cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (teks) {
         clearTimeout(timer);
-        var produk = ubahKeProduk(bacaCSV(teks));
-        try { localStorage.setItem("katalog", teks); } catch (e) {}
+        var produk = ubahKeProduk(bacaCSV(teks), toko);
+        try { localStorage.setItem(kunciSimpan, teks); } catch (e) {}
         return { produk: produk, catatan: "", terbaru: true };
       })
       .catch(function () {
         clearTimeout(timer);
         var simpanan = null;
-        try { simpanan = localStorage.getItem("katalog"); } catch (e) {}
+        try { simpanan = localStorage.getItem(kunciSimpan); } catch (e) {}
         if (simpanan) {
           try {
-            return { produk: ubahKeProduk(bacaCSV(simpanan)), catatan: "Daftar harga terbaru belum bisa dimuat. Yang tampil adalah daftar dari kunjungan terakhir Anda, jadi harga bisa berbeda." };
+            return { produk: ubahKeProduk(bacaCSV(simpanan), toko), catatan: "Daftar harga terbaru belum bisa dimuat. Yang tampil adalah daftar dari kunjungan terakhir Anda, jadi harga bisa berbeda." };
           } catch (e) {}
         }
-        return dariCadangan("Daftar harga terbaru belum bisa dimuat. Yang tampil adalah salinan lama, jadi harga bisa berbeda. Tanyakan harga dan stok langsung lewat WhatsApp.");
+        return gagal("Daftar harga terbaru belum bisa dimuat. Yang tampil adalah salinan lama, jadi harga bisa berbeda. Tanyakan harga dan stok langsung lewat WhatsApp.");
       });
   }
 
-  return { muat: muat, cari: cari, normalisasi: normalisasi };
+  return { muat: muat, cari: cari, normalisasi: normalisasi, daftarToko: daftarToko, tokoUtama: tokoUtama, cariToko: cariToko,
+           tokoAktif: tokoAktif, setTokoAktif: setTokoAktif, tokoDariIdProduk: tokoDariIdProduk };
 })();

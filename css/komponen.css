@@ -597,3 +597,22 @@ footer .link-faq { margin-top: 10px; }
 /* Tombol tema: ikon bulan atau matahari, 44 x 44 px. */
 .tombol-tema { display: grid; place-items: center; width: 44px; padding: 0; }
 .tombol-tema svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Pilihan toko di atas katalog: dua tombol besar yang jelas mana yang aktif. */
+.pilih-toko { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; max-width: 560px; margin: 0 auto 8px; padding: 4px; background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); }
+.pilih-toko-item { display: grid; gap: 2px; min-height: 56px; padding: 8px 12px; background: transparent; color: var(--ink); border: 0; border-radius: var(--r-kontrol); text-align: center; }
+.pilih-toko-item b { font-weight: 700; }
+.pilih-toko-item small { color: var(--mute); font-size: 0.82rem; }
+.pilih-toko-item:hover { background: var(--soft); }
+.pilih-toko-item[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
+.pilih-toko-item[aria-pressed="true"] small { color: var(--primary-ink); }
+.alamat-toko { margin: 0 0 14px; text-align: center; color: var(--mute); font-size: 0.88rem; }
+.alamat-toko a { color: var(--ink); font-weight: 600; }
+
+/* Petunjuk "juga ada di toko lain" dan tombol pindah toko di keadaan kosong. */
+.petunjuk-toko p { flex: 1 1 200px; }
+.keadaan .keadaan-aksi { flex-direction: column; align-items: center; }
+
+/* Judul kelompok toko di keranjang. */
+.laci-toko { display: grid; gap: 2px; margin: 14px 0 0; padding: 8px 12px; background: var(--soft); border-radius: var(--r-kontrol); font-size: 0.95rem; font-weight: 700; }
+.laci-toko small { color: var(--mute); font-size: 0.8rem; font-weight: 400; }

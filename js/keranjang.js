@@ -19,7 +19,7 @@ var KatalogKeranjang = (function () {
   function tambah(p) {
     var x = cari(p.id);
     if (x) { x.qty = Math.min(MAKS, x.qty + 1); x.harga = p.harga; x.nama = p.nama; x.sat = p.sat; }
-    else item.push({ id: p.id, nama: p.nama, harga: p.harga, sat: p.sat, qty: 1 });
+    else item.push({ id: p.id, toko: p.toko, nama: p.nama, harga: p.harga, sat: p.sat, qty: 1 });
     simpan();
   }
   function ubah(id, selisih) {
@@ -28,15 +28,23 @@ var KatalogKeranjang = (function () {
     x.qty = Math.max(1, Math.min(MAKS, x.qty + selisih));
     simpan();
   }
-  // Menyamakan isi keranjang dengan katalog terbaru: harga, nama, dan satuan diperbarui,
-  // barang yang sudah tidak ada di katalog dikeluarkan. Mengembalikan nama barang yang dikeluarkan.
-  function sinkron(produk) {
+  // Barang dari keranjang lama (sebelum ada pilihan toko) dianggap milik toko utama.
+  function tokoItem(x) { return x.toko || PENGATURAN.toko[0].id; }
+  function namaToko(id) {
+    var t = PENGATURAN.toko.filter(function (x) { return x.id === id; })[0];
+    return t ? t.nama : id;
+  }
+
+  // Menyamakan isi keranjang dengan katalog terbaru satu toko: harga, nama, dan satuan diperbarui,
+  // barang yang sudah tidak ada di katalog toko itu dikeluarkan. Mengembalikan nama barang yang dikeluarkan.
+  function sinkron(produk, tokoId) {
     var peta = {}, keluar = [];
     produk.forEach(function (p) { peta[p.id] = p; });
     item = item.filter(function (x) {
+      if (tokoId && tokoItem(x) !== tokoId) return true;
       var p = peta[x.id];
       if (!p) { keluar.push(x.nama); return false; }
-      x.harga = p.harga; x.nama = p.nama; x.sat = p.sat;
+      x.harga = p.harga; x.nama = p.nama; x.sat = p.sat; x.toko = p.toko;
       return true;
     });
     simpan();
@@ -46,6 +54,13 @@ var KatalogKeranjang = (function () {
   function kosongkan() { item = []; simpan(); }
 
   function daftar() { return item.slice(); }
+  // Isi keranjang dikelompokkan per toko, mengikuti urutan toko di pengaturan.
+  function perToko(isi) {
+    isi = isi || item;
+    return PENGATURAN.toko.map(function (t) {
+      return { toko: t, item: isi.filter(function (x) { return tokoItem(x) === t.id; }) };
+    }).filter(function (g) { return g.item.length; });
+  }
   function qty(id) { var x = cari(id); return x ? x.qty : 0; }
   function jumlah() { return item.reduce(function (n, x) { return n + x.qty; }, 0); }
   function subtotal(x) { return x.harga > 0 ? x.harga * x.qty : 0; }
@@ -59,16 +74,20 @@ var KatalogKeranjang = (function () {
     var isi = daftarLain || item;
     var totalIsi = isi.reduce(function (n, x) { return n + subtotal(x); }, 0);
     var tanpaHarga = isi.some(function (x) { return !(x.harga > 0); });
-    var baris = isi.map(function (x, i) {
+    var barisItem = function (x, i) {
       var rincian = x.harga > 0 ? x.qty + " " + x.sat + " x " + rp(x.harga) + " = " + rp(subtotal(x)) : x.qty + " " + x.sat + " (harga ditanyakan)";
       return (i + 1) + ". " + x.nama + " - " + rincian;
-    });
-    return "Halo " + namaToko + ", saya mau pesan:\n" + baris.join("\n") + "\n\nTotal perkiraan: " + rp(totalIsi) +
+    };
+    // Pesanan asli dikelompokkan per toko, supaya jelas barang mana disiapkan di toko mana.
+    var isiPesan = daftarLain ? isi.map(barisItem).join("\n") : "\n" + perToko(isi).map(function (g) {
+      return "Ambil di " + g.toko.nama + ":\n" + g.item.map(barisItem).join("\n");
+    }).join("\n\n");
+    return "Halo " + namaToko + ", saya mau pesan:\n" + isiPesan + "\n\nTotal perkiraan: " + rp(totalIsi) +
       (tanpaHarga ? " (belum termasuk barang yang harganya ditanyakan)" : "") +
       "\nMohon dicek stok dan totalnya.";
   }
 
   muat();
-  return { tambah: tambah, ubah: ubah, sinkron: sinkron, hapus: hapus, kosongkan: kosongkan, daftar: daftar, qty: qty,
+  return { tambah: tambah, ubah: ubah, sinkron: sinkron, hapus: hapus, kosongkan: kosongkan, daftar: daftar, qty: qty, perToko: perToko, namaToko: namaToko,
            jumlah: jumlah, subtotal: subtotal, total: total, adaTanpaHarga: adaTanpaHarga, teksPesanan: teksPesanan };
 })();
