@@ -82,7 +82,7 @@ var KatalogTampilan = (function () {
 
   function isiToko() {
     $("nama-toko").textContent = cfg.namaToko;
-    $("tagline").textContent = cfg.tagline;
+    if ($("subjudul")) $("subjudul").textContent = cfg.subjudul || "";
     document.title = cfg.namaToko + ": " + cfg.tagline;
     $("f-nama").textContent = namaLengkap();
     $("f-tagline").textContent = cfg.tagline;

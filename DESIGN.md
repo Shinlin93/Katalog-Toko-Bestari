@@ -39,7 +39,7 @@ Aturan: satu warna utama (biru), satu aksen (merah), dan hijau khusus untuk What
 
 ## Huruf
 
-Memakai font bawaan perangkat (system-ui). Website jadi tampil tanpa mengunduh font, dan tetap cepat di HP dengan sinyal lemah.
+Teks memakai font bawaan perangkat (system-ui), jadi tampil tanpa mengunduh font dan tetap cepat di HP dengan sinyal lemah. Khusus nama "Toko Bestari" di header memakai Plus Jakarta Sans ExtraBold (pilihan pemilik toko), dan hanya huruf nama toko yang diunduh dari Google Fonts.
 
 ## Bentuk
 

@@ -6,7 +6,7 @@
 
   function isiToko() {
     $("nama-toko").textContent = cfg.namaToko;
-    $("tagline").textContent = cfg.tagline;
+    if ($("subjudul")) $("subjudul").textContent = cfg.subjudul || "";
     $("f-nama").textContent = T.namaLengkap();
     $("f-alamat").innerHTML = T.htmlAlamat();
     var tanya = cfg.waNomor ? T.linkWA("Halo " + cfg.namaToko + ", saya mau bertanya.") : "";

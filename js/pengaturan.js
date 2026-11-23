@@ -2,6 +2,8 @@
 var PENGATURAN = {
   namaToko: "Toko Bestari",
   tagline: "Plastik dan Peralatan Rumah Tangga",
+  // Tulisan kecil di bawah nama toko di header.
+  subjudul: "Plastik dan Kemasan",
 
   // Nomor WhatsApp diawali 62, tanpa + atau spasi. Kosong berarti tombol pesan nonaktif.
   waNomor: "6285136879923",
