@@ -86,7 +86,7 @@ ENERGI 2 / RITME 2 / GERAK 1: tenang dengan sedikit variasi. Gerakan hanya ada d
 Mengikuti struktur EnvioStore dan `design.md` dari pemilik toko, dengan warna dan bentuk Toko Bestari.
 
 - Header: logo, kolom cari lebar, dan tombol keranjang gelap bersudut 4 px berisi jumlah barang dan total. Tidak ada pilihan tema gelap; website selalu terang.
-- Desktop (1040 px ke atas): kolom kiri berisi Kategori Produk (semua kategori dengan jumlah produk) dan Informasi Toko (cabang terpilih, alamat, WhatsApp, Instagram, cara pesan). Kolom kanan berisi banner bergeser (slogan, foto produk tanpa harga, panduan kresek) dengan panah dan titik, pilihan toko, judul katalog dengan jumlah produk, grid 4 kolom, dan nomor halaman.
+- Desktop (1040 px ke atas): kolom kiri berisi Kategori Produk (semua kategori dengan jumlah produk) dan Informasi Toko (cabang terpilih, alamat, WhatsApp, Instagram, cara pesan). Kolom kanan berisi banner bergeser (slogan dan banner kemasan tanpa harga) dengan panah dan titik, pilihan toko, judul katalog dengan jumlah produk, grid 4 kolom, dan nomor halaman.
 - HP: di bawah kolom cari ada baris menu yang menempel (Kategori, Keranjang, WhatsApp), polos dan kotak seperti EnvioStore. Kategori dibuka lewat laci. Informasi toko tidak diulang di atas footer; alamat dan kontak ada di footer.
 - Footer empat kolom: Layanan Pelanggan, Toko Kami, Ikuti Kami, Toko Bestari, ditambah hak cipta.
 - Halaman produk: jejak halaman (Beranda › Kategori › Produk) dan pilihan jumlah sebaris dengan tombol Tambah ke Keranjang.

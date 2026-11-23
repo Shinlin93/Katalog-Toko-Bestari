@@ -70,12 +70,6 @@ var PENGATURAN = {
         { label: "Tisu", foto: "aset/promo/tisu-dapur.jpg", cari: "tisu" },
         { label: "Kresek", foto: "aset/promo/kresek.jpg", cari: "kresek" }
       ]
-    },
-    {
-      gambar: "aset/hero-panduan-kresek.jpg",
-      alt: "Panduan ukuran kresek: ukuran 15, 21, 24, 35, 40, dan 55 beserta kegunaannya, dan pilihan warna putih bening, hitam, warna-warni, dan putih susu.",
-      judul: "Panduan ukuran kresek",
-      panduan: "ukuran-kresek"
     }
   ],
   // Lama tiap slide tampil, dalam detik.
