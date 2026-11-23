@@ -54,16 +54,20 @@ var PENGATURAN = {
   //   judul    = keterangan singkat di bawah gambar
   //   panduan  = id panduan yang dibuka saat gambar diketuk (kosongkan kalau tidak ada)
   slideHero: [
-    // Slide foto produk (tanpa harga). Foto diambil dari folder foto/. Sebaiknya diganti dengan foto milik toko sendiri.
+    // Banner promo gaya spanduk. Foto di aset/promo/ bebas watermark toko lain. Tanpa harga, karena harga naik turun.
     {
-      tipe: "produk",
-      judul: "Plastik dan kemasan, lengkap di sini",
-      ket: "Ketuk barang untuk melihat pilihannya",
+      tipe: "promo",
+      atas: "Kebutuhan usaha kuliner",
+      judul: "Kemasan Serba Ada",
+      sorot: "Serba Ada",
+      ket: "Ketuk barang untuk melihat pilihan dan harganya",
+      kaki: "Toko Gedangan & Toko Sarirogo",
       produk: [
-        { label: "Kresek", foto: "mustika24.jpg", cari: "kresek" },
-        { label: "Plastik PE", foto: "pe24.jpg", cari: "plastik pe" },
-        { label: "Toples", foto: "tdrat500ml.jpg", cari: "toples" },
-        { label: "Gelas cup", foto: "pa077.jpg", cari: "cup" }
+        { label: "Gelas cup", foto: "aset/promo/cup-gelas.jpg", cari: "cup" },
+        { label: "Seal cup", foto: "aset/promo/seal-cup.jpg", cari: "seal" },
+        { label: "Mika", foto: "aset/promo/mika.jpg", cari: "mika" },
+        { label: "Tisu", foto: "aset/promo/tisu-dapur.jpg", cari: "tisu" },
+        { label: "Kresek", foto: "aset/promo/kresek.jpg", cari: "kresek" }
       ]
     },
     {

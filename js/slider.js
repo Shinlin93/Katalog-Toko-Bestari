@@ -22,8 +22,31 @@ var HeroSlider = (function () {
       '</figcaption><ul class="slide-produk-daftar">' + isi + "</ul></figure>";
   }
 
+  // Slide banner promo (gaya spanduk): judul besar dengan sapuan merah seperti slogan, dan kartu barang dengan foto bebas hak cipta.
+  // Tanpa harga dan tanpa harga coret, karena harga plastik naik turun. Kartu membuka pencarian barang itu.
+  function htmlSlidePromo(s) {
+    var isi = (s.produk || []).map(function (p) {
+      return '<li><button class="promo-item" type="button" data-aksi="pilih-saran" data-nilai="' + esc(p.cari || p.label) + '">' +
+        '<span class="promo-foto"><img src="' + esc(p.foto) + '" alt="" loading="lazy" decoding="async"></span>' +
+        '<b>' + esc(p.label) + '</b><span class="promo-pil">Lihat harga</span></button></li>';
+    }).join("");
+    var ig = PENGATURAN.instagram
+      ? '<a class="promo-kaki-pil" href="https://www.instagram.com/' + esc(PENGATURAN.instagram) + '/" target="_blank" rel="noopener">@' + esc(PENGATURAN.instagram) + "</a>"
+      : "";
+    // Kata sorotan di judul diberi sapuan merah, sama seperti slogan di slide pertama.
+    var judul = esc(s.judul || "");
+    if (s.sorot) judul = judul.replace(esc(s.sorot), '<span class="sorot">' + esc(s.sorot) + "</span>");
+    return '<figure class="slide slide-promo">' +
+      '<figcaption class="promo-kepala"><span class="promo-atas">' + esc(s.atas || "") + "</span>" +
+      '<b class="promo-judul hero-judul">' + judul + "</b>" +
+      (s.ket ? '<span class="promo-ket">' + esc(s.ket) + "</span>" : "") + "</figcaption>" +
+      '<ul class="promo-daftar">' + isi + "</ul>" +
+      '<div class="promo-kaki">' + ig + (s.kaki ? '<span class="promo-kaki-pil">' + esc(s.kaki) + "</span>" : "") + "</div></figure>";
+  }
+
   function htmlSlide(s) {
     if (s.tipe === "produk") return htmlSlideProduk(s);
+    if (s.tipe === "promo") return htmlSlidePromo(s);
     var gambar = '<img src="' + esc(s.gambar) + '" alt="' + esc(s.alt || s.judul || "") + '" decoding="async">';
     // Gambar tegak khusus HP (opsional) supaya tulisannya tetap terbaca di layar sempit.
     if (s.gambarHP) gambar = '<picture><source media="(max-width: 699px)" srcset="' + esc(s.gambarHP) + '">' + gambar + "</picture>";

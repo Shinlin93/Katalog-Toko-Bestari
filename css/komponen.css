@@ -1030,3 +1030,46 @@ button:not(:disabled):active, .tombol-utama:active, .tombol-sekunder:active, .he
 .slide-produk-item b { font-size: 0.9rem; }
 @media (hover: hover) { .slide-produk-item:hover { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); } }
 @media (max-width: 699px) { .slide-produk-foto { aspect-ratio: 4 / 3; } }
+
+/* ---------- Banner promo di hero (gaya spanduk) ----------
+   Warna sama dengan slide slogan: latar biru hero, teks putih, dan merah hanya untuk sapuan di bawah kata sorotan.
+   Kartu barang putih dengan kapsul biru "Lihat harga". Tanpa angka harga. */
+.slide-promo { align-self: center; display: grid; gap: 14px; margin: 0; color: var(--hero-ink); }
+.promo-kepala { display: grid; justify-items: start; gap: 6px; }
+.promo-atas { font-weight: 700; font-size: 0.95rem; color: var(--hero-mute); }
+.hero .promo-judul { display: block; max-width: none; margin: 0; font-size: clamp(2rem, 8vw, 3.4rem); }
+.promo-ket { font-size: 0.9rem; color: var(--hero-mute); }
+.promo-daftar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.promo-daftar li { flex: 0 0 calc((100% - 16px) / 3); min-width: 0; }
+.promo-item {
+  display: grid; justify-items: center; gap: 6px; width: 100%; height: 100%; padding: 6px 6px 10px;
+  background: #FFFFFF; color: #1B2433; border: 0; border-radius: var(--r-kartu); text-align: center;
+}
+.promo-foto { display: block; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 10px; background: #F1F2F4; }
+.promo-foto img { width: 100%; height: 100%; object-fit: cover; }
+.promo-item b { font-size: 0.88rem; line-height: 1.2; }
+.promo-pil { display: none; padding: 4px 10px; background: #1D5FD8; color: #FFFFFF; font-size: 0.78rem; font-weight: 700; border-radius: var(--r-pil); }
+.promo-kaki { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.promo-kaki-pil { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; background: var(--hero-chip); color: var(--hero-ink); font-size: 0.82rem; font-weight: 600; border-radius: var(--r-pil); }
+a.promo-kaki-pil { min-height: 44px; text-decoration: none; }
+@media (hover: hover) {
+  .promo-item:hover { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6); }
+  a.promo-kaki-pil:hover { background: rgba(255, 255, 255, 0.26); }
+}
+.hero .promo-item:focus-visible, .hero .promo-kaki-pil:focus-visible { outline-color: #FFFFFF; }
+@media (min-width: 700px) {
+  .promo-daftar { flex-wrap: nowrap; gap: 10px; }
+  .promo-daftar li { flex: 1 1 0; }
+  .promo-pil { display: inline-block; }
+  .promo-item b { font-size: 0.95rem; }
+  .promo-kaki { justify-content: flex-start; }
+}
+/* HP: judul lebih kecil supaya muat satu baris, foto lebih pendek, dan kapsul bawah sebaris, supaya hero tidak terlalu tinggi. */
+@media (max-width: 699px) {
+  .slide-promo { gap: 10px; }
+  .hero .promo-judul { font-size: clamp(1.6rem, 7.6vw, 2rem); }
+  .promo-ket { font-size: 0.85rem; }
+  .promo-foto { aspect-ratio: 4 / 3; }
+  .promo-kaki { flex-wrap: nowrap; gap: 6px; }
+  .promo-kaki-pil { padding: 0 10px; font-size: 0.75rem; white-space: nowrap; }
+}
