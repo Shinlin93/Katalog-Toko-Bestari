@@ -1073,3 +1073,7 @@ a.promo-kaki-pil { min-height: 44px; text-decoration: none; }
   .promo-kaki { flex-wrap: nowrap; gap: 6px; }
   .promo-kaki-pil { padding: 0 10px; font-size: 0.75rem; white-space: nowrap; }
 }
+
+/* Tombol "+ Keranjang" di kartu dan "Tambah ke Keranjang" di halaman produk dibuat kotak (sudut 4 px),
+   sama dengan tombol keranjang di header dan baris menu HP. */
+.beli { border-radius: 4px; }
