@@ -1,7 +1,7 @@
 // Satu-satunya file yang perlu Anda edit untuk data toko.
 var PENGATURAN = {
   namaToko: "Toko Bestari",
-  tagline: "Plastik dan Peralatan Rumah Tangga",
+  tagline: "Plastik dan Kemasan",
   // Tulisan kecil di bawah nama toko di header.
   subjudul: "Plastik dan Kemasan",
 

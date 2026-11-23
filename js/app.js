@@ -251,7 +251,8 @@
       else a.removeAttribute("aria-current");
     });
     $("ke-atas").hidden = window.scrollY < 400;
-    var d = $("daftar").getBoundingClientRect(), h = window.innerHeight;
+    // Seluruh bagian katalog (judul, filter, dan daftar produk), supaya tombol melayang tidak menutupi teks atau tombolnya.
+    var d = $("katalog").getBoundingClientRect(), h = window.innerHeight;
     document.body.classList.toggle("melayang-minggir", window.innerWidth < 700 && d.top < h - 60 && d.bottom > h - 140);
   }
   window.addEventListener("scroll", function () {

@@ -1,7 +1,8 @@
 /* Susunan halaman dan semua breakpoint responsif. */
 html { scroll-padding-top: calc(68px + env(safe-area-inset-top, 0px)); }
 
-body { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+/* Ruang untuk tombol melayang ada di dalam footer (bukan di bawahnya), supaya bagian paling bawah halaman tetap biru tua. */
+footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
 
 .wrap {
   max-width: 1320px;
