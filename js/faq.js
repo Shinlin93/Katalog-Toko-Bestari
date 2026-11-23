@@ -57,6 +57,14 @@
   K.setToko(D.tokoAktif().id);
   isiToko();
   T.isiFaq();
+  // Data terstruktur FAQ untuk Google, dari daftar pertanyaan yang sama di pengaturan.js.
+  var faqData = document.createElement("script");
+  faqData.type = "application/ld+json";
+  faqData.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage",
+    mainEntity: (cfg.faq || []).map(function (f) {
+      return { "@type": "Question", name: f.tanya, acceptedAnswer: { "@type": "Answer", text: f.jawab } };
+    }) });
+  document.head.appendChild(faqData);
   T.gambarLencana();
 
   // Daftar produk dimuat supaya harga di keranjang ikut terbaru dan contoh chat memakai produk asli.

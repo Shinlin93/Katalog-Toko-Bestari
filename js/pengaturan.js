@@ -14,10 +14,11 @@ var PENGATURAN = {
 
   // Daftar toko. Tiap toko punya katalog sendiri dari link CSV Google Sheets masing-masing
   // (File > Bagikan > Publikasikan ke web, pilih tab-nya, format .csv).
-  //   id       = nama pendek untuk link, misalnya katalog-toko-bestari.vercel.app/?toko=citra
+  //   id       = nama pendek untuk link, misalnya alamat-situs/?toko=citra
   //   nama     = nama yang tampil di tombol pilihan toko, keranjang, dan pesan WhatsApp
   //   alamat   = tampil di bawah tombol pilihan toko dan di footer, dengan link Google Maps
   //   sheetUrl = link CSV katalog toko ini
+  //   contoh   = true selama datanya masih contoh, supaya produknya tidak masuk sitemap Google. Hapus setelah data asli dipasang.
   // Toko pertama adalah toko utama: tampil lebih dulu untuk pengunjung baru, dan link produk lamanya tetap berlaku.
   // PENTING: barang yang dijual di lebih dari satu toko harus memakai KODE yang sama persis di setiap spreadsheet.
   // Dari KODE itu website tahu barangnya sama, untuk "Juga tersedia di" di halaman produk.
@@ -27,7 +28,7 @@ var PENGATURAN = {
     // CONTOH: belum ada spreadsheet Toko Sarirogo, jadi sementara memakai file contoh di folder data/.
     // Ganti dengan link CSV tab Toko Sarirogo setelah tab-nya dibuat dan diterbitkan.
     { id: "citra", nama: "Toko Sarirogo", alamat: "Ruko Citra City R-19, Sarirogo, Sidoarjo",
-      sheetUrl: "data/contoh-citra.csv" }
+      sheetUrl: "data/contoh-citra.csv", contoh: true }
   ],
   // Alamat utama, dipakai bila daftar toko di atas kosong.
   alamat: "Jl. Wirabumi No. 97, Gedangan, Sidoarjo",

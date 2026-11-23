@@ -18,9 +18,31 @@
     return p.nama + (p.harga ? " - " + rupiah(p.harga) + " per " + p.sat : "") + " di " + toko.nama + " (" + cfg.namaToko + ")";
   }
 
+  // Mengubah atau menambah tag meta di <head>, supaya judul dan deskripsi yang dibaca Google sesuai produknya.
   function setMeta(nama, isi) {
-    var el = document.querySelector('meta[' + (nama.indexOf("og:") === 0 ? "property" : "name") + '="' + nama + '"]');
-    if (el) el.setAttribute("content", isi);
+    var attr = nama.indexOf("og:") === 0 ? "property" : "name";
+    var el = document.querySelector("meta[" + attr + '="' + nama + '"]');
+    if (!el) { el = document.createElement("meta"); el.setAttribute(attr, nama); document.head.appendChild(el); }
+    el.setAttribute("content", isi);
+  }
+  // Alamat kanonik satu produk memakai domain tempat halaman dibuka, jadi tetap benar setelah ganti domain.
+  function setKanonik(url) {
+    var el = document.querySelector('link[rel="canonical"]');
+    if (!el) { el = document.createElement("link"); el.rel = "canonical"; document.head.appendChild(el); }
+    el.href = url;
+    setMeta("og:url", url);
+  }
+  // Jejak halaman untuk Google (BreadcrumbList): Beranda, kategori, produk.
+  function setJejakData(p) {
+    var awal = location.origin + "/";
+    var el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Beranda", item: awal },
+      { "@type": "ListItem", position: 2, name: p.kat, item: awal + "?toko=" + encodeURIComponent(toko.id) + "&kategori=" + encodeURIComponent(p.kat) },
+      { "@type": "ListItem", position: 3, name: p.nama, item: linkBagikan() }
+    ] });
+    document.head.appendChild(el);
   }
 
   function isiToko() {
@@ -107,6 +129,8 @@
 
   function tidakDitemukan() {
     document.title = "Produk tidak ditemukan · " + cfg.namaToko;
+    // Link produk yang sudah tidak ada tidak perlu masuk hasil pencarian Google.
+    setMeta("robots", "noindex");
     $("produk").innerHTML = '<div class="keadaan"><img class="maskot" src="aset/logo-maskot.jpg" alt="" width="96" height="80">' +
       "<b>Produk tidak ditemukan</b>Mungkin produk ini sudah tidak ada di katalog, atau linknya terpotong saat dikirim." +
       '<p class="keadaan-aksi"><a class="tombol-sekunder" href="index.html#katalog">Lihat semua produk</a></p></div>';
@@ -138,8 +162,13 @@
       var judul = ini.nama + " · " + cfg.namaToko;
       document.title = judul;
       setMeta("og:title", judul);
-      setMeta("description", teksBagikan(ini) + ". Pesan lewat WhatsApp, lalu ambil di salah satu toko kami.");
-      setMeta("og:description", teksBagikan(ini));
+      // Deskripsi untuk Google tanpa angka harga: Google menyimpannya berhari-hari, sedangkan harga plastik naik turun.
+      // Harga tetap tampil di halaman dan di pesan Bagikan, karena keduanya selalu memakai harga terbaru.
+      var deskripsi = ini.nama + " di " + toko.nama + " (" + cfg.namaToko + "). Cek harga terbaru dan pesan lewat WhatsApp.";
+      setMeta("description", deskripsi);
+      setMeta("og:description", deskripsi);
+      setKanonik(linkBagikan());
+      setJejakData(ini);
       gambarProduk(ini);
       if ($("remah-kategori")) {
         $("remah-kategori").innerHTML = '<a href="index.html?toko=' + encodeURIComponent(toko.id) + "&kategori=" + encodeURIComponent(ini.kat) + '#katalog">' + esc(ini.kat) + "</a>";
