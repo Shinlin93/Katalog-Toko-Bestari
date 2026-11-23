@@ -9,6 +9,10 @@
   --line: #DDE3EC;
   /* Tepi kartu produk sedikit lebih gelap dari garis pemisah biasa, supaya batas antar kartu tetap terlihat di layar HP yang terang. */
   --garis-kartu: #BAC4D3;
+  /* Kotak toko di samping hero: biru muda untuk toko pertama, merah muda untuk toko kedua. */
+  --tile-biru: #E3ECFC;
+  --tile-merah: #FDE8EB;
+  --tile-merah-ink: #A50E26;
   --field: #738098;
   --primary: #1D5FD8;
   --primary-hover: #174BB0;
@@ -52,6 +56,9 @@
   --mute: #A3AEC0;
   --line: #2A3550;
   --garis-kartu: #3A4766;
+  --tile-biru: #1C2C4D;
+  --tile-merah: #3A1C26;
+  --tile-merah-ink: #FF9C93;
   --field: #7E8CA5;
   --primary: #5B93F5;
   --primary-hover: #7BA8F7;

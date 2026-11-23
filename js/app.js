@@ -32,7 +32,7 @@
   function tampilkanToko(katAwal) {
     var r = S.semua[S.toko];
     T.gambarPilihToko(S.toko, jumlahPerToko());
-    if (!r) { S.produk = []; S.keadaan = "memuat"; S.catatan = ""; T.buatKategori([]); gambar(); return; }
+    if (!r) { S.produk = []; S.keadaan = "memuat"; S.catatan = ""; T.buatKategori([]); T.buatKategoriBulat([]); gambar(); return; }
     S.produk = r.produk;
     S.catatan = r.catatan;
     S.keadaan = r.produk.length ? "ok" : "kosong";
@@ -41,6 +41,7 @@
     S.kategori = katAwal;
     S.batas = cfg.produkPerHalaman;
     T.buatKategori(S.produk);
+    T.buatKategoriBulat(S.produk);
     T.tandaiKategori(katAwal);
     T.isiJumlahProduk(S.produk, D.cariToko(S.toko));
     gambar();

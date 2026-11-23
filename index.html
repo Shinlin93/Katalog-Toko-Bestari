@@ -63,6 +63,7 @@
 
 <main>
   <section class="wrap bagian" aria-labelledby="hero-judul">
+    <div class="hero-grid">
     <div class="hero">
       <div class="hero-slider" id="hero-slider">
       <div class="slide-daftar" id="slide-daftar">
@@ -77,16 +78,20 @@
       </div>
       <div class="slide-kontrol" id="slide-kontrol" hidden></div>
       </div>
-      <div class="hero-panel">
-        <p class="hero-angka"><b id="hero-jumlah">Ratusan</b> <span id="hero-jumlah-ket">produk di katalog</span></p>
-        <h3>Cara pesan</h3>
-        <ol class="langkah">
-          <li><b>Pilih barang</b><span>Tekan + Keranjang.</span></li>
-          <li><b>Kirim lewat WhatsApp</b><span>Daftar pesanan terkirim otomatis.</span></li>
-          <li><b>Ambil di toko</b><span>Setelah stok dan total kami konfirmasi.</span></li>
-        </ol>
-      </div>
     </div>
+    <!-- Dua kotak toko di samping hero: langsung membuka katalog toko itu. -->
+    <div class="hero-toko" id="hero-toko" role="group" aria-label="Pilih toko"></div>
+    </div>
+    <ol class="langkah-baris" aria-label="Cara pesan">
+      <li><b>Pilih barang</b> <span>tekan + Keranjang</span></li>
+      <li><b>Kirim lewat WhatsApp</b> <span>daftar pesanan otomatis</span></li>
+      <li><b>Ambil di toko</b> <span>setelah kami konfirmasi</span></li>
+    </ol>
+  </section>
+
+  <section class="wrap bagian" id="bagian-kategori" aria-labelledby="j-kategori-bulat" hidden>
+    <h2 class="judul-bagian" id="j-kategori-bulat">Belanja per kategori</h2>
+    <ul class="kategori-bulat" id="kategori-bulat"></ul>
   </section>
 
   <section class="wrap bagian" id="pilihan" aria-labelledby="j-pilihan" hidden>

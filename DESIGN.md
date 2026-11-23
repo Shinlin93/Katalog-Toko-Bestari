@@ -49,8 +49,11 @@ Teks memakai font bawaan perangkat (system-ui), jadi tampil tanpa mengunduh font
 
 ## Tata letak
 
-- Urutan halaman depan: header dan menu, hero, katalog, footer. Tiap informasi hanya muncul di satu tempat utama.
-- Hero cukup berisi judul, satu kalimat, dua tombol, dan panel berisi jumlah produk serta 3 langkah cara pesan. Contoh chat pesanan ada di FAQ.
+- Urutan halaman depan: header dan menu, hero dengan dua kotak toko, baris 3 langkah cara pesan, "Belanja per kategori", katalog, footer. Contoh chat pesanan ada di FAQ.
+- Hero dibagi (terinspirasi atelier): banner biru berisi judul, satu kalimat, dan dua tombol di kiri; dua kotak toko di kanan (Toko Gedangan biru muda, Toko Sarirogo merah muda) berisi alamat, jumlah produk, dan "Lihat katalog". Di HP kotak toko berdampingan di bawah banner.
+- Belanja per kategori (terinspirasi anyhome): 8 kategori terbanyak toko yang dipilih, berupa lingkaran berisi foto produk asli dengan nama kategori merah. Mengetuknya menyaring katalog.
+- Kartu produk: foto dibingkai bersudut membulat, nama maksimal 2 baris, harga lebih besar, dan label "Stok sedikit" atau "Stok habis" di pojok foto (tidak ada label untuk stok normal). Tidak memakai rating, label terlaris, atau harga coret.
+- Kolom cari berbentuk kapsul dengan latar abu muda.
 - FAQ punya halaman sendiri (faq.html), dibuka dari menu atas dan dari link di footer. Footer di setiap halaman berisi alamat, logo WhatsApp dan Instagram, dan link FAQ.
 - HP (sampai 699 px): satu kolom, produk dua kolom, dan langkah cara pesan hanya menampilkan judulnya.
 - Dua toko, dua katalog, dua keranjang: tombol Toko Gedangan dan Toko Sarirogo di atas katalog, dengan alamat toko terpilih di bawahnya. Pilihan diingat, dan link ?toko=citra langsung membuka katalog Toko Sarirogo. Satu pesanan untuk satu toko: keranjang mengikuti toko yang dipilih, keranjang toko lain tetap tersimpan, tombol pilihan toko menampilkan "N di keranjang", dan di dalam keranjang ada pengingat "Keranjang Toko ... masih berisi N barang". Pesan WhatsApp selalu menyebut toko dan alamat tempat mengambil di baris pertama. Barang yang dijual di kedua toko memakai KODE yang sama di kedua spreadsheet, untuk "Juga tersedia di" di halaman produk. Bila barang yang dicari tidak ada di toko yang dipilih tapi ada di toko lain, hasil pencarian menampilkan "Tidak ada di Toko …, tapi barang ini ada di toko kami yang lain" dengan tombol "Lihat di Toko … (jumlah)" yang langsung membuka katalog toko itu. Kotak saran saat mengetik hanya berisi barang toko yang dipilih.

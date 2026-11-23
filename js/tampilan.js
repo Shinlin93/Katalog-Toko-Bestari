@@ -107,6 +107,7 @@ var KatalogTampilan = (function () {
 
   // Angka besar = jumlah produk di katalog, tanpa menyinggung stok.
   function isiJumlahProduk(produk, toko) {
+    if (!$("hero-jumlah")) return;
     if (!produk.length) {
       $("hero-jumlah").textContent = "–";
       $("hero-jumlah-ket").textContent = toko ? "Katalog " + toko.nama + " belum bisa dimuat" : "Katalog belum bisa dimuat";
@@ -129,6 +130,15 @@ var KatalogTampilan = (function () {
         "<b>" + esc(t.nama) + "</b><small>" + n + "</small>" +
         (diKeranjang ? '<span class="pilih-toko-keranjang">' + diKeranjang + " di keranjang</span>" : "") + "</button>";
     }).join("");
+    var heroToko = $("hero-toko");
+    if (heroToko) {
+      heroToko.hidden = daftar.length < 2;
+      heroToko.innerHTML = daftar.map(function (t, i) {
+        var n = jumlah && jumlah[t.id] != null ? jumlah[t.id].toLocaleString("id-ID") + " produk" : "Memuat katalog...";
+        return '<button class="tile-toko tile-' + (i % 2 ? "merah" : "biru") + '" type="button" data-aksi="pilih-toko" data-nilai="' + esc(t.id) + '" aria-pressed="' + (t.id === aktifId) + '">' +
+          "<b>" + esc(t.nama) + "</b><span>" + esc(t.alamat) + '</span><span class="tile-bawah">' + n + ' <span class="tile-aksi">Lihat katalog</span></span></button>';
+      }).join("");
+    }
     var aktif = daftar.filter(function (t) { return t.id === aktifId; })[0];
     if (aktif) {
       $("j-katalog").textContent = "Katalog " + aktif.nama;
@@ -236,6 +246,22 @@ var KatalogTampilan = (function () {
 
   // Delapan kategori dengan produk terbanyak, sebagai jalan pintas di bagian atas.
 
+  function buatKategoriBulat(produk) {
+    var bagian = $("bagian-kategori");
+    if (!bagian) return;
+    var k = hitungKategori(produk);
+    var teratas = k.urut.slice().sort(function (a, b) { return k.hitung[b] - k.hitung[a]; }).slice(0, 8);
+    bagian.hidden = !teratas.length;
+    $("kategori-bulat").innerHTML = teratas.map(function (n) {
+      // Foto kategori: produk pertama di kategori itu yang punya foto dan masih ada stok.
+      var contoh = produk.filter(function (p) { return p.kat === n && p.foto && p.status !== "habis"; })[0];
+      var gambar = contoh ? '<img src="' + esc(cfg.folderFoto + contoh.foto) + '" alt="" loading="lazy" onerror="this.remove()">' : "";
+      return '<li><button class="kategori-item" type="button" data-aksi="kategori" data-nilai="' + esc(n) + '">' +
+        '<span class="kategori-foto" aria-hidden="true">' + gambar + "<span>" + esc(n.charAt(0)) + "</span></span>" +
+        "<b>" + esc(n) + "</b><small>" + k.hitung[n] + " produk</small></button></li>";
+    }).join("");
+  }
+
   function tandaiKategori(nilai) {
     [].forEach.call($("kategori").children, function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-kategori") === nilai);
@@ -248,15 +274,14 @@ var KatalogTampilan = (function () {
   function kartu(p) {
     var habis = p.status === "habis", n = K.qty(p.id), diKeranjang = teksDiKeranjang(n);
     var foto = p.foto ? '<img src="' + esc(cfg.folderFoto + p.foto) + '" alt="' + esc(p.nama) + '" loading="lazy" onerror="this.remove()">' : "";
-    var stok = habis ? '<p class="stok habis">Stok habis</p>'
-      : p.status === "sedikit" ? '<p class="stok sedikit">Stok tinggal sedikit</p>'
-      : '<p class="stok"><span class="centang" aria-hidden="true">✓</span> Tersedia</p>';
+    var label = habis ? '<span class="label-stok habis">Stok habis</span>'
+      : p.status === "sedikit" ? '<span class="label-stok sedikit">Stok sedikit</span>' : "";
     var harga = p.harga ? rupiah(p.harga) + " <small>per " + esc(p.sat) + "</small>" : "<small>Tanya harga lewat WhatsApp</small>";
     var tombol = habis ? '<button class="beli" type="button" disabled>Stok habis</button>'
       : '<button class="beli" type="button" data-aksi="tambah" data-id="' + esc(p.id) + '" aria-label="Tambah ke keranjang: ' + esc(p.nama) + '">+ Keranjang</button>';
     var link = esc(linkProduk(p));
-    return '<li class="kartu" data-id="' + esc(p.id) + '"><a class="foto" href="' + link + '" tabindex="-1" aria-hidden="true">' + foto + esc(p.kat) + "<small>Foto menyusul</small></a>" +
-      '<div class="isi"><p class="nama"><a href="' + link + '">' + esc(p.nama) + "</a></p>" + stok + '<p class="harga">' + harga + "</p>" +
+    return '<li class="kartu" data-id="' + esc(p.id) + '"><a class="foto" href="' + link + '" tabindex="-1" aria-hidden="true">' + foto + esc(p.kat) + "<small>Foto menyusul</small>" + label + "</a>" +
+      '<div class="isi"><p class="nama"><a href="' + link + '">' + esc(p.nama) + "</a></p>" + (label ? '<p class="sr">' + (habis ? "Stok habis" : "Stok sedikit") + "</p>" : "") + '<p class="harga">' + harga + "</p>" +
       '<p class="di-keranjang"' + (diKeranjang ? "" : " hidden") + ">" + esc(diKeranjang) + "</p>" + tombol + "</div></li>";
   }
 
@@ -426,7 +451,7 @@ var KatalogTampilan = (function () {
   return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, teksDiKeranjang: teksDiKeranjang, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
+           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, buatKategoriBulat: buatKategoriBulat, teksDiKeranjang: teksDiKeranjang, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
            kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
            htmlAlamat: htmlAlamat, isiSosmed: isiSosmed, ikonWA: IKON_WA_TOMBOL, konfirmasiKosongkan: konfirmasiKosongkan, namaLengkap: namaLengkap };
 })();
