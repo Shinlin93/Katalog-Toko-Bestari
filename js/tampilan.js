@@ -91,9 +91,6 @@ var KatalogTampilan = (function () {
       var tanya = linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".");
       $("wa-melayang").href = tanya;
       $("wa-melayang").hidden = false;
-      $("hero-wa").href = tanya;
-      $("hero-wa").innerHTML = IKON_WA_TOMBOL + "Chat WhatsApp";
-      $("hero-wa").hidden = false;
     }
     isiSosmed(cfg.waNomor ? linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
     isiHero();
@@ -101,8 +98,9 @@ var KatalogTampilan = (function () {
 
   function isiHero() {
     var h = cfg.hero || {};
-    $("hero-judul").textContent = h.judul || cfg.namaToko;
-    $("hero-sub").textContent = h.sub || cfg.tagline;
+    var judul = esc(h.judul || cfg.namaToko);
+    if (h.sorot && judul.indexOf(esc(h.sorot)) > -1) judul = judul.replace(esc(h.sorot), '<span class="sorot">' + esc(h.sorot) + "</span>");
+    $("hero-judul").innerHTML = judul;
   }
 
   // Angka besar = jumlah produk di katalog, tanpa menyinggung stok.

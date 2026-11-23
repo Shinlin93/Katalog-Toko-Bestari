@@ -41,8 +41,9 @@ var PENGATURAN = {
 
   // Teks bagian besar di atas halaman.
   hero: {
-    judul: "Cari kebutuhan plastik dan perabot rumah tangga dengan mudah",
-    sub: "Kresek, mika, gelas cup, sampai perabot rumah tangga. Pesan lewat WhatsApp, ambil di toko kami."
+    judul: "Belanja plastik jadi gampang.",
+    // Kata di judul yang diberi sapuan stabilo merah. Kosongkan bila tidak perlu.
+    sorot: "gampang"
   },
 
   // Slide tambahan di hero. Slide pertama selalu judul toko di atas; slide di bawah ini menyusul.

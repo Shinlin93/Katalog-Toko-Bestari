@@ -45,6 +45,8 @@
     T.tandaiKategori(katAwal);
     T.isiJumlahProduk(S.produk, D.cariToko(S.toko));
     gambar();
+    // Posisi katalog berubah setelah produk tampil; hitung ulang tombol melayang tanpa menunggu pengunjung menggulir.
+    sesuaikanMenu();
   }
 
   // Semua toko dimuat bersamaan: toko yang dipilih langsung tampil, toko lain dipakai untuk petunjuk pencarian.
@@ -255,9 +257,14 @@
     var d = $("katalog").getBoundingClientRect(), h = window.innerHeight;
     document.body.classList.toggle("melayang-minggir", window.innerWidth < 700 && d.top < h - 60 && d.bottom > h - 140);
   }
-  window.addEventListener("scroll", function () {
-    if (!menunggu) { menunggu = true; requestAnimationFrame(sesuaikanMenu); }
-  }, { passive: true });
+  // Dijadwalkan sekali per frame; bila browser menunda frame (misalnya browser di dalam aplikasi), tetap jalan lewat jeda singkat.
+  function jadwalkanMenu() {
+    if (menunggu) return;
+    menunggu = true;
+    requestAnimationFrame(sesuaikanMenu);
+    setTimeout(function () { if (menunggu) sesuaikanMenu(); }, 120);
+  }
+  window.addEventListener("scroll", jadwalkanMenu, { passive: true });
 
   var navDaftar = document.querySelector(".nav-daftar");
   function tandaiSisaMenu() {
@@ -272,6 +279,9 @@
   HeroSlider.mulai();
   T.gambarLencana();
   sesuaikanMenu();
+  // Gambar hero dan foto produk mengubah tinggi halaman setelah dimuat, begitu juga rotasi layar.
+  window.addEventListener("load", sesuaikanMenu);
+  window.addEventListener("resize", jadwalkanMenu);
   mulai();
   // Datang dari pengingat keranjang di halaman lain (index.html?toko=...#keranjang): langsung buka keranjangnya.
   if (location.hash === "#keranjang") {
