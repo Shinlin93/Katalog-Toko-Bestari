@@ -27,7 +27,10 @@
     $("nama-toko").textContent = cfg.namaToko;
     if ($("subjudul")) $("subjudul").textContent = cfg.subjudul || "";
     $("f-alamat").innerHTML = T.htmlAlamat();
-    T.isiSosmed(cfg.waNomor ? T.linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
+    var tanyaToko = cfg.waNomor ? T.linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "";
+    T.isiSosmed(tanyaToko);
+    if (tanyaToko && $("wa-bawah")) $("wa-bawah").href = tanyaToko;
+    if (tanyaToko && $("f-wa-teks")) $("f-wa-teks").href = tanyaToko;
   }
 
   function gambarProduk(p) {
@@ -52,6 +55,10 @@
           stok +
           '<p class="harga detail-harga">' + harga + "</p>" +
           '<p class="di-keranjang"' + (diKeranjang ? "" : " hidden") + ">" + esc(diKeranjang) + "</p>" +
+          (habis ? "" : '<div class="jumlah-beli"><label for="qty">Jumlah</label><div class="pengatur">' +
+            '<button type="button" data-aksi="qty-kurang" aria-label="Kurangi jumlah">−</button>' +
+            '<input id="qty" type="number" min="1" max="999" value="1" inputmode="numeric">' +
+            '<button type="button" data-aksi="qty-tambah" aria-label="Tambah jumlah">+</button></div></div>') +
           '<div class="detail-aksi">' + beli + tanya + "</div>" +
           '<div class="toko-lain" id="toko-lain" hidden></div>' +
           '<div class="bagikan" role="group" aria-labelledby="j-bagikan">' +
@@ -134,6 +141,11 @@
       setMeta("description", teksBagikan(ini) + ". Pesan lewat WhatsApp, lalu ambil di salah satu toko kami.");
       setMeta("og:description", teksBagikan(ini));
       gambarProduk(ini);
+      if ($("remah-kategori")) {
+        $("remah-kategori").innerHTML = '<a href="index.html?toko=' + encodeURIComponent(toko.id) + "&kategori=" + encodeURIComponent(ini.kat) + '#katalog">' + esc(ini.kat) + "</a>";
+        $("remah-kategori").hidden = false;
+        $("remah-nama").textContent = ini.nama;
+      }
       gambarSerupa(ini);
       gambarTokoLain(ini);
     });
@@ -199,12 +211,20 @@
       if (!produk.length) return gagalMuat();
       for (var i = 0; i < produk.length; i++) if (produk[i].id === idItem) p = produk[i];
       if (!p) return;
-      K.tambah(p);
+      // Di halaman detail, jumlah diambil dari pilihan jumlah; di kartu produk serupa tetap satu.
+      var qtyEl = b.closest(".detail") ? $("qty") : null;
+      var banyak = qtyEl ? Math.max(1, Math.min(999, parseInt(qtyEl.value, 10) || 1)) : 1;
+      for (var q = 0; q < banyak; q++) K.tambah(p);
+      if (qtyEl) qtyEl.value = 1;
       perbarui(idItem);
       beriTanda(b, "Ditambahkan");
       T.pengumuman(p.nama + " ditambahkan ke keranjang. Jumlah di keranjang: " + K.qty(idItem) + ".");
     }
     else if (aksi === "buka-laci") bukaLaci();
+    else if (aksi === "qty-kurang" || aksi === "qty-tambah") {
+      var el = $("qty");
+      if (el) el.value = Math.max(1, Math.min(999, (parseInt(el.value, 10) || 1) + (aksi === "qty-tambah" ? 1 : -1)));
+    }
     else if (aksi === "tutup-laci") tutupLaci();
     else if (aksi === "lebih" || aksi === "kurang") { K.ubah(idItem, aksi === "lebih" ? 1 : -1); perbarui(idItem); }
     else if (aksi === "hapus-item") { K.hapus(idItem); perbarui(idItem); }
@@ -224,7 +244,6 @@
     var dariKatalog = document.referrer && document.referrer.indexOf(location.origin) === 0 && !/produk\.html/.test(document.referrer);
     if (dariKatalog && history.length > 1) { e.preventDefault(); history.back(); }
   });
-  $("tombol-tema").addEventListener("click", T.gantiTema);
 
   T.mulaiTema();
   isiToko();

@@ -981,3 +981,52 @@ button:not(:disabled):active, .tombol-utama:active, .tombol-sekunder:active, .he
 @media (max-width: 699px) {
   .slide-gambar img { max-height: 240px; object-fit: contain; }
 }
+
+/* ===== Preview gaya katalog besar (cabang coba-envio) ===== */
+
+/* Daftar kategori di samping kiri: hanya di layar lebar. Di HP tetap memakai tombol kategori dan kategori bulat. */
+.sidebar-kategori { display: none; }
+@media (min-width: 1040px) {
+  .katalog-tata { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .sidebar-kategori {
+    display: block;
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    background: var(--card);
+    border: 1px solid var(--garis-kartu);
+    border-radius: var(--r-kartu);
+    scrollbar-width: thin;
+  }
+  .sidebar-kategori h3 { position: sticky; top: 0; z-index: 1; margin: 0; padding: 14px 16px; background: var(--card); border-bottom: 1px solid var(--line); font-size: 1rem; }
+  .sidebar-kategori ul { padding: 6px; }
+  .sidebar-kategori button {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    width: 100%; min-height: 40px; padding: 8px 12px;
+    background: transparent; color: var(--ink); border: 0; border-radius: var(--r-kontrol);
+    font-size: 0.92rem; text-align: left;
+  }
+  .sidebar-kategori button small { flex: none; color: var(--mute); font-size: 0.8rem; }
+  .sidebar-kategori button:hover { background: var(--soft); }
+  .sidebar-kategori button[aria-current="true"] { background: var(--tile-biru); color: var(--primary-text); font-weight: 700; }
+  .sidebar-kategori button[aria-current="true"] small { color: var(--primary-text); }
+  /* Dengan daftar kategori di samping, tombol kategori dan pilihan kategori di atas produk tidak diperlukan. */
+  .katalog-isi .pil, .katalog-isi .baris-hasil .urut:first-of-type { display: none; }
+  .katalog-isi .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 1300px) { .katalog-isi .daftar { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* Slide hero foto produk: empat foto barang asli di kartu putih, tanpa harga. */
+.slide-produk { align-self: center; display: grid; gap: 14px; margin: 0; }
+.slide-produk figcaption { display: grid; gap: 2px; }
+.slide-produk figcaption b { font-family: "Plus Jakarta Sans", var(--font); font-size: clamp(1.4rem, 5vw, 2rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: var(--hero-ink); }
+.slide-produk figcaption span { color: var(--hero-mute); font-size: 0.9rem; }
+.slide-produk-daftar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 700px) { .slide-produk-daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.slide-produk-item { display: grid; gap: 6px; width: 100%; padding: 8px; background: #FFFFFF; color: #1B2433; border: 0; border-radius: var(--r-kartu); text-align: center; }
+.slide-produk-foto { display: block; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 8px; background: #FFFFFF; }
+.slide-produk-foto img { width: 100%; height: 100%; object-fit: cover; }
+.slide-produk-item b { font-size: 0.9rem; }
+@media (hover: hover) { .slide-produk-item:hover { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); } }
+@media (max-width: 699px) { .slide-produk-foto { aspect-ratio: 4 / 3; } }

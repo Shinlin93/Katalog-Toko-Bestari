@@ -17,12 +17,13 @@
 <link rel="stylesheet" href="css/tema.css">
 <link rel="stylesheet" href="css/tata-letak.css">
 <link rel="stylesheet" href="css/komponen.css">
+<link rel="stylesheet" href="css/retail.css">
 </head>
 <body class="halaman-faq">
 <a class="lompat" href="#faq">Lewati ke daftar pertanyaan</a>
 
-<header class="kepala">
-  <div class="wrap kepala-isi kepala-produk">
+<header class="kepala kepala-retail">
+  <div class="wrap kepala-isi">
     <a class="marka" href="index.html">
       <span class="logo"><img src="aset/logo-maskot.jpg" alt="" width="56" height="56"></span>
       <div>
@@ -30,28 +31,43 @@
         <p class="subjudul" id="subjudul">Plastik dan Kemasan</p>
       </div>
     </a>
-    <button class="tombol-tema" id="tombol-tema" type="button"></button>
+
+    <!-- Pencarian dari halaman ini membuka katalog di halaman depan dengan kata yang dicari. -->
+    <form class="cari" action="index.html" method="get" role="search">
+      <label class="sr" for="cari">Cari barang</label>
+      <input id="cari" name="q" type="search" placeholder="Cari nama barang, misalnya toples" enterkeyhint="search">
+      <button class="cari-tombol" type="submit" aria-label="Cari">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      </button>
+    </form>
+
+    <div class="kepala-aksi">
+      <button class="keranjang" id="tombol-keranjang" type="button" data-aksi="buka-laci">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8h13.6l-.9 11.4a1.7 1.7 0 0 1-1.7 1.6H7.8a1.7 1.7 0 0 1-1.7-1.6z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>
+        <span class="lencana" id="lencana">0</span>
+        <span class="total-mini" id="total-mini">0 barang · Rp 0</span>
+      </button>
+    </div>
   </div>
 </header>
 
-<nav class="nav" aria-label="Menu utama">
-  <div class="wrap nav-isi">
-    <ul class="nav-daftar">
-      <li><a href="index.html">Beranda</a></li>
-      <li><a href="index.html#katalog">Katalog</a></li>
-      <li><a href="faq.html" aria-current="true">FAQ</a></li>
-      <li><a href="#lokasi">Alamat</a></li>
-      <li><a href="#kontak">Kontak</a></li>
-    </ul>
-    <button class="keranjang" id="tombol-keranjang" type="button" data-aksi="buka-laci">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8h13.6l-.9 11.4a1.7 1.7 0 0 1-1.7 1.6H7.8a1.7 1.7 0 0 1-1.7-1.6z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>
-      <span class="lencana" id="lencana">0</span>
-      <span class="total-mini" id="total-mini">Rp 0</span>
-    </button>
-  </div>
+<!-- Menu HP: baris tetap di bawah kolom cari, berisi Kategori, Keranjang, dan WhatsApp. -->
+<nav class="nav-hp" aria-label="Menu">
+  <a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/></svg><span>Beranda</span></a>
+  <a href="index.html#katalog"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg><span>Kategori</span></a>
+  <button type="button" data-aksi="buka-laci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8h13.6l-.9 11.4a1.7 1.7 0 0 1-1.7 1.6H7.8a1.7 1.7 0 0 1-1.7-1.6z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg><span id="total-hp">Keranjang</span><b class="lencana-bawah" id="lencana-bawah" hidden>0</b></button>
+  <a id="wa-bawah" target="_blank" rel="noopener"><svg class="ikon-wa-bawah" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
 </nav>
 
+
+
 <main>
+  <nav class="wrap remah" aria-label="Jejak halaman">
+    <ol>
+      <li><a href="index.html">Beranda</a></li>
+      <li aria-current="page">Pertanyaan yang sering ditanyakan</li>
+    </ol>
+  </nav>
   <section class="wrap bagian faq" id="faq" aria-labelledby="h-faq">
     <h1 class="judul-bagian" id="h-faq">Pertanyaan yang sering ditanyakan</h1>
     <div class="faq-daftar" id="faq-daftar"></div>
@@ -62,22 +78,40 @@
   </section>
 </main>
 
-<footer>
+<!-- Footer empat kolom: layanan pelanggan, toko kami, ikuti kami, dan tentang toko. -->
+<footer class="footer-retail">
   <div class="wrap">
-    <div class="footer-isi">
-      <section id="lokasi" aria-labelledby="h-lokasi">
-        <p class="nama-footer" id="f-nama"></p>
-        <h2 id="h-lokasi">Alamat toko</h2>
+    <div class="footer-kolom">
+      <section aria-labelledby="h-layanan">
+        <h2 id="h-layanan">Layanan Pelanggan</h2>
+        <ul class="footer-tautan">
+          <li><a href="faq.html">Cara memesan</a></li>
+          <li><a href="faq.html">Pertanyaan yang sering ditanyakan</a></li>
+          <li><a id="f-wa-teks" target="_blank" rel="noopener">Tanya lewat WhatsApp</a></li>
+        </ul>
+      </section>
+      <section aria-labelledby="h-lokasi">
+        <h2 id="h-lokasi">Toko Kami</h2>
         <ul class="alamat-daftar" id="f-alamat"><li><span>Jl. Wirabumi No. 97, Gedangan, Sidoarjo</span></li><li><span>Ruko Citra City R-19, Sarirogo, Sidoarjo</span></li></ul>
       </section>
       <section id="kontak" aria-labelledby="h-kontak">
-        <h2 id="h-kontak">Hubungi kami</h2>
-        <ul class="sosmed"><li><a id="f-wa" target="_blank" rel="noopener"></a></li><li><a id="f-ig" target="_blank" rel="noopener"></a></li></ul>
+        <h2 id="h-kontak">Ikuti Kami</h2>
+        <ul class="sosmed">
+          <li><a id="f-wa" target="_blank" rel="noopener"></a></li>
+          <li><a id="f-ig" target="_blank" rel="noopener"></a></li>
+        </ul>
+      </section>
+      <section aria-labelledby="f-nama">
+        <h2 class="nama-footer" id="f-nama">Toko Bestari (Bestari Plastik)</h2>
+        <p id="f-tagline">Plastik dan Kemasan</p>
+        <p class="catatan-bawah">Harga bisa berubah. Kami memastikan stok dan total saat membalas chat Anda di WhatsApp.</p>
       </section>
     </div>
-    <p class="catatan-bawah">Harga bisa berubah. Kami memastikan stok dan total saat membalas chat Anda di WhatsApp.</p>
+    <p class="hak-cipta">TOKO BESTARI © <span id="tahun">2026</span></p>
   </div>
 </footer>
+
+
 
 <dialog class="laci" id="laci" aria-labelledby="judul-laci">
   <div class="laci-isi">

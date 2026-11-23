@@ -57,25 +57,11 @@ var KatalogTampilan = (function () {
   }
   function namaLengkap() { return cfg.namaToko + (cfg.namaLain ? " (" + cfg.namaLain + ")" : ""); }
 
-  var IKON_BULAN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>';
-  var IKON_MATAHARI = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/>' +
-    '<path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
-  function setTema(t) {
-    document.documentElement.setAttribute("data-theme", t);
-    var label = t === "dark" ? "Ganti ke mode terang" : "Ganti ke mode gelap";
-    $("tombol-tema").innerHTML = t === "dark" ? IKON_MATAHARI : IKON_BULAN;
-    $("tombol-tema").setAttribute("aria-label", label);
-    $("tombol-tema").title = label;
-    try { localStorage.setItem("tema", t); } catch (e) {}
-  }
+  // Website selalu tampil terang (pilihan tema gelap dihapus atas permintaan pemilik toko).
+  // Pilihan tema lama yang tersimpan di browser pengunjung ikut dihapus.
   function mulaiTema() {
-    var t = null;
-    try { t = localStorage.getItem("tema"); } catch (e) {}
-    if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    setTema(t);
-  }
-  function gantiTema() {
-    setTema(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    document.documentElement.setAttribute("data-theme", "light");
+    try { localStorage.removeItem("tema"); } catch (e) {}
   }
 
   function pengumuman(teks) { $("pengumuman").textContent = teks; }
@@ -91,7 +77,10 @@ var KatalogTampilan = (function () {
       var tanya = linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".");
       $("wa-melayang").href = tanya;
       $("wa-melayang").hidden = false;
+      if ($("wa-bawah")) $("wa-bawah").href = tanya;
+      if ($("f-wa-teks")) $("f-wa-teks").href = tanya;
     }
+    if ($("tahun")) $("tahun").textContent = new Date().getFullYear();
     isiSosmed(cfg.waNomor ? linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
     isiHero();
   }
@@ -138,6 +127,13 @@ var KatalogTampilan = (function () {
       }).join("");
     }
     var aktif = daftar.filter(function (t) { return t.id === aktifId; })[0];
+    if (aktif && $("info-toko")) {
+      $("info-toko").innerHTML =
+        '<div class="info-baris"><b>' + esc(aktif.nama) + "</b><span>" + esc(aktif.alamat) + '</span><a href="' + esc(linkMaps(aktif.alamat)) + '" target="_blank" rel="noopener">Lihat peta</a></div>' +
+        (cfg.waNomor ? '<div class="info-baris"><b>Pesan dan tanya stok</b><a href="' + esc(linkWA("Halo " + cfg.namaToko + ", saya mau tanya stok di " + aktif.nama + ".")) + '" target="_blank" rel="noopener">WhatsApp ' + esc(cfg.waTampil) + "</a></div>" : "") +
+        (cfg.instagram ? '<div class="info-baris"><b>Instagram</b><a href="https://www.instagram.com/' + esc(cfg.instagram) + '/" target="_blank" rel="noopener">@' + esc(cfg.instagram) + "</a></div>" : "") +
+        '<div class="info-baris"><b>Cara pesan</b><ol class="info-langkah"><li>Pilih barang, tekan + Keranjang.</li><li>Kirim pesanan lewat WhatsApp.</li><li>Ambil di toko setelah kami konfirmasi.</li></ol></div>';
+    }
     if (aktif) {
       $("j-katalog").textContent = "Katalog " + aktif.nama;
       $("alamat-toko").innerHTML = "Diambil di " + esc(aktif.alamat) + ' · <a href="' + esc(linkMaps(aktif.alamat)) + '" target="_blank" rel="noopener">Lihat peta</a>';
@@ -239,6 +235,16 @@ var KatalogTampilan = (function () {
     $("kategori-lain").innerHTML = '<option value="">Semua kategori</option>' + abjad.map(function (n) {
       return '<option value="' + esc(n) + '">' + esc(n) + " (" + k.hitung[n] + ")</option>";
     }).join("");
+    // Daftar kategori di samping kiri (layar lebar): semua kategori urut abjad, dengan jumlah produk.
+    var sidebar = $("sidebar-kategori");
+    if (sidebar) {
+      var baris = function (nilai, label, jumlah) {
+        return '<li><button type="button" data-aksi="kategori" data-nilai="' + esc(nilai) + '" aria-current="' + (nilai === "") + '">' +
+          "<span>" + esc(label) + "</span><small>" + jumlah + "</small></button></li>";
+      };
+      sidebar.innerHTML = produk.length ? baris("", "Semua produk", produk.length) + abjad.map(function (n) { return baris(n, n, k.hitung[n]); }).join("") : "";
+      if ($("laci-kategori")) $("laci-kategori").innerHTML = sidebar.innerHTML;
+    }
   }
   var JUMLAH_TOMBOL_KATEGORI = 10;
 
@@ -265,6 +271,12 @@ var KatalogTampilan = (function () {
       b.setAttribute("aria-pressed", b.getAttribute("data-kategori") === nilai);
     });
     $("kategori-lain").value = nilai;
+    ["sidebar-kategori", "laci-kategori"].forEach(function (id) {
+      if ($(id)) [].forEach.call($(id).querySelectorAll("button"), function (b) {
+        b.setAttribute("aria-current", b.getAttribute("data-nilai") === nilai);
+      });
+    });
+    if ($("label-kategori")) $("label-kategori").textContent = nilai || "Kategori";
   }
 
   function teksDiKeranjang(n) { return n ? "Di keranjang: " + n : ""; }
@@ -298,7 +310,9 @@ var KatalogTampilan = (function () {
     var n = K.jumlah(), total = rupiah(K.total());
     $("lencana").textContent = n;
     $("lencana").hidden = !n;
-    $("total-mini").textContent = total;
+    $("total-mini").textContent = n + " barang · " + total;
+    if ($("lencana-bawah")) { $("lencana-bawah").textContent = n; $("lencana-bawah").hidden = !n; }
+    if ($("total-hp")) $("total-hp").textContent = n ? total : "Keranjang";
     $("tombol-keranjang").setAttribute("aria-label", "Buka keranjang, " + n + " barang, total " + total);
   }
 
@@ -434,22 +448,55 @@ var KatalogTampilan = (function () {
         }).join("") + '</div><button class="tombol-sekunder" type="button" data-aksi="reset">Hapus pencarian dan filter</button></li>';
       return;
     }
-    var tampil = hasil.slice(0, S.batas);
-    $("jumlah").textContent = tampil.length < hasil.length
-      ? "Menampilkan " + tampil.length + " dari " + hasil.length + " produk" + ket
+    var per = cfg.produkPerHalaman, jumlahHal = Math.max(1, Math.ceil(hasil.length / per));
+    var hal = Math.min(Math.max(1, S.halaman || 1), jumlahHal);
+    var mulai = (hal - 1) * per, tampil = hasil.slice(mulai, mulai + per);
+    $("jumlah").textContent = jumlahHal > 1
+      ? "Menampilkan " + (mulai + 1).toLocaleString("id-ID") + "–" + (mulai + tampil.length).toLocaleString("id-ID") + " dari " + hasil.length.toLocaleString("id-ID") + " produk" + ket
       : hasil.length + " produk" + ket;
     daftar.innerHTML = tampil.map(kartu).join("");
-    if (tampil.length < hasil.length) {
-      $("lagi").hidden = false;
-      $("tombol-lagi").textContent = "Tampilkan " + Math.min(cfg.produkPerHalaman, hasil.length - tampil.length) +
-        " produk lagi (sisa " + (hasil.length - tampil.length) + ")";
-    }
+    gambarHalaman(hal, jumlahHal);
   }
 
-  return { mulaiTema: mulaiTema, gantiTema: gantiTema, isiToko: isiToko, buatKategori: buatKategori,
+  // Nomor halaman: Sebelumnya, nomor (dengan "…" bila banyak), Berikutnya. Di HP cukup "Halaman x dari y".
+  function gambarHalaman(hal, jumlahHal) {
+    var nav = $("halaman");
+    if (!nav) return;
+    nav.hidden = jumlahHal < 2;
+    if (jumlahHal < 2) { nav.innerHTML = ""; return; }
+    var nomor = [], tambah = function (n) { if (nomor.indexOf(n) < 0 && n >= 1 && n <= jumlahHal) nomor.push(n); };
+    [1, hal - 1, hal, hal + 1, jumlahHal].forEach(tambah);
+    nomor.sort(function (a, b) { return a - b; });
+    var html = '<button type="button" class="halaman-panah" data-aksi="halaman" data-nilai="' + (hal - 1) + '"' + (hal === 1 ? " disabled" : "") + ">Sebelumnya</button>";
+    html += '<span class="halaman-nomor">';
+    nomor.forEach(function (n, i) {
+      if (i && n - nomor[i - 1] > 1) html += '<span class="halaman-jeda" aria-hidden="true">…</span>';
+      html += '<button type="button" data-aksi="halaman" data-nilai="' + n + '"' + (n === hal ? ' aria-current="page"' : "") + ' aria-label="Halaman ' + n + '">' + n + "</button>";
+    });
+    html += "</span>";
+    html += '<span class="halaman-ringkas">Halaman ' + hal + " dari " + jumlahHal + "</span>";
+    html += '<button type="button" class="halaman-panah" data-aksi="halaman" data-nilai="' + (hal + 1) + '"' + (hal === jumlahHal ? " disabled" : "") + ">Berikutnya</button>";
+    nav.innerHTML = html;
+  }
+
+  // Pemberitahuan singkat di bawah layar, dengan tombol aksi opsional. Hilang sendiri setelah beberapa detik.
+  var timerToast = null;
+  function toast(teks, label, aksi) {
+    var el = $("toast");
+    if (!el) return;
+    el.innerHTML = "<span>" + esc(teks) + "</span>" + (label ? '<button type="button" data-aksi="' + esc(aksi) + '">' + esc(label) + "</button>" : "");
+    el.hidden = false;
+    el.classList.remove("tampil");
+    void el.offsetWidth;
+    el.classList.add("tampil");
+    clearTimeout(timerToast);
+    timerToast = setTimeout(function () { el.classList.remove("tampil"); setTimeout(function () { el.hidden = true; }, 250); }, 3000);
+  }
+
+  return { mulaiTema: mulaiTema, isiToko: isiToko, buatKategori: buatKategori,
            tandaiKategori: tandaiKategori, perbaruiKartu: perbaruiKartu, gambarLencana: gambarLencana, gambarLaci: gambarLaci,
            gambarSaran: gambarSaran, gambar: gambar, pengumuman: pengumuman, isiJumlahProduk: isiJumlahProduk,
-           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, buatKategoriBulat: buatKategoriBulat, teksDiKeranjang: teksDiKeranjang, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
+           isiContohPesan: isiContohPesan, gambarPilihToko: gambarPilihToko, toast: toast, buatKategoriBulat: buatKategoriBulat, teksDiKeranjang: teksDiKeranjang, gambarPanduan: gambarPanduan, isiFaq: isiFaq,
            kartu: kartu, esc: esc, rupiah: rupiah, linkWA: linkWA, linkMaps: linkMaps, linkProduk: linkProduk,
            htmlAlamat: htmlAlamat, isiSosmed: isiSosmed, ikonWA: IKON_WA_TOMBOL, konfirmasiKosongkan: konfirmasiKosongkan, namaLengkap: namaLengkap };
 })();

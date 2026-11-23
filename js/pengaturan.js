@@ -54,6 +54,18 @@ var PENGATURAN = {
   //   judul    = keterangan singkat di bawah gambar
   //   panduan  = id panduan yang dibuka saat gambar diketuk (kosongkan kalau tidak ada)
   slideHero: [
+    // Slide foto produk (tanpa harga). Foto diambil dari folder foto/. Sebaiknya diganti dengan foto milik toko sendiri.
+    {
+      tipe: "produk",
+      judul: "Plastik dan kemasan, lengkap di sini",
+      ket: "Ketuk barang untuk melihat pilihannya",
+      produk: [
+        { label: "Kresek", foto: "mustika24.jpg", cari: "kresek" },
+        { label: "Plastik PE", foto: "pe24.jpg", cari: "plastik pe" },
+        { label: "Toples", foto: "tdrat500ml.jpg", cari: "toples" },
+        { label: "Gelas cup", foto: "pa077.jpg", cari: "cup" }
+      ]
+    },
     {
       gambar: "aset/hero-panduan-kresek.jpg",
       alt: "Panduan ukuran kresek: ukuran 15, 21, 24, 35, 40, dan 55 beserta kegunaannya, dan pilihan warna putih bening, hitam, warna-warni, dan putih susu.",

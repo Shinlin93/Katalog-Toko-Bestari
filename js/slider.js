@@ -10,7 +10,20 @@ var HeroSlider = (function () {
     });
   }
 
+  // Slide foto produk: beberapa kategori utama dengan foto barang asli, tanpa harga (harga plastik naik turun).
+  // Mengetuk satu foto langsung mencari barang itu di katalog.
+  function htmlSlideProduk(s) {
+    var isi = (s.produk || []).map(function (p) {
+      return '<li><button class="slide-produk-item" type="button" data-aksi="pilih-saran" data-nilai="' + esc(p.cari || p.label) + '">' +
+        '<span class="slide-produk-foto"><img src="' + esc(PENGATURAN.folderFoto + p.foto) + '" alt="" loading="lazy" decoding="async"></span>' +
+        "<b>" + esc(p.label) + "</b></button></li>";
+    }).join("");
+    return '<figure class="slide slide-produk"><figcaption><b>' + esc(s.judul || "") + "</b>" + (s.ket ? "<span>" + esc(s.ket) + "</span>" : "") +
+      '</figcaption><ul class="slide-produk-daftar">' + isi + "</ul></figure>";
+  }
+
   function htmlSlide(s) {
+    if (s.tipe === "produk") return htmlSlideProduk(s);
     var gambar = '<img src="' + esc(s.gambar) + '" alt="' + esc(s.alt || s.judul || "") + '" decoding="async">';
     // Gambar tegak khusus HP (opsional) supaya tulisannya tetap terbaca di layar sempit.
     if (s.gambarHP) gambar = '<picture><source media="(max-width: 699px)" srcset="' + esc(s.gambarHP) + '">' + gambar + "</picture>";
@@ -38,7 +51,9 @@ var HeroSlider = (function () {
       el.setAttribute("aria-label", (i + 1) + " dari " + n);
     });
 
-    kontrol.innerHTML = '<button class="slide-jeda" type="button"></button>' +
+    kontrol.innerHTML = '<button class="slide-panah" type="button" data-arah="-1" aria-label="Slide sebelumnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>' +
+      '<button class="slide-panah" type="button" data-arah="1" aria-label="Slide berikutnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>' +
+      '<button class="slide-jeda" type="button"></button>' +
       '<div class="slide-titik-daftar">' + slides.map(function (_, i) {
         return '<button class="slide-titik" type="button" data-ke="' + i + '" aria-label="Tampilkan slide ' + (i + 1) + '"></button>';
       }).join("") + "</div>";
@@ -74,6 +89,9 @@ var HeroSlider = (function () {
     }
 
     tombolJeda.addEventListener("click", function () { diputar = !diputar; atur(); });
+    [].forEach.call(kontrol.querySelectorAll(".slide-panah"), function (b) {
+      b.addEventListener("click", function () { tampilkan(aktif + Number(b.getAttribute("data-arah"))); atur(); });
+    });
     titik.forEach(function (t) {
       t.addEventListener("click", function () { tampilkan(Number(t.getAttribute("data-ke"))); atur(); });
     });

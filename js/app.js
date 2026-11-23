@@ -1,7 +1,7 @@
 // Menyambungkan data, tampilan, dan keranjang, lalu memasang semua tombol.
 (function () {
   var cfg = PENGATURAN, D = KatalogData, T = KatalogTampilan, K = KatalogKeranjang;
-  var S = { produk: [], kategori: "", kueri: "", urut: "", batas: cfg.produkPerHalaman, keadaan: "memuat", catatan: "",
+  var S = { produk: [], kategori: "", kueri: "", urut: "", batas: cfg.produkPerHalaman, halaman: 1, keadaan: "memuat", catatan: "",
             toko: D.tokoAktif().id, tokoNama: D.tokoAktif().nama, semua: {}, lain: [] };
   var $ = function (id) { return document.getElementById(id); };
   var laci = $("laci");
@@ -40,11 +40,13 @@
     if (!S.produk.some(function (p) { return p.kat === katAwal; })) katAwal = "";
     S.kategori = katAwal;
     S.batas = cfg.produkPerHalaman;
+    S.halaman = 1;
     T.buatKategori(S.produk);
     T.buatKategoriBulat(S.produk);
     T.tandaiKategori(katAwal);
     T.isiJumlahProduk(S.produk, D.cariToko(S.toko));
     gambar();
+    if (gulirKeKatalog) { gulirKeKatalog = false; keKatalog(); }
     // Posisi katalog berubah setelah produk tampil; hitung ulang tombol melayang tanpa menunggu pengunjung menggulir.
     sesuaikanMenu();
   }
@@ -95,6 +97,7 @@
   function ubah(bagian) {
     for (var k in bagian) S[k] = bagian[k];
     S.batas = cfg.produkPerHalaman;
+    S.halaman = 1;
     gambar();
   }
 
@@ -154,6 +157,17 @@
   dialogPanduan.addEventListener("close", sesudahPanduan);
   dialogPanduan.addEventListener("click", function (e) { if (e.target === dialogPanduan) tutupPanduan(); });
 
+  var dialogKategori = $("dialog-kategori");
+  function bukaKategori() {
+    if (!dialogKategori) return;
+    if (dialogKategori.showModal) dialogKategori.showModal(); else dialogKategori.setAttribute("open", "");
+  }
+  function tutupKategori() {
+    if (!dialogKategori || !dialogKategori.open) return;
+    if (dialogKategori.close) dialogKategori.close(); else dialogKategori.removeAttribute("open");
+  }
+  if (dialogKategori) dialogKategori.addEventListener("click", function (e) { if (e.target === dialogKategori) tutupKategori(); });
+
   laci.addEventListener("close", sesudahLaci);
   laci.addEventListener("click", function (e) { if (e.target === laci) tutupLaci(); });
 
@@ -170,6 +184,7 @@
     K.tambah(p);
     perbaruiKeranjang(id);
     T.pengumuman(p.nama + " ditambahkan ke keranjang " + S.tokoNama + ". Jumlah di keranjang: " + K.qty(id) + ".");
+    T.toast("Ditambahkan: " + p.nama, "Lihat keranjang", "buka-laci");
     var awal = tombol.textContent;
     tombol.textContent = "Ditambahkan";
     setTimeout(function () { tombol.textContent = awal; }, 1200);
@@ -208,14 +223,13 @@
     ubah({ kategori: e.target.value });
   });
   $("tombol-lagi").addEventListener("click", function () { S.batas += cfg.produkPerHalaman; gambar(); });
-  $("tombol-tema").addEventListener("click", T.gantiTema);
 
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-aksi]");
     if (!b) return;
     var aksi = b.getAttribute("data-aksi"), nilai = b.getAttribute("data-nilai"), id = b.getAttribute("data-id");
     if (aksi === "tambah") tambahKeKeranjang(b, id);
-    else if (aksi === "buka-laci") bukaLaci();
+    else if (aksi === "buka-laci") { if ($("toast")) $("toast").hidden = true; bukaLaci(); }
     else if (aksi === "tutup-laci") tutupLaci();
     else if (aksi === "lebih" || aksi === "kurang") { K.ubah(id, aksi === "lebih" ? 1 : -1); perbaruiKeranjang(id); }
     else if (aksi === "hapus-item") { K.hapus(id); perbaruiKeranjang(id); }
@@ -225,7 +239,10 @@
     else if (aksi === "saran-cepat") setKueri(nilai);
     else if (aksi === "reset") reset();
     else if (aksi === "ulang") mulai();
-    else if (aksi === "kategori") { T.tandaiKategori(nilai); ubah({ kategori: nilai }); keKatalog(); }
+    else if (aksi === "kategori") { tutupKategori(); T.tandaiKategori(nilai); ubah({ kategori: nilai }); keKatalog(); }
+    else if (aksi === "halaman") { S.halaman = Number(nilai) || 1; gambar(); keKatalog(); }
+    else if (aksi === "buka-kategori") bukaKategori();
+    else if (aksi === "tutup-kategori") tutupKategori();
     else if (aksi === "ke-atas") window.scrollTo({ top: 0 });
     else if (aksi === "buka-keranjang-toko") { e.preventDefault(); gantiToko(nilai); }
     else if (aksi === "pilih-toko") { tutupSaran(); gantiToko(nilai); if (!b.closest("#pilih-toko")) keKatalog(); }
@@ -268,9 +285,10 @@
 
   var navDaftar = document.querySelector(".nav-daftar");
   function tandaiSisaMenu() {
+    if (!navDaftar) return;
     navDaftar.classList.toggle("ada-sisa", navDaftar.scrollLeft + navDaftar.clientWidth < navDaftar.scrollWidth - 2);
   }
-  navDaftar.addEventListener("scroll", tandaiSisaMenu, { passive: true });
+  if (navDaftar) navDaftar.addEventListener("scroll", tandaiSisaMenu, { passive: true });
   window.addEventListener("resize", tandaiSisaMenu);
   tandaiSisaMenu();
 
@@ -282,6 +300,10 @@
   // Gambar hero dan foto produk mengubah tinggi halaman setelah dimuat, begitu juga rotasi layar.
   window.addEventListener("load", sesuaikanMenu);
   window.addEventListener("resize", jadwalkanMenu);
+  var kueriAwal = new URLSearchParams(location.search).get("q");
+  // Pencarian dari halaman lain langsung menuju hasilnya di katalog.
+  var gulirKeKatalog = false;
+  if (kueriAwal) { $("cari").value = kueriAwal; S.kueri = kueriAwal.trim(); gulirKeKatalog = true; }
   mulai();
   // Datang dari pengingat keranjang di halaman lain (index.html?toko=...#keranjang): langsung buka keranjangnya.
   if (location.hash === "#keranjang") {

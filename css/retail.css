@@ -1,0 +1,255 @@
+/* Tata letak katalog retail (mengikuti design.md dan referensi EnvioStore):
+   header satu baris, kolom kiri berisi kategori dan informasi toko, kolom kanan berisi banner, produk, dan
+   nomor halaman. Di HP: kategori lewat laci, informasi toko di bawah produk, dan menu bawah tetap. */
+
+/* ---------- Header ---------- */
+.kepala-retail { position: relative; z-index: 30; border-bottom: 1px solid var(--line); }
+.kepala-retail .kepala-isi {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "marka aksi" "cari cari";
+  gap: 10px 12px;
+  padding-top: 10px;
+  padding-bottom: 12px;
+}
+.kepala-retail .marka { grid-area: marka; color: var(--ink); text-decoration: none; }
+.kepala-retail .cari { grid-area: cari; }
+.kepala-aksi { grid-area: aksi; display: flex; align-items: center; gap: 10px; }
+@media (min-width: 900px) {
+  .kepala-retail { position: sticky; top: 0; }
+  .kepala-retail .kepala-isi {
+    grid-template-columns: auto minmax(280px, 1fr) auto;
+    grid-template-areas: "marka cari aksi";
+    gap: 12px 28px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
+@media (max-width: 699px) {
+  /* Di HP keranjang ada di baris menu di bawah kolom cari, jadi tombol keranjang di header disembunyikan.
+     Header di atas baris menu supaya kotak saran pencarian tidak tertutup baris menu. */
+  .kepala-retail { z-index: 40; }
+  .kepala-retail #tombol-keranjang { display: none; }
+  .kepala-retail .logo { width: 48px; height: 48px; }
+}
+
+/* ---------- Tata letak dua kolom ---------- */
+.tata-retail { display: flex; flex-direction: column; gap: 20px; padding-top: 16px; }
+.kolom-utama { display: grid; gap: 16px; min-width: 0; }
+/* Kolom kiri (kategori dan informasi toko) hanya di layar lebar. Di HP dan tablet kategori dibuka lewat laci,
+   dan alamat serta kontak toko sudah ada di footer, jadi kolom ini tidak ditampilkan di atas footer. */
+.kolom-samping { display: none; }
+@media (min-width: 1040px) {
+  .tata-retail { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 24px; align-items: start; padding-top: 20px; }
+  .kolom-samping { display: grid; gap: 16px; align-content: start; }
+}
+
+/* ---------- Panel kolom kiri ---------- */
+.panel { background: var(--card); border: 1px solid var(--garis-kartu); border-radius: var(--r-kartu); overflow: hidden; }
+.panel-judul { margin: 0; padding: 14px 16px; border-bottom: 1px solid var(--line); background: var(--soft); font-size: 1rem; font-weight: 700; }
+.tata-retail .sidebar-kategori { display: none; position: static; max-height: none; }
+@media (min-width: 1040px) {
+  .tata-retail .sidebar-kategori { display: block; }
+  .tata-retail .sidebar-kategori ul { max-height: min(60vh, 560px); overflow-y: auto; scrollbar-width: thin; }
+}
+/* Baris kategori: dipakai di kolom kiri (desktop) dan laci kategori (HP). */
+.sidebar-kategori ul, .daftar-kategori-laci { margin: 0; padding: 6px; list-style: none; }
+.sidebar-kategori button, .daftar-kategori-laci button {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; min-height: 44px; padding: 8px 12px;
+  background: transparent; color: var(--ink); border: 0; border-radius: var(--r-kontrol);
+  font-size: 0.92rem; text-align: left;
+}
+.sidebar-kategori button small, .daftar-kategori-laci button small { flex: none; color: var(--mute); font-size: 0.8rem; }
+@media (hover: hover) { .sidebar-kategori button:hover, .daftar-kategori-laci button:hover { background: var(--soft); } }
+.sidebar-kategori button[aria-current="true"], .daftar-kategori-laci button[aria-current="true"] { background: var(--tile-biru); color: var(--primary-text); font-weight: 700; }
+.sidebar-kategori button[aria-current="true"] small, .daftar-kategori-laci button[aria-current="true"] small { color: var(--primary-text); }
+
+.info-toko-isi { display: grid; }
+.info-baris { display: grid; gap: 2px; padding: 12px 16px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+.info-baris:first-child { border-top: 0; }
+.info-baris b { font-size: 0.92rem; }
+.info-baris span { color: var(--mute); }
+.info-baris a { justify-self: start; display: inline-block; padding: 10px 0; margin: -8px 0; color: var(--primary-text); font-weight: 600; }
+.info-langkah { margin: 2px 0 0; padding-left: 18px; color: var(--mute); font-size: 0.88rem; line-height: 1.5; }
+
+/* ---------- Banner ---------- */
+.banner .hero { position: relative; }
+.slide-panah { display: none; }
+@media (min-width: 700px) {
+  .slide-panah {
+    position: absolute; top: 50%; z-index: 2;
+    display: grid; place-items: center; width: 44px; height: 44px; margin-top: -22px; padding: 0;
+    background: rgba(255, 255, 255, 0.18); color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 50%;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .slide-panah[data-arah="-1"] { left: 10px; }
+  .slide-panah[data-arah="1"] { right: 10px; }
+  .slide-panah svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  @media (hover: hover) { .slide-panah:hover { background: rgba(255, 255, 255, 0.3); } }
+  .banner .hero { padding-left: 64px; padding-right: 64px; }
+}
+
+/* ---------- Kepala katalog ---------- */
+#katalog { scroll-margin-top: 96px; }
+#katalog .pilih-toko { max-width: none; margin: 0 0 6px; }
+#katalog .alamat-toko { text-align: left; }
+@media (min-width: 1040px) { #katalog .alamat-toko { display: none; } }
+.katalog-kepala { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; margin: 14px 0 12px; }
+.judul-retail { margin: 0; font-family: "Plus Jakarta Sans", var(--font); font-size: clamp(1.25rem, 4vw, 1.5rem); font-weight: 800; letter-spacing: -0.01em; }
+.katalog-kepala #jumlah { margin-top: 2px; color: var(--mute); font-size: 0.88rem; }
+.katalog-alat { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tombol-kategori {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 52vw; min-height: 44px; padding: 0 14px;
+  background: var(--card); color: var(--ink); border: 1.5px solid var(--field); border-radius: var(--r-kontrol); font-weight: 600;
+}
+.tombol-kategori span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tombol-kategori svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+@media (min-width: 1040px) { .tombol-kategori { display: none; } }
+@media (max-width: 699px) {
+  .katalog-kepala { align-items: stretch; }
+  .katalog-alat { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .tombol-kategori { max-width: none; }
+  .katalog-alat .urut { display: block; }
+  .katalog-alat .urut > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .katalog-alat .urut select { width: 100%; }
+}
+
+/* ---------- Grid produk ---------- */
+.tata-retail .daftar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 600px) { .tata-retail .daftar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; } }
+@media (min-width: 1040px) { .tata-retail .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
+@media (hover: hover) {
+  .tata-retail .daftar .kartu { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .tata-retail .daftar .kartu:hover { border-color: var(--field); box-shadow: 0 6px 16px rgba(15, 30, 60, 0.08); }
+  .tata-retail .daftar .kartu .foto img { transition: transform 0.25s ease; }
+  .tata-retail .daftar .kartu:hover .foto img { transform: scale(1.03); }
+}
+
+/* ---------- Nomor halaman ---------- */
+.halaman { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 24px 0 4px; }
+.halaman-nomor { display: flex; align-items: center; gap: 6px; }
+.halaman button {
+  min-width: 44px; min-height: 44px; padding: 0 14px;
+  background: var(--card); color: var(--ink); border: 1.5px solid var(--garis-kartu); border-radius: var(--r-kontrol); font-weight: 600;
+}
+.halaman button[aria-current="page"] { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+.halaman button:disabled { opacity: 0.45; cursor: default; }
+@media (hover: hover) { .halaman button:not(:disabled):not([aria-current="page"]):hover { background: var(--soft); } }
+.halaman-jeda { color: var(--mute); padding: 0 2px; }
+.halaman-ringkas { display: none; color: var(--mute); font-size: 0.9rem; }
+@media (max-width: 699px) {
+  .halaman { flex-wrap: nowrap; justify-content: space-between; }
+  .halaman-nomor { display: none; }
+  .halaman-ringkas { display: block; }
+}
+
+/* ---------- Footer empat kolom ---------- */
+.footer-retail { margin-top: 40px; }
+.footer-kolom { display: grid; gap: 24px; padding-top: 32px; padding-bottom: 8px; }
+@media (min-width: 600px) { .footer-kolom { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .footer-kolom { grid-template-columns: 1fr 1.3fr 0.8fr 1.3fr; } }
+.footer-kolom h2 { margin: 0 0 10px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.footer-kolom .nama-footer { text-transform: none; letter-spacing: 0; font-size: 1.1rem; }
+.footer-tautan { margin: 0; padding: 0; list-style: none; display: grid; }
+.footer-tautan a { min-height: 40px; font-weight: 500; }
+.footer-retail .catatan-bawah { padding: 8px 0 0; }
+.hak-cipta { margin: 16px 0 0; padding: 16px 0 20px; border-top: 1px solid rgba(255, 255, 255, 0.18); color: var(--bingkai-mute); font-size: 0.8rem; letter-spacing: 0.06em; }
+
+/* ---------- Menu HP: baris tetap di bawah kolom cari ---------- */
+.nav-hp { display: none; }
+@media (max-width: 699px) {
+  .nav-hp {
+    position: sticky; top: 0; z-index: 35;
+    display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 8px;
+    padding: 8px max(16px, env(safe-area-inset-left, 0px));
+    background: var(--card); border-bottom: 1px solid var(--line); box-shadow: 0 2px 8px rgba(15, 30, 60, 0.06);
+  }
+  /* Beranda tidak perlu di baris ini; logo di header sudah membawa ke beranda. */
+  .nav-hp > a:first-child { display: none; }
+  .nav-hp a, .nav-hp button {
+    position: relative; display: flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 44px; padding: 0 8px; border: 1.5px solid var(--garis-kartu); border-radius: var(--r-kontrol);
+    background: var(--card); color: var(--ink); font-size: 0.85rem; font-weight: 700; text-decoration: none; white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-hp button[data-aksi="buka-laci"] { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+  .nav-hp svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-hp .ikon-wa-bawah { fill: var(--wa-teks); stroke: none; }
+  .nav-hp a:active, .nav-hp button:active { transform: scale(0.97); }
+  .lencana-bawah {
+    position: absolute; top: -7px; right: -5px; min-width: 20px; height: 20px; padding: 0 5px;
+    display: grid; place-items: center; background: var(--aksen); color: var(--aksen-ink);
+    border: 2px solid var(--card); border-radius: var(--r-pil); font-size: 0.7rem;
+  }
+  #katalog { scroll-margin-top: 72px; }
+}
+
+/* ---------- Pemberitahuan singkat ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  display: flex; align-items: center; gap: 14px; max-width: min(92vw, 460px); padding: 10px 10px 10px 16px;
+  background: #1B2433; color: #FFFFFF; border-radius: var(--r-kartu); box-shadow: 0 10px 28px rgba(5, 20, 60, 0.3);
+  font-size: 0.9rem; opacity: 0; transform: translate(-50%, 12px); transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.toast.tampil { opacity: 1; transform: translate(-50%, 0); }
+.toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast button { flex: none; min-height: 40px; padding: 0 12px; background: rgba(255, 255, 255, 0.14); color: #FFFFFF; border: 0; border-radius: var(--r-kontrol); font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+/* ---------- Jejak halaman (produk, FAQ) ---------- */
+.remah ol { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 14px auto 0; padding: 0; list-style: none; font-size: 0.88rem; color: var(--mute); }
+.remah li + li::before { content: "›"; margin: 0 8px; color: var(--mute); }
+.remah a { display: inline-block; padding: 10px 0; margin: -10px 0; color: var(--primary-text); font-weight: 600; }
+.remah li[aria-current="page"] { color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60vw; }
+
+/* ---------- Jumlah beli di halaman produk ---------- */
+.jumlah-beli { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.jumlah-beli label { font-weight: 600; }
+.jumlah-beli .pengatur input { width: 56px; min-height: 44px; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; text-align: center; -moz-appearance: textfield; }
+.jumlah-beli .pengatur input::-webkit-outer-spin-button, .jumlah-beli .pengatur input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* HP: foto produk lebih pendek, dan jumlah beli sebaris dengan tombol Tambah ke Keranjang,
+   supaya tombol beli terlihat tanpa menggulir dan tidak tertutup menu bawah. */
+@media (max-width: 699px) {
+  .remah ol { margin-top: 8px; }
+  .detail-foto { max-height: 30vh; }
+  .detail-isi { gap: 6px; padding-top: 12px; }
+  .detail-nama { font-size: 1.25rem; }
+  .jumlah-beli label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .detail-isi:has(.jumlah-beli) { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; }
+  .detail-isi:has(.jumlah-beli) > :not(.jumlah-beli):not(.detail-aksi) { grid-column: 1 / -1; }
+  .detail-isi:has(.jumlah-beli) .jumlah-beli { grid-column: 1; margin-top: 0; align-self: start; }
+  .detail-isi:has(.jumlah-beli) .detail-aksi { grid-column: 2; margin-top: 0; }
+}
+
+/* Baris menu HP bergaya polos seperti EnvioStore (atas permintaan pemilik toko):
+   tombol kotak bersudut tipis, warna rata tanpa bayangan, keranjang berwarna gelap. */
+@media (max-width: 699px) {
+  .nav-hp { gap: 6px; padding-top: 8px; padding-bottom: 8px; box-shadow: none; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .nav-hp a, .nav-hp button {
+    border-radius: 4px;
+    border: 1px solid #D5D9DF;
+    background: #F1F2F4;
+    color: #2B2F36;
+    font-weight: 600;
+  }
+  .nav-hp button[data-aksi="buka-laci"] { background: #2F3238; border-color: #2F3238; color: #FFFFFF; }
+  .nav-hp svg { width: 18px; height: 18px; }
+  .nav-hp .ikon-wa-bawah { fill: #1F8F4E; }
+  .nav-hp a:active, .nav-hp button:active { transform: none; filter: brightness(0.95); }
+  .lencana-bawah { top: -6px; right: -4px; border-radius: 4px; border-color: #FFFFFF; }
+}
+
+/* Tombol keranjang di header (tablet dan desktop) disamakan dengan baris menu HP:
+   gelap, kotak bersudut tipis, polos tanpa bayangan, seperti tombol keranjang EnvioStore. */
+.kepala-retail #tombol-keranjang {
+  background: #2F3238;
+  color: #FFFFFF;
+  border: 1px solid #2F3238;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 0 16px 0 12px;
+}
+@media (hover: hover) { .kepala-retail #tombol-keranjang:hover { background: #42464E; border-color: #42464E; } }
+.kepala-retail #tombol-keranjang:active { transform: none; filter: brightness(0.95); }
+.kepala-retail #tombol-keranjang .lencana { border-radius: 4px; border-color: #FFFFFF; }

@@ -11,6 +11,8 @@
     $("f-alamat").innerHTML = T.htmlAlamat();
     var tanya = cfg.waNomor ? T.linkWA("Halo " + cfg.namaToko + ", saya mau bertanya.") : "";
     T.isiSosmed(tanya);
+    if (tanya && $("wa-bawah")) $("wa-bawah").href = tanya;
+    if (tanya && $("f-wa-teks")) $("f-wa-teks").href = tanya;
     if (tanya) {
       $("faq-wa").href = tanya;
       $("faq-wa").innerHTML = T.ikonWA + "Tanya lewat WhatsApp";
@@ -50,7 +52,6 @@
     else if (aksi === "hapus-item") { K.hapus(id); perbarui(); }
     else if (aksi === "kosongkan") { if (T.konfirmasiKosongkan()) { K.kosongkan(); perbarui(); } }
   });
-  $("tombol-tema").addEventListener("click", T.gantiTema);
 
   T.mulaiTema();
   K.setToko(D.tokoAktif().id);
