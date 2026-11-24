@@ -75,6 +75,26 @@ var PENGATURAN = {
   // Lama tiap slide tampil, dalam detik.
   slideDetik: 6,
 
+  // Rekomendasi di halaman produk ("Produk Serupa" dan "Produk Pelengkap"). Penjelasan: docs/rekomendasi.md.
+  //   bobot     = seberapa penting tiap atribut saat menilai kemiripan (jumlahnya tidak harus 1, otomatis dinormalkan).
+  //               Merek hanya dipakai bila spreadsheet punya kolom MEREK.
+  //   ambang    = skor minimal (0 sampai 1) supaya produk dianggap serupa.
+  //   stokHabis = "belakang" (tetap tampil di urutan akhir) atau "sembunyikan".
+  //   Produk tanpa barang yang cukup mirip tidak menampilkan bagian Produk Serupa (tidak diisi asal-asalan).
+  //   pelengkap = pasangan kategori yang saling melengkapi, ditulis pemilik toko. Kosong = bagian Produk Pelengkap tidak tampil.
+  //               Contoh: [{ dari: "Gelas Cup", ke: ["Seal Cup", "Sedotan"] }]
+  rekomendasi: {
+    jumlah: 8,
+    ambang: 0.35,
+    bobot: { kategori: 0.30, nama: 0.35, merek: 0.15, harga: 0.15, satuan: 0.05 },
+    merekKosong: ["OTR", "LAIN LAIN", "LAIN-LAIN", "-"],
+    kategoriCampuran: ["Perabot Plastik"],
+    // true = barang serupa wajib berbagi minimal satu kata nama (gelas cup tidak dianggap serupa dengan tutupnya).
+    wajibKataSama: true,
+    stokHabis: "belakang",
+    pelengkap: []
+  },
+
   // Panduan belanja. Tiap panduan tampil sebagai kartu di bagian "Panduan belanja", dibuka dalam jendela,
   // dan muncul sebagai petunjuk saat pengunjung memilih kategorinya atau mencari salah satu kata kuncinya.
   // Untuk menambah panduan: salin satu blok { ... } di bawah, beri id baru, lalu ubah isinya.

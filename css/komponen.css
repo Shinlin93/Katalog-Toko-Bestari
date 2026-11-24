@@ -887,3 +887,7 @@ a.promo-kaki-pil { min-height: 44px; text-decoration: none; }
 /* Sudut kanan tombol mengikuti sudut kolom (4 px dikurangi tepi 1,5 px). Kolom tidak memakai overflow hidden
    supaya kotak saran pencarian di bawahnya tidak terpotong. */
 .cari .cari-tombol { align-self: stretch; width: 52px; height: auto; margin: 0; border-radius: 0 2.5px 2.5px 0; }
+
+/* Teks khusus pembaca layar di dalam kartu (misalnya "Stok habis") dikunci ke kartunya, supaya kartu di ujung
+   deretan yang bisa digeser (Produk Serupa) tidak membuat seluruh halaman melebar ke samping. */
+.kartu { position: relative; }

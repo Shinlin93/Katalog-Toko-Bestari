@@ -93,12 +93,19 @@
       "</div>";
   }
 
-  function gambarSerupa(p) {
-    var lain = produk.filter(function (x) { return x.kat === p.kat && x.id !== p.id; });
-    lain.sort(function (a, b) { return (a.status === "habis") - (b.status === "habis") || a.urutan - b.urutan; });
-    lain = lain.slice(0, 12);
-    $("serupa").hidden = !lain.length;
-    $("baris-serupa").innerHTML = lain.map(T.kartu).join("");
+  // Produk Serupa dan Produk Pelengkap dari mesin rekomendasi (js/rekomendasi.js).
+  // Indeks dibangun sekali untuk daftar produk ini dan dibangun ulang bila data spreadsheet berubah.
+  function gambarRekomendasi(p) {
+    var ix = window.Rekomendasi ? Rekomendasi.indeksUntuk(produk, cfg.rekomendasi) : null;
+    var serupa = ix ? Rekomendasi.serupa(ix, p.id) : [];
+    var pelengkap = ix ? Rekomendasi.pelengkap(ix, p.id) : [];
+    var kartu = function (r) { return T.kartu(r.produk); };
+    $("serupa").hidden = !serupa.length;
+    $("baris-serupa").innerHTML = serupa.map(kartu).join("");
+    if ($("pelengkap")) {
+      $("pelengkap").hidden = !pelengkap.length;
+      $("baris-pelengkap").innerHTML = pelengkap.map(kartu).join("");
+    }
   }
 
   // Barang yang sama (KODE sama) di toko lain, lengkap dengan harganya di toko itu.
@@ -170,7 +177,7 @@
         $("remah-kategori").hidden = false;
         $("remah-nama").textContent = ini.nama;
       }
-      gambarSerupa(ini);
+      gambarRekomendasi(ini);
       gambarTokoLain(ini);
     });
   }

@@ -1,6 +1,7 @@
 // Membaca produk tiap toko (Google Sheets atau cadangan), lalu mencari dan mengurutkannya.
 var KatalogData = (function () {
-  var KOLOM = ["KODE", "NAMA", "KATEGORI", "SATUAN", "HARGA", "STATUS", "TAMPIL", "FOTO", "TAG", "SOROT"];
+  // MEREK opsional: dipakai mesin rekomendasi bila kolomnya ada di spreadsheet.
+  var KOLOM = ["KODE", "NAMA", "KATEGORI", "SATUAN", "HARGA", "STATUS", "TAMPIL", "FOTO", "TAG", "SOROT", "MEREK"];
 
   function bacaCSV(teks) {
     var baris = [], sel = [], isi = "", kutip = false;
@@ -106,6 +107,7 @@ var KatalogData = (function () {
         tampil: ambil(r, "TAMPIL").toUpperCase(),
         foto: ambil(r, "FOTO"),
         sorot: ambil(r, "SOROT").toUpperCase() === "YA",
+        merek: ambil(r, "MEREK"),
         tag: ambil(r, "TAG").split(/[,;]/).map(function (t) { return t.trim().toLowerCase(); }).filter(Boolean)
       };
     }).filter(function (p) { return p.nama && p.tampil !== "TIDAK"; });
