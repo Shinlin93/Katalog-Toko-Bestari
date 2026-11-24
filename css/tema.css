@@ -10,7 +10,7 @@
   /* Tepi kartu produk sedikit lebih gelap dari garis pemisah biasa, supaya batas antar kartu tetap terlihat di layar HP yang terang. */
   --garis-kartu: #BAC4D3;
   /* Latar kotak toko yang sedang dipilih. */
-  --tile-biru: #E3ECFC;
+  --tile-biru: var(--primary-soft);
   --field: #738098;
   --primary: #1D5FD8;
   --primary-hover: #174BB0;
@@ -36,11 +36,38 @@
   --hero-ink: #FFFFFF;
   --hero-mute: #D3E0FF;
   --hero-chip: rgba(255, 255, 255, 0.14);
-  /* Skala sudut: tombol dan kolom 10px, semua wadah (kartu, kotak toko, hero, keranjang) 16px. Bentuk kapsul hanya untuk filter kategori dan lencana,
-     supaya filter mudah dibedakan dari tombol aksi. */
-  --r-kontrol: 10px;
-  --r-kartu: 16px;
-  --r-pil: 999px;
+  /* Sudut: satu sudut kotak 4 px untuk semua tombol, kolom, kartu, banner, label, dan lencana (seperti EnvioStore).
+     Foto di dalam kartu 2 px. Bulat penuh (50%) hanya untuk tombol ikon: cari, WhatsApp, ke atas, panah banner, sosial media. */
+  --r-kontrol: 4px;
+  --r-kartu: 4px;
+  --r-pil: 4px;
+  --r-kecil: 2px;
+  /* Netral untuk tombol keranjang, menu HP, dan pemberitahuan (gaya EnvioStore). */
+  --gelap: #2F3238;
+  --gelap-hover: #42464E;
+  --abu: #F1F2F4;
+  --abu-garis: #D5D9DF;
+  --primary-soft: #E3ECFC;
+  --wa-hover: #0F6532;
+  /* Skala huruf (dasar 15 px). Ukuran lain hanya untuk nama toko dan slogan banner. */
+  --t-kecil: 0.8rem;     /* 12 px: label, lencana, keterangan */
+  --t-pelan: 0.875rem;   /* 13 px: teks kedua */
+  --t-isi: 1rem;         /* 15 px: teks isi */
+  --t-besar: 1.125rem;   /* 17 px: harga di kartu, judul laci */
+  --t-judul: 1.375rem;   /* 21 px: judul bagian */
+  --t-halaman: clamp(1.375rem, 4vw, 1.75rem); /* judul halaman dan harga besar */
+  /* Skala jarak kelipatan 4 px. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 48px;
+  --s-9: 64px;
+  /* Bayangan hanya untuk elemen yang melayang di atas konten (tombol melayang, saran pencarian, pemberitahuan). */
+  --bayang-melayang: 0 4px 14px rgba(10, 20, 40, 0.2);
   /* Font bawaan perangkat: tampil tanpa unduhan di HP dengan sinyal lemah (lihat DESIGN.md). */
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
   color-scheme: light;
@@ -103,9 +130,9 @@ ul { padding: 0; list-style: none; }
   left: 8px;
   top: -60px;
   z-index: 100;
-  padding: 10px 14px;
+  padding: var(--s-3) var(--s-4);
   background: var(--primary);
   color: var(--primary-ink);
-  border-radius: 8px;
+  border-radius: var(--r-kontrol);
 }
 .lompat:focus { top: 8px; }

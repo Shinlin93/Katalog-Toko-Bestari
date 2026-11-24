@@ -43,9 +43,11 @@ Teks memakai font bawaan perangkat (system-ui), jadi tampil tanpa mengunduh font
 
 ## Bentuk
 
-- Sudut tombol dan kolom: 10 px. Sudut kartu: 14 px.
-- Bentuk kapsul hanya untuk filter kategori dan lencana, supaya mudah dibedakan dari tombol aksi.
-- Bayangan hanya untuk elemen yang melayang (tombol WhatsApp, saran pencarian).
+- Satu sudut untuk semua tombol, kolom, kartu, banner, label, dan lencana: kotak 4 px, seperti EnvioStore. Foto di dalam kartu 2 px.
+- Bulat penuh hanya untuk tombol ikon: tombol cari, WhatsApp melayang, ke atas, panah banner, dan logo sosial media di footer.
+- Tanpa efek kaca, gradien, atau kilap. Bayangan hanya untuk elemen yang melayang (tombol melayang, saran pencarian, pemberitahuan singkat).
+- Gerak hanya perubahan warna saat disorot atau ditekan; tidak ada efek membesar, mengecil, atau memantul.
+- Ukuran huruf, jarak, warna, dan sudut diambil dari token di `css/tema.css` (skala huruf `--t-*`, jarak kelipatan 4 px `--s-*`).
 
 ## Tata letak
 

@@ -17,9 +17,9 @@ footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas: "marka tema" "cari cari";
   align-items: center;
-  gap: 12px 12px;
-  padding-top: 12px;
-  padding-bottom: 14px;
+  gap: var(--s-3) var(--s-3);
+  padding-top: var(--s-3);
+  padding-bottom: var(--s-4);
 }
 .marka { grid-area: marka; }
 .tombol-tema { grid-area: tema; }
@@ -33,23 +33,23 @@ footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
   background: var(--nav);
   border-bottom: 1px solid var(--line);
 }
-.nav-isi { display: flex; align-items: center; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
-.nav-daftar { display: flex; flex: 1 1 0; min-width: 0; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.nav-isi { display: flex; align-items: center; gap: var(--s-2); padding-top: var(--s-2); padding-bottom: var(--s-2); }
+.nav-daftar { display: flex; flex: 1 1 0; min-width: 0; gap: var(--s-1); overflow-x: auto; scrollbar-width: none; }
 .nav-daftar::-webkit-scrollbar { display: none; }
 /* Tepi kanan memudar selama masih ada menu di luar layar, tanda bahwa menu bisa digeser. */
 .nav-daftar.ada-sisa { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
 
-.bagian { padding-top: 22px; }
-.baris-pilihan { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.bagian { padding-top: var(--s-6); }
+.baris-pilihan { display: flex; gap: var(--s-4); overflow-x: auto; padding-bottom: var(--s-3); scroll-snap-type: x proximity; scrollbar-width: thin; }
 .baris-pilihan > li { flex: none; width: 176px; scroll-snap-align: start; }
 
-.pil { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 8px; scrollbar-width: thin; }
-.baris-hasil { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin: 6px 0 14px; }
+.pil { display: flex; gap: var(--s-2); overflow-x: auto; padding: var(--s-1) 0 var(--s-2); scrollbar-width: thin; }
+.baris-hasil { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-2) var(--s-3); margin: var(--s-2) 0 var(--s-4); }
 
-.daftar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.lagi { display: flex; justify-content: center; padding: 24px 0 4px; }
+.daftar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+.lagi { display: flex; justify-content: center; padding: var(--s-6) 0 var(--s-1); }
 
-.footer-isi { display: grid; gap: 22px; padding-top: 28px; padding-bottom: 8px; }
+.footer-isi { display: grid; gap: var(--s-6); padding-top: var(--s-7); padding-bottom: var(--s-2); }
 
 .melayang {
   position: fixed;
@@ -59,7 +59,7 @@ footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: var(--s-3);
 }
 
 @media (max-width: 519px) {
@@ -73,7 +73,7 @@ footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
 
 
 @media (min-width: 600px) {
-  .daftar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .daftar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
   .baris-pilihan > li { width: 190px; }
 }
 
@@ -87,12 +87,12 @@ footer { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
     grid-template-columns: auto minmax(260px, 640px) auto;
     grid-template-areas: "marka cari tema";
     justify-content: space-between;
-    gap: 12px 28px;
+    gap: var(--s-3) var(--s-7);
   }
 }
 
 @media (min-width: 960px) {
-  .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .daftar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); }
 }
 
 @media (min-width: 1100px) {
