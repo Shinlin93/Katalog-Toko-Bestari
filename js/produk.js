@@ -83,16 +83,11 @@
             '<button type="button" data-aksi="qty-tambah" aria-label="Tambah jumlah">+</button></div></div>') +
           '<div class="detail-aksi">' + beli + tanya + "</div>" +
           '<div class="toko-lain" id="toko-lain" hidden></div>' +
-          '<div class="bagikan" role="group" aria-labelledby="j-bagikan">' +
-            '<p class="bagikan-judul" id="j-bagikan">Bagikan produk ini</p>' +
-            '<div class="bagikan-tombol">' +
-              (navigator.share ? '<button class="tombol-sekunder" type="button" data-aksi="bagikan">Bagikan</button>' : "") +
-              '<button class="tombol-sekunder" type="button" data-aksi="salin-link">Salin link</button>' +
-              '<a class="tombol-sekunder" target="_blank" rel="noopener" href="https://wa.me/?text=' +
-                encodeURIComponent(teksBagikan(p) + "\n" + linkBagikan()) + '">Kirim ke WhatsApp</a>' +
-            "</div>" +
-            '<p class="bagikan-link"><span class="sr">Link produk: </span><span id="link-produk">' + esc(linkBagikan()) + "</span></p>" +
-          "</div>" +
+          // Satu tautan kecil untuk membagikan: di HP membuka menu bagikan bawaan (WhatsApp, Instagram, salin link),
+          // di komputer langsung menyalin link. Dibuat kecil supaya tidak bersaing dengan tombol pesan.
+          '<button class="tombol-bagikan" type="button" data-aksi="bagikan">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>' +
+            '<span class="teks">Bagikan produk ini</span></button>' +
           '<p class="catatan-kecil">Pesanan dikirim lewat WhatsApp. Kami memastikan harga dan stok saat membalas chat Anda.</p>' +
         "</div>" +
       "</div>";
@@ -202,10 +197,10 @@
   }
 
   function beriTanda(tombol, teks) {
-    var awal = tombol.textContent;
-    tombol.textContent = teks;
+    var sasaran = tombol.querySelector(".teks") || tombol, awal = sasaran.textContent;
+    sasaran.textContent = teks;
     T.pengumuman(teks);
-    setTimeout(function () { tombol.textContent = awal; }, 1600);
+    setTimeout(function () { sasaran.textContent = awal; }, 1600);
   }
 
   function bukaLaci() {
@@ -259,12 +254,16 @@
     else if (aksi === "hapus-item") { K.hapus(idItem); perbarui(idItem); }
     else if (aksi === "kosongkan") { if (T.konfirmasiKosongkan()) { K.kosongkan(); perbarui(null); } }
     else if (aksi === "ulang") mulai();
-    else if (aksi === "salin-link") {
-      salin(linkBagikan()).then(function () { beriTanda(b, "Link disalin"); },
-        function () { beriTanda(b, "Gagal menyalin, salin link di bawah"); });
-    }
     else if (aksi === "bagikan" && ini) {
-      navigator.share({ title: ini.nama, text: teksBagikan(ini), url: linkBagikan() }).catch(function () {});
+      // Layar sentuh: menu bagikan bawaan HP. Komputer (atau HP tanpa menu bagikan): salin link.
+      var layarSentuh = window.matchMedia && matchMedia("(pointer: coarse)").matches;
+      if (navigator.share && layarSentuh) {
+        navigator.share({ title: ini.nama, text: teksBagikan(ini), url: linkBagikan() }).catch(function () {});
+      } else {
+        salin(linkBagikan()).then(function () { beriTanda(b, "Link produk disalin"); },
+          // Bila browser menolak menyalin, link ditampilkan supaya bisa disalin sendiri.
+          function () { window.prompt("Salin link produk ini:", linkBagikan()); });
+      }
     }
   });
 

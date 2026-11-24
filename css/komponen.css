@@ -491,13 +491,12 @@ a.marka { color: var(--ink); text-decoration: none; }
 .detail-harga small { font-size: var(--t-isi); }
 .detail-aksi { display: grid; gap: var(--s-3); margin-top: var(--s-1); }
 .detail-aksi .beli { margin-top: 0; min-height: 48px; font-size: var(--t-isi); }
-.detail-aksi .tombol-sekunder, .bagikan-tombol .tombol-sekunder { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.detail-aksi .tombol-sekunder { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
 .tombol-wa-produk { border-color: var(--wa); color: var(--ink); }
-.bagikan { margin-top: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); }
-.bagikan-judul { margin-bottom: var(--s-2); font-weight: 700; }
-.bagikan-tombol { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-.bagikan-tombol .tombol-sekunder { flex: 1 1 auto; padding: 0 var(--s-4); }
-.bagikan-link { margin-top: var(--s-2); color: var(--mute); font-size: var(--t-kecil); overflow-wrap: anywhere; user-select: all; }
+/* Bagikan: satu tautan kecil di bawah tombol pesan, bukan deretan tombol besar. */
+.tombol-bagikan { display: inline-flex; align-items: center; gap: var(--s-2); align-self: flex-start; justify-self: start; min-height: 44px; margin-top: var(--s-1); padding: 0; background: none; border: 0; color: var(--primary-text); font-weight: 600; }
+.tombol-bagikan svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tombol-bagikan:hover .teks { text-decoration: underline; }
 @media (min-width: 760px) {
   .detail { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
   .detail-foto { aspect-ratio: 1 / 1; max-height: none; border-right: 1px solid var(--line); }
