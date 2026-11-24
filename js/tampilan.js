@@ -80,7 +80,6 @@ var KatalogTampilan = (function () {
       if ($("wa-bawah")) $("wa-bawah").href = tanya;
       if ($("f-wa-teks")) $("f-wa-teks").href = tanya;
     }
-    if ($("tahun")) $("tahun").textContent = new Date().getFullYear();
     isiSosmed(cfg.waNomor ? linkWA("Halo, saya mau tanya produk di " + cfg.namaToko + ".") : "");
     isiHero();
   }

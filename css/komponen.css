@@ -881,3 +881,9 @@ a.promo-kaki-pil { min-height: 44px; text-decoration: none; }
    Sama dengan judul "Katalog Toko ..." di halaman depan. */
 .judul-bagian { width: auto; margin: 0 0 var(--s-3); padding-bottom: 0; border-bottom: 0; font-family: "Plus Jakarta Sans", var(--font); font-size: var(--t-judul); font-weight: 800; letter-spacing: -0.01em; }
 .halaman-faq .judul-bagian { margin-top: var(--s-2); font-size: var(--t-halaman); }
+
+/* Tombol cari kotak, menempel di sisi kanan kolom cari dan setinggi kolomnya (seperti EnvioStore),
+   supaya kolom dan tombol terbaca sebagai satu kesatuan dengan sudut 4 px yang sama. */
+/* Sudut kanan tombol mengikuti sudut kolom (4 px dikurangi tepi 1,5 px). Kolom tidak memakai overflow hidden
+   supaya kotak saran pencarian di bawahnya tidak terpotong. */
+.cari .cari-tombol { align-self: stretch; width: 52px; height: auto; margin: 0; border-radius: 0 2.5px 2.5px 0; }
