@@ -7,7 +7,8 @@ Mencatat perilaku pengunjung website ke Google Sheets **privat** milik toko, unt
 | Kejadian | Kapan | Isi | Kode | Nilai |
 |---|---|---|---|---|
 | `kunjungan` | sekali per kunjungan (per tab) | halaman pertama yang dibuka | | |
-| `cari_kosong` | kata dicari tapi 0 hasil di semua toko, setelah berhenti mengetik 1,5 detik; kata yang sama hanya sekali per kunjungan | kata yang dicari | | |
+| `cari` | kata dicari dan ada hasilnya, setelah berhenti mengetik 1,5 detik (ketikan setengah jadi tidak ikut); kata yang sama hanya sekali per kunjungan | kata yang dicari | | jumlah hasil di semua toko |
+| `cari_kosong` | sama seperti `cari`, tapi 0 hasil di semua toko | kata yang dicari | | |
 | `lihat` | halaman detail produk dibuka | nama produk | KODE | |
 | `keranjang` | tombol + Keranjang / Tambah ke Keranjang | nama produk | KODE | jumlah |
 | `kirim_wa` | tombol Kirim pesanan lewat WhatsApp | jumlah barang | | total Rp |
@@ -55,6 +56,7 @@ Pilih periode di sel **B2**: 7, 30, atau 90 hari terakhir. Semua angka dihitung 
 2. **Produk dilihat dan masuk keranjang**: kode, nama, berapa kali dilihat, berapa kali masuk keranjang, dan rasio keranjang.
 3. **Keranjang dan pesanan**: jumlah kunjungan, kunjungan yang menambah ke keranjang, yang mengirim pesanan WA, keranjang ditinggal, persentase dikirim, dan rata-rata nilai pesanan.
 4. **Asal pengunjung**: jumlah kunjungan dan pesanan WA per asal.
+5. **Kata yang paling sering dicari** (yang ada hasilnya): kata, berapa kali dicari, dan rata-rata jumlah hasilnya.
 
 ## Ritme membaca
 
@@ -66,7 +68,11 @@ Pilih periode di sel **B2**: 7, 30, atau 90 hari terakhir. Semua angka dihitung 
 ## Penyimpanan dan keamanan
 
 - Catatan lebih tua dari 90 hari dihapus otomatis tiap Senin pukul 03.00 (`bersihkan`), supaya sheet tetap ringan.
-- Penerima hanya menerima 5 jenis kejadian, maksimal 30 catatan per kiriman, teks dipotong, dan teks yang diawali `= + - @` disimpan sebagai teks biasa (bukan rumus).
+- `@OnlyCurrentDoc`: izin skrip hanya untuk spreadsheet tempat skrip menempel, bukan semua spreadsheet di Drive.
+- Penerima hanya menerima 6 jenis kejadian dan maksimal 30 catatan per kiriman.
+- Batas kiriman: 300 catatan per menit dan 3.000 per jam untuk semua pengunjung, 200 per kode kunjungan per 6 jam, dan tab Catatan maksimal 200.000 baris. Kelebihannya diabaikan, supaya kiriman palsu tidak membengkakkan sheet atau menghabiskan kuota.
+- Teks bebas: karakter kendali dan karakter tak terlihat dibuang, panjang dipotong, dan teks yang diawali `= + - @` diberi awalan `_`, sehingga tidak pernah menjadi rumus di Google Sheets maupun saat diunduh sebagai CSV. Kode toko, asal, dan kode kunjungan hanya boleh berisi huruf kecil, angka, `_`, dan `-`.
+- Bila ada kiriman palsu: hapus barisnya, atau arsipkan deployment lalu buat deployment baru (alamat lama mati, alamat baru dipasang di `js/pengaturan.js`).
 - Data perilaku ini hanya untuk pemilik toko dan **tidak** ditampilkan di website (sejalan dengan aturan tidak menampilkan data terlaris).
 - Sebaiknya tambahkan kalimat di Kebijakan Privasi atau FAQ: website mencatat pencarian dan produk yang dilihat tanpa data pribadi, untuk memperbaiki katalog.
 
@@ -76,3 +82,8 @@ Pilih periode di sel **B2**: 7, 30, atau 90 hari terakhir. Semua angka dihitung 
 - Pengunjung yang memakai pemblokir iklan atau Do Not Track tidak tercatat.
 - `kirim_wa` berarti tombol kirim ditekan; website tidak tahu apakah chat benar-benar terkirim.
 - Barang apa yang ada di keranjang yang ditinggal belum dirangkum (bisa ditambahkan nanti dari tab Catatan).
+- Alamat `/exec` terlihat di kode website, jadi orang yang paham teknis bisa mengirim catatan palsu. Batas kiriman membatasi dampaknya, tapi tidak bisa mencegahnya sepenuhnya.
+
+## Memperbarui kode Apps Script
+
+Tempel kode baru di editor, simpan, lalu **Terapkan → Kelola deployment → ikon pensil → Versi: Versi baru → Terapkan**. Jangan memilih "Deployment baru" karena alamatnya akan berganti.
