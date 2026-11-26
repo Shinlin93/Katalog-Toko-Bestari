@@ -1,4 +1,10 @@
 /**
+ * @OnlyCurrentDoc
+ * Baris di atas membatasi izin skrip hanya ke spreadsheet tempat skrip ini menempel,
+ * bukan ke semua spreadsheet di Google Drive pemilik.
+ */
+
+/**
  * Penerima "Catatan Pengunjung" Toko Bestari (Google Apps Script).
  *
  * Ditempel di Google Sheets PRIVAT milik toko (bukan sheet katalog yang diterbitkan).
@@ -11,14 +17,26 @@
  *   2. Pilih fungsi "pasangPemicu" lalu Jalankan (izinkan akses; pembersihan otomatis tiap Senin).
  *   3. Terapkan → Penerapan baru → Aplikasi web: Jalankan sebagai "Saya", Akses "Siapa saja".
  *   4. Salin URL aplikasi web (berakhiran /exec) ke js/pengaturan.js → catatan.url.
+ * Memperbarui kode tanpa mengganti URL: tempel kode baru, simpan, lalu Terapkan → Kelola deployment →
+ * ikon pensil → Versi: Versi baru → Terapkan.
  * Fungsi "siapkan" hanya perlu bila memasang di Google Sheets baru yang masih kosong.
  */
 
 var TAB_CATATAN = "Catatan";
 var TAB_RINGKASAN = "Ringkasan";
 var SIMPAN_HARI = 90; // catatan lebih tua dari ini dihapus oleh pembersihan mingguan
-var KEJADIAN = ["kunjungan", "cari_kosong", "lihat", "keranjang", "kirim_wa"];
+var KEJADIAN = ["kunjungan", "cari", "cari_kosong", "lihat", "keranjang", "kirim_wa"];
 var KOLOM = ["Waktu", "Kejadian", "Isi", "Kode", "Toko", "Asal", "Sesi", "Nilai"];
+
+// Batas kiriman, supaya kiriman palsu dalam jumlah besar (spam) tidak membengkakkan sheet atau menghabiskan kuota.
+// Pengunjung asli jauh di bawah angka ini. Kelebihannya diabaikan tanpa pesan galat.
+var BATAS = {
+  perKiriman: 30,     // catatan dalam satu kiriman
+  perMenit: 300,      // semua pengunjung, per menit
+  perJam: 3000,       // semua pengunjung, per jam
+  perSesi: 200,       // satu kode kunjungan, per 6 jam
+  barisMaks: 200000   // batas ukuran tab Catatan; di atas ini catatan baru ditolak
+};
 
 // ---------- Penerima ----------
 function doPost(e) {
@@ -28,24 +46,61 @@ function doPost(e) {
   } catch (galat) {
     return teks("format salah");
   }
-  var daftar = (Array.isArray(data) ? data : [data]).slice(0, 30); // maksimal 30 catatan per kiriman
+  var daftar = (Array.isArray(data) ? data : [data]).slice(0, BATAS.perKiriman);
   var sekarang = new Date();
   var baris = [];
   daftar.forEach(function (d) {
-    if (!d || KEJADIAN.indexOf(d.k) < 0) return; // hanya jenis kejadian yang dikenal
-    baris.push([sekarang, d.k, bersih(d.isi, 80), bersih(d.kode, 60), bersih(d.toko, 20), bersih(d.asal, 30), bersih(d.sesi, 12), angka(d.nilai)]);
+    if (!d || typeof d !== "object" || KEJADIAN.indexOf(d.k) < 0) return; // hanya jenis kejadian yang dikenal
+    baris.push([
+      sekarang,
+      d.k,
+      bersih(d.isi, 80),
+      bersih(d.kode, 60),
+      sandi(d.toko, 20),
+      sandi(d.asal, 30),
+      sandi(d.sesi, 12),
+      angka(d.nilai)
+    ]);
   });
   if (!baris.length) return teks("kosong");
 
   var kunci = LockService.getScriptLock();
-  kunci.waitLock(10000);
+  if (!kunci.tryLock(10000)) return teks("sibuk");
   try {
+    baris = saringBatas(baris, sekarang);
+    if (!baris.length) return teks("batas");
     var sh = lembar(TAB_CATATAN);
+    if (sh.getLastRow() + baris.length > BATAS.barisMaks) return teks("penuh");
     sh.getRange(sh.getLastRow() + 1, 1, baris.length, KOLOM.length).setValues(baris);
   } finally {
     kunci.releaseLock();
   }
   return teks("ok");
+}
+
+// Menghitung kiriman per menit, per jam, dan per kode kunjungan dengan cache sementara Apps Script.
+// Catatan yang melewati batas dibuang. Dijalankan di dalam kunci, jadi hitungannya tidak bertabrakan.
+function saringBatas(baris, sekarang) {
+  var cache = CacheService.getScriptCache();
+  var t = sekarang.getTime();
+  var kMenit = "m" + Math.floor(t / 60000), kJam = "j" + Math.floor(t / 3600000);
+  var nMenit = Number(cache.get(kMenit) || 0), nJam = Number(cache.get(kJam) || 0);
+  var sisa = Math.max(0, Math.min(BATAS.perMenit - nMenit, BATAS.perJam - nJam));
+  var perSesi = {}, lolos = [];
+  baris.forEach(function (b) {
+    if (lolos.length >= sisa) return;
+    var kSesi = "s" + (b[6] || "-") + Math.floor(t / 21600000);
+    if (perSesi[kSesi] === undefined) perSesi[kSesi] = Number(cache.get(kSesi) || 0);
+    if (perSesi[kSesi] >= BATAS.perSesi) return;
+    perSesi[kSesi]++;
+    lolos.push(b);
+  });
+  if (lolos.length) {
+    cache.put(kMenit, String(nMenit + lolos.length), 120);
+    cache.put(kJam, String(nJam + lolos.length), 3700);
+    for (var k in perSesi) cache.put(k, String(perSesi[k]), 21600);
+  }
+  return lolos;
 }
 
 // Membuka URL /exec di browser hanya menampilkan pesan ini (untuk mengecek penerima aktif).
@@ -57,12 +112,22 @@ function teks(s) {
   return ContentService.createTextOutput(s).setMimeType(ContentService.MimeType.TEXT);
 }
 
-// Teks dipotong, baris baru dibuang, dan teks yang diawali = + - @ dijadikan teks biasa
-// supaya kiriman dari luar tidak bisa menjadi rumus di sheet.
+// Teks bebas (kata pencarian, nama produk): karakter kendali dan karakter tak terlihat dibuang, lalu dipotong.
+// Teks yang diawali = + - @ diberi awalan "_" yang terlihat, supaya tidak pernah menjadi rumus,
+// baik di Google Sheets maupun saat diunduh sebagai CSV lalu dibuka di Excel.
 function bersih(v, maks) {
-  var s = String(v == null ? "" : v).replace(/[\r\n\t]+/g, " ").trim().slice(0, maks);
-  if (/^[=+\-@]/.test(s)) s = "'" + s;
+  var s = String(v == null ? "" : v)
+    .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u206F\uFEFF]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maks);
+  if (/^[=+\-@]/.test(s)) s = "_" + s;
   return s;
+}
+
+// Kode pendek (toko, asal, kode kunjungan): hanya huruf kecil, angka, garis bawah, dan tanda hubung.
+function sandi(v, maks) {
+  return String(v == null ? "" : v).toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, maks);
 }
 
 function angka(v) {
@@ -144,8 +209,14 @@ function siapkan() {
   r.getRange("L15").setValue("Pesanan WA").setFontWeight("bold");
   r.getRange("L16").setFormula('=ARRAYFORMULA(IF(J16:J45="","",COUNTIFS(Catatan!F:F,J16:J45,Catatan!B:B,"kirim_wa",Catatan!A:A,">="&$B$3)))');
 
+  // 5. Kata yang paling sering dicari (yang ada hasilnya).
+  judul(r, "N5", "5. Kata yang paling sering dicari");
+  r.getRange("N6").setFormula('=IFERROR(QUERY(Catatan!A:H,"select C, count(C), avg(H) where B = \'cari\' and A >= ' + mulai +
+    ' group by C order by count(C) desc limit 40 label C \'Kata yang dicari\', count(C) \'Jumlah\', avg(H) \'Rata-rata hasil\'",1),"Belum ada data")');
+  r.getRange("P7:P46").setNumberFormat("0");
+
   r.setFrozenRows(3);
-  r.setColumnWidth(1, 220); r.setColumnWidth(5, 260); r.setColumnWidth(10, 260);
+  r.setColumnWidth(1, 220); r.setColumnWidth(5, 260); r.setColumnWidth(10, 260); r.setColumnWidth(14, 220);
   SpreadsheetApp.getUi && SpreadsheetApp.getActive().toast("Tab Catatan dan Ringkasan siap.");
 }
 

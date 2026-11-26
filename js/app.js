@@ -23,13 +23,15 @@
   function gambar() {
     hitungLain();
     T.gambar(S, S.keadaan === "ok" ? hasil() : []);
-    catatCariKosong();
+    catatCari();
   }
-  // Catatan pengunjung (js/catatan.js): kata yang dicari tapi tidak ada di toko mana pun.
-  function catatCariKosong() {
+  // Catatan pengunjung (js/catatan.js): kata yang dicari dan jumlah hasilnya di semua toko (0 = tidak ketemu).
+  function catatCari() {
     if (!window.Catatan) return;
-    var kosong = S.keadaan === "ok" && S.kueri && !D.cari(S.produk, { kueri: S.kueri }).length && !S.lain.length;
-    if (kosong) Catatan.cariKosong(S.kueri, S.toko); else Catatan.batalCari();
+    if (S.keadaan !== "ok" || !S.kueri) { Catatan.batalCari(); return; }
+    var jumlah = D.cari(S.produk, { kueri: S.kueri }).length;
+    S.lain.forEach(function (l) { jumlah += l.jumlah; });
+    Catatan.cari(S.kueri, S.toko, jumlah);
   }
 
   function jumlahPerToko() {

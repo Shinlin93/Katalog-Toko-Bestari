@@ -1,6 +1,6 @@
 // Catatan pengunjung TANPA data pribadi, dikirim ke Google Sheets privat milik toko (lewat Google Apps Script).
-// Yang dicatat: kunjungan dan asalnya, pencarian yang tidak ketemu, produk yang dilihat, produk yang masuk keranjang,
-// dan pesanan yang dikirim ke WhatsApp. TIDAK dicatat: nama, nomor WA, alamat IP, lokasi, atau isi chat.
+// Yang dicatat: kunjungan dan asalnya, kata yang dicari (beserta jumlah hasilnya, termasuk yang tidak ketemu),
+// produk yang dilihat, produk yang masuk keranjang, dan pesanan yang dikirim ke WhatsApp. TIDAK dicatat: nama, nomor WA, alamat IP, lokasi, atau isi chat.
 // Penjelasan dan cara memasang penerima: docs/catatan-pengunjung.md.
 //
 // Mati otomatis bila: alamat penerima di pengaturan.js kosong, browser meminta "jangan dilacak" (Do Not Track),
@@ -75,19 +75,21 @@ var Catatan = (function () {
     timer = setTimeout(function () { kirimSekarang(false); }, 4000);
   }
 
-  // Pencarian yang tidak ketemu: dicatat setelah pengunjung berhenti mengetik 1,5 detik,
-  // dan kata yang sama hanya sekali per kunjungan.
+  // Pencarian: dicatat setelah pengunjung berhenti mengetik 1,5 detik (ketikan setengah jadi tidak ikut),
+  // dan kata yang sama hanya sekali per kunjungan. Ada hasilnya = "cari" dengan jumlah hasil; tidak ada = "cari_kosong".
   var tundaCari = null, sudahDicari = {};
-  function cariKosong(kata, toko) {
+  function cari(kata, toko, jumlah) {
     clearTimeout(tundaCari);
     kata = String(kata || "").toLowerCase().replace(/\s+/g, " ").trim();
     if (kata.length < 2) return;
     tundaCari = setTimeout(function () {
       if (sudahDicari[kata]) return;
       sudahDicari[kata] = 1;
-      kirim("cari_kosong", { isi: kata, toko: toko });
+      if (jumlah > 0) kirim("cari", { isi: kata, toko: toko, nilai: jumlah });
+      else kirim("cari_kosong", { isi: kata, toko: toko });
     }, 1500);
   }
+  function cariKosong(kata, toko) { cari(kata, toko, 0); }
   function batalCari() { clearTimeout(tundaCari); }
 
   // Pesanan dikirim: tombol "Kirim pesanan lewat WhatsApp" di keranjang (semua halaman).
@@ -109,5 +111,5 @@ var Catatan = (function () {
     kirim("kunjungan", { isi: location.pathname.replace(/^\//, "") || "index.html" });
   }
 
-  return { kirim: kirim, cariKosong: cariKosong, batalCari: batalCari, aktif: function () { return aktif; } };
+  return { kirim: kirim, cari: cari, cariKosong: cariKosong, batalCari: batalCari, aktif: function () { return aktif; } };
 })();
