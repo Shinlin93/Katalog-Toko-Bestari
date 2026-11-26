@@ -79,7 +79,7 @@ var PENGATURAN = {
   //   url = alamat Web App Apps Script (berakhiran /exec). Kosong = pencatatan mati.
   //   Cara memasang: docs/catatan-pengunjung.md. Perangkat toko dikecualikan dengan membuka website sekali memakai ?catat=mati.
   catatan: {
-    url: ""
+    url: "https://script.google.com/macros/s/AKfycbwx881SINxSUmmSq4aRczkCfmac9nlbRajdxrwuR5_Hqk889TlarYjqTYf3OGWxqy_cSQ/exec"
   },
 
   // Rekomendasi di halaman produk ("Produk Serupa" dan "Produk Pelengkap"). Penjelasan: docs/rekomendasi.md.
