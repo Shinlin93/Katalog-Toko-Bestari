@@ -20,7 +20,17 @@
       if (n) S.lain.push({ toko: t, jumlah: n });
     });
   }
-  function gambar() { hitungLain(); T.gambar(S, S.keadaan === "ok" ? hasil() : []); }
+  function gambar() {
+    hitungLain();
+    T.gambar(S, S.keadaan === "ok" ? hasil() : []);
+    catatCariKosong();
+  }
+  // Catatan pengunjung (js/catatan.js): kata yang dicari tapi tidak ada di toko mana pun.
+  function catatCariKosong() {
+    if (!window.Catatan) return;
+    var kosong = S.keadaan === "ok" && S.kueri && !D.cari(S.produk, { kueri: S.kueri }).length && !S.lain.length;
+    if (kosong) Catatan.cariKosong(S.kueri, S.toko); else Catatan.batalCari();
+  }
 
   function jumlahPerToko() {
     var j = {};
@@ -182,6 +192,7 @@
     var p = cariProduk(id);
     if (!p) return;
     K.tambah(p);
+    if (window.Catatan) Catatan.kirim("keranjang", { kode: id, isi: p.nama, toko: S.toko, nilai: 1 });
     perbaruiKeranjang(id);
     T.pengumuman(p.nama + " ditambahkan ke keranjang " + S.tokoNama + ". Jumlah di keranjang: " + K.qty(id) + ".");
     T.toast("Ditambahkan: " + p.nama, "Lihat keranjang", "buka-laci");

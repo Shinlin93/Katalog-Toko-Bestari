@@ -172,6 +172,7 @@
       setKanonik(linkBagikan());
       setJejakData(ini);
       gambarProduk(ini);
+      if (window.Catatan) Catatan.kirim("lihat", { kode: ini.id, isi: ini.nama, toko: toko.id });
       if ($("remah-kategori")) {
         $("remah-kategori").innerHTML = '<a href="index.html?toko=' + encodeURIComponent(toko.id) + "&kategori=" + encodeURIComponent(ini.kat) + '#katalog">' + esc(ini.kat) + "</a>";
         $("remah-kategori").hidden = false;
@@ -246,6 +247,7 @@
       var qtyEl = b.closest(".detail") ? $("qty") : null;
       var banyak = qtyEl ? Math.max(1, Math.min(999, parseInt(qtyEl.value, 10) || 1)) : 1;
       for (var q = 0; q < banyak; q++) K.tambah(p);
+      if (window.Catatan) Catatan.kirim("keranjang", { kode: p.id, isi: p.nama, toko: toko.id, nilai: banyak });
       if (qtyEl) qtyEl.value = 1;
       perbarui(idItem);
       beriTanda(b, "Ditambahkan");

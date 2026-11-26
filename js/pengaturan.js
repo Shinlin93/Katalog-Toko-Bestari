@@ -75,6 +75,13 @@ var PENGATURAN = {
   // Lama tiap slide tampil, dalam detik.
   slideDetik: 6,
 
+  // Catatan pengunjung tanpa data pribadi (js/catatan.js), dikirim ke Google Sheets privat lewat Google Apps Script.
+  //   url = alamat Web App Apps Script (berakhiran /exec). Kosong = pencatatan mati.
+  //   Cara memasang: docs/catatan-pengunjung.md. Perangkat toko dikecualikan dengan membuka website sekali memakai ?catat=mati.
+  catatan: {
+    url: ""
+  },
+
   // Rekomendasi di halaman produk ("Produk Serupa" dan "Produk Pelengkap"). Penjelasan: docs/rekomendasi.md.
   //   bobot     = seberapa penting tiap atribut saat menilai kemiripan (jumlahnya tidak harus 1, otomatis dinormalkan).
   //               Merek hanya dipakai bila spreadsheet punya kolom MEREK.
